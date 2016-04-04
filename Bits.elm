@@ -6,6 +6,7 @@ import Color exposing (Color)
 import Text
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
+import Mouse 
 
 type alias Bit = Int
 
@@ -19,7 +20,6 @@ colorOf bit=
         0 -> Color.black
         1 -> Color.white
         _ -> Color.red
-
 
 {- Given a Bit type, converts it to a Form. -}       
 toForm : Bit -> Form
@@ -41,4 +41,4 @@ bitToggle bit =
 
 
 main : Element     
-main = collage 400 400 [toForm (4)]
+main = collage 400 400 [toForm (bitToggle 0)]
