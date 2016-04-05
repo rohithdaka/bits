@@ -22,8 +22,8 @@ colorOf bit=
         _ -> Color.red
 
 {- Given a Bit type, converts it to a Form. -}       
-toForm : Bit -> Form
-toForm bit = 
+convertToForm : Bit -> Form
+convertToForm bit = 
     let shape = square size
         border = outlined (solid Color.darkCharcoal) shape 
         bitDisplay = toString bit
@@ -31,7 +31,8 @@ toForm bit =
                     |> Text.color Color.green
                     |> Text.monospace
                     |> Text.height (0.8*size)
-                    |> text 
+                    |> centered 
+                    |> toForm
     in  group [filled (colorOf bit) shape, border, bitDisplay]
 
 
@@ -41,4 +42,4 @@ bitToggle bit =
 
 
 main : Element     
-main = collage 400 400 [toForm (bitToggle 0)]
+main = collage 400 400 [convertToForm (bitToggle 1)]
