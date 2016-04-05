@@ -8,13 +8,16 @@ import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
 import Mouse 
 
-type alias Bit = Int
+type alias Bit =
+            { value: Int
+            , location: Int
+            }
 
 {- The length of the edges of each Bit block -}                 
 size : Float
-size = 40
+size = 30
 
-colorOf : Bit -> Color
+colorOf : Int -> Color
 colorOf bit=
     case bit of 
         0 -> Color.black
@@ -23,23 +26,23 @@ colorOf bit=
 
 {- Given a Bit type, converts it to a Form. -}       
 convertToForm : Bit -> Form
-convertToForm bit = 
+convertToForm {value, location} = 
     let shape = square size
         border = outlined (solid Color.darkCharcoal) shape 
-        bitDisplay = toString bit
+        bitDisplay = toString value
                     |> Text.fromString 
                     |> Text.color Color.green
                     |> Text.monospace
                     |> Text.height (0.8*size)
                     |> centered 
                     |> toForm
-    in  group [filled (colorOf bit) shape, border, bitDisplay]
+    in  group [filled (colorOf value) shape, border, bitDisplay]
 
 
 bitToggle : Bit -> Bit
 bitToggle bit = 
-    (bit + 1) % 2
+    {bit | value = (bit.value + 1) % 2}
 
 
 main : Element     
-main = collage 400 400 [convertToForm (bitToggle 1)]
+main = collage 500 500 [convertToForm (bitToggle (Bit 1 1))]
