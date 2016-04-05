@@ -54,4 +54,4 @@ bitToggle bit =
 
 
 main : Element     
-main = collage 500 500 [convertToForm {location = {x =3, y=-1}, value = 1}]
+main = collage 500 500 [convertToForm {location = {x =0, y=-1}, value = 1}]
