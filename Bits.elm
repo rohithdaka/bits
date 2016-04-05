@@ -6,11 +6,17 @@ import Color exposing (Color)
 import Text
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
+import Transform2D exposing (translation)
 import Mouse 
+
+type alias Location = 
+            { x: Int
+            , y: Int
+            }
 
 type alias Bit =
             { value: Int
-            , location: Int
+            , location: Location
             }
 
 {- The length of the edges of each Bit block -}                 
@@ -27,7 +33,9 @@ colorOf bit=
 {- Given a Bit type, converts it to a Form. -}       
 convertToForm : Bit -> Form
 convertToForm {value, location} = 
-    let shape = square size
+    let x = toFloat(location.x) * size
+        y = toFloat(location.y) * size
+        shape = square size
         border = outlined (solid Color.darkCharcoal) shape 
         bitDisplay = toString value
                     |> Text.fromString 
@@ -36,7 +44,8 @@ convertToForm {value, location} =
                     |> Text.height (0.8*size)
                     |> centered 
                     |> toForm
-    in  group [filled (colorOf value) shape, border, bitDisplay]
+    in  [filled (colorOf value) shape, border, bitDisplay] 
+        |> groupTransform (translation x y)
 
 
 bitToggle : Bit -> Bit
@@ -45,4 +54,4 @@ bitToggle bit =
 
 
 main : Element     
-main = collage 500 500 [convertToForm (bitToggle (Bit 1 1))]
+main = collage 500 500 [convertToForm {location = {x =3, y=-1}, value = 1}]
