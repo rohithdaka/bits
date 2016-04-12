@@ -18,25 +18,23 @@ numberOfBits = 4
 bitPositions: List Int
 bitPositions = [1..numberOfBits]
 
-bitGenerator : Int -> Location -> Bit
-bitGenerator = 
-    \{v, l} -> {location = l,value = v}
-
 transmittedMessage: Model
 transmittedMessage=
-    List.map messageGenerator bitPositions
+    List.map bitGenerator bitPositions
 
 -- Update
 type Action = Toggle
 
 update: Action -> Bit -> Bit
-update action transmittedMessage =
+update action bit =
     case action of
-        Toggle -> {}
+        Toggle -> (bitToggle bit)
 
 
-main : Element     
-main = collage 900 900 (List.map convertToForm transmittedMessage)
+-- View 
+
+
+
 
 
 

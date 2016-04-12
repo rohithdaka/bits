@@ -31,8 +31,8 @@ colorOf bit=
         _ -> Color.red
 
 bitGenerator : Int -> Location -> Bit
-bitGenerator = 
-    \{v, l} -> {location = l,value = v}
+bitGenerator v l = 
+    {location = l,value = v}
 
 {- Given a Bit type, converts it to a Form. -}       
 convertToForm : Bit -> Form
