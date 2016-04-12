@@ -17,38 +17,39 @@ type alias Location =
 type alias Bit =
             { value: Int
             , location: Location
+            , category: String
             }
 
 {- The length of the edges of each Bit block -}                 
 size : Float
 size = 30
 
-colorOf : Int -> Color
-colorOf bit=
-    case bit of 
-        0 -> Color.black
-        1 -> Color.white
+colorOf : String -> Color
+colorOf category=
+    case category of 
+        "data" -> Color.green
+        "parity" -> Color.blue
         _ -> Color.red
 
-bitGenerator : Int -> Location -> Bit
-bitGenerator v l = 
-    {location = l,value = v}
+bitGenerator : Int -> Location -> String -> Bit
+bitGenerator v l c= 
+    {location = l,value = v, category = c}
 
 {- Given a Bit type, converts it to a Form. -}       
 convertToForm : Bit -> Form
-convertToForm {value, location} = 
+convertToForm {value, location, category} = 
     let x = toFloat(location.x) * size
         y = toFloat(location.y) * size
         shape = square size
         border = outlined (solid Color.darkCharcoal) shape 
         bitDisplay = toString value
                     |> Text.fromString 
-                    |> Text.color Color.green
+                    |> Text.color Color.black
                     |> Text.monospace
                     |> Text.height (0.8*size)
                     |> centered 
                     |> toForm
-    in  [filled (colorOf value) shape, border, bitDisplay] 
+    in  [filled (colorOf category) shape, border, bitDisplay] 
         |> groupTransform (translation x y)
 
 
@@ -58,4 +59,4 @@ bitToggle bit =
 
 
 main : Element     
-main = collage 500 500 [convertToForm {location = {x =0, y=-1}, value = 1}]
+main = collage 500 500 [convertToForm {location = {x =0, y=-1}, value = 0, category="adf"}]
