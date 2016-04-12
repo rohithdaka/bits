@@ -1,4 +1,4 @@
-module Message where
+module NoChecks where
 
 import Bits exposing(..)
 import Basics exposing (..)
@@ -9,7 +9,8 @@ import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
 import List
 
-type alias Message = List Bit
+-- Model
+type alias Model = Bit
 
 numberOfBits : Int
 numberOfBits = 4
@@ -17,14 +18,21 @@ numberOfBits = 4
 bitPositions: List Int
 bitPositions = [1..numberOfBits]
 
-messageGenerator : Int -> Bit
-messageGenerator = 
-    \n -> {location = {x =n, y=0},value = 1}
+bitGenerator : Int -> Location -> Bit
+bitGenerator = 
+    \{v, l} -> {location = l,value = v}
 
-transmittedMessage: Message
+transmittedMessage: Model
 transmittedMessage=
     List.map messageGenerator bitPositions
 
+-- Update
+type Action = Toggle
+
+update: Action -> Bit -> Bit
+update action transmittedMessage =
+    case action of
+        Toggle -> {}
 
 
 main : Element     
