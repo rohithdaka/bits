@@ -3,10 +3,9 @@ module Bit where
 import Basics exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
-import Html exposing (Html,div)
+import Html exposing (Html)
 import Html.Events exposing (onClick)
 
-import Color exposing (..)
 import StartApp.Simple as StartApp
 
 type alias Location = 
@@ -17,11 +16,12 @@ type alias Location =
 type alias Bit =
             { value: Int
             , location: Location
-            , size: Float
             , category: String
             }
 
 {- The length of the edges of each Bit block -}                 
+sizeOfBit: Float
+sizeOfBit = 100
 
 type Action = Click 
 
@@ -47,9 +47,9 @@ bitToggle bit =
 viewBit address bit =
     let xOrigin = (toString bit.location.x)
         yOrigin = (toString bit.location.y)
-        bitDimension = (toString bit.size)
+        bitDimension = (toString sizeOfBit)
         fillColor = colorOf(bit.category)
-        textOrigin = (toString  (bit.size/2))
+        textOrigin = (toString  (sizeOfBit/2))
     in 
     svg 
         [ onClick address Click, x xOrigin, y yOrigin,width bitDimension, height bitDimension]
@@ -62,9 +62,8 @@ viewBit address bit =
                 [text (toString bit.value)]
         ]
 
-defaultBit = { value = 1
+defaultBit = { value = 0
             , location = {x=0,y=0}
-            , size = 400
             , category ="data"
             }
 
