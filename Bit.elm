@@ -40,8 +40,9 @@ colorOf category=
 
 bitToggle : Bit -> Bit
 bitToggle bit = 
-    {bit | value = (bit.value + 1) % 2}
-
+    case bit.category of 
+        "data" -> {bit | value = (bit.value + 1) % 2}
+        _ -> bit
 
 viewBit address bit =
     let xOrigin = (toString bit.location.x)
@@ -61,38 +62,10 @@ viewBit address bit =
                 [text (toString bit.value)]
         ]
 
-defaultBit = { value = 0
+defaultBit = { value = 1
             , location = {x=0,y=0}
             , size = 100
             , category ="data"
             }
 
 main = StartApp.start { model = defaultBit, view = viewBit, update = updateBit }
-
-{-
-main: Html
-main = 
-    svg 
-        [ version "1.1", width "100", height "100"]
-                  [x "50", y "50", fill "black", fontFamily "monospace", fontSize "60", textAnchor "middle", alignmentBaseline "middle"]
-      [
-            svg [ x "0", y "0", width "50", height "50"]
-                [ 
-                    rect 
-                        [ fill "green", x "0", y "0", width "50", height "50"] 
-                        []
-                ,   text' 
-                       [x "25", y "25", fill "black", fontFamily "monospace", fontSize "60", textAnchor "middle", alignmentBaseline "middle"]
-                       [text "1"]
-                ]
-        ,   svg [ x "50", y "50", width "50", height "50"]
-                [ 
-                    rect 
-                        [ fill "blue", x "0", y "0", width "50", height "50"] 
-                        []
-                ,   text' 
-                        [x "25", y "25", fill "black", fontFamily "monospace", fontSize "60", textAnchor "middle", alignmentBaseline "middle"]
-                        [text "0"]
-                ]
-        ]
--}
