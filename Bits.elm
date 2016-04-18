@@ -6,8 +6,9 @@ import Color exposing (Color)
 import Text
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
+import Graphics.Input exposing (..)
 import Transform2D exposing (translation)
-import Mouse 
+import Mouse
 
 type alias Location = 
             { x: Int
@@ -21,7 +22,7 @@ type alias Bit =
             }
 
 {- The length of the edges of each Bit block -}                 
-size : Float
+type alias Size = Float
 size = 30
 
 colorOf : String -> Color
@@ -47,10 +48,11 @@ convertToForm {value, location, category} =
                     |> Text.color Color.black
                     |> Text.monospace
                     |> Text.height (0.8*size)
-                    |> centered 
+                    |> centered
                     |> toForm
     in  [filled (colorOf category) shape, border, bitDisplay] 
         |> groupTransform (translation x y)
+
 
 
 bitToggle : Bit -> Bit
@@ -59,4 +61,4 @@ bitToggle bit =
 
 
 main : Element     
-main = collage 500 500 [convertToForm {location = {x =0, y=-1}, value = 0, category="adf"}]
+main = collage 100 100 [convertToForm {location = {x =0, y=0}, value = 0, category="adf"}]
