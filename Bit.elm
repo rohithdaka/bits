@@ -49,7 +49,7 @@ viewBit address bit =
         yOrigin = (toString bit.location.y)
         bitDimension = (toString bit.size)
         fillColor = colorOf(bit.category)
-        xTextOrigin = (toString (bit.location.x + bit.size/2))
+        textOrigin = (toString  (bit.size/2))
     in 
     svg 
         [ onClick address Click, x xOrigin, y yOrigin,width bitDimension, height bitDimension]
@@ -58,13 +58,13 @@ viewBit address bit =
                 [ fill fillColor, x "0", y "0", width bitDimension, height bitDimension] 
                 []
         ,   text' 
-                [x "50", y "50", fill "black", fontFamily "monospace", fontSize "60", textAnchor "middle", alignmentBaseline "middle"]
+                [x textOrigin, y textOrigin, fill "black", fontFamily "monospace", fontSize textOrigin, textAnchor "middle", alignmentBaseline "middle"]
                 [text (toString bit.value)]
         ]
 
 defaultBit = { value = 1
             , location = {x=0,y=0}
-            , size = 100
+            , size = 400
             , category ="data"
             }
 
