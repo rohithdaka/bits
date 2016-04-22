@@ -6,8 +6,6 @@ import Svg.Attributes exposing (..)
 import Html exposing (Html)
 import Html.Events exposing (onClick)
 
-import StartApp.Simple as StartApp
-
 type alias Location = 
             { x: Float
             , y: Float
@@ -44,6 +42,7 @@ bitToggle bit =
         "data" -> {bit | value = (bit.value + 1) % 2}
         _ -> bit
 
+viewBit: Signal.Address Action -> Bit -> Html
 viewBit address bit =
     let xOrigin = (toString bit.location.x)
         yOrigin = (toString bit.location.y)
@@ -61,10 +60,3 @@ viewBit address bit =
                 [x textOrigin, y textOrigin, fill "black", fontFamily "monospace", fontSize textOrigin, textAnchor "middle", alignmentBaseline "middle"]
                 [text (toString bit.value)]
         ]
-
-defaultBit = { value = 0
-            , location = {x=0,y=0}
-            , category ="data"
-            }
-
-main = StartApp.start { model = defaultBit, view = viewBit, update = updateBit }

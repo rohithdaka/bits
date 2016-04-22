@@ -11,11 +11,19 @@ import List
 import StartApp.Simple as StartApp
 
 -- Model
+type alias Packet = List ( ID, Bit )
+type alias ID = Int
+
+type Action 
+    = Add Bit
+    | Remove Bit
+    | Modify Bit
+
+packet: numberOfBits -> Packet -> Packet
 
 
 -- Update
-type Action = Increment | Decrement 
 
 
 -- View 
-packetView 
+packetView address
