@@ -66,10 +66,10 @@ update action packet =
 view: Signal.Address Action -> Model -> Html
 view address packet =
     let bits = List.map (viewSpecificBit address) packet.bits
-        remove  = button [ onClick address Remove] [text "Remove a bit"]
-        add     = button [ onClick address Add] [text "Add a bit"] 
+        remove  = div [] [button [ onClick address Remove] [text "Remove a bit"]]
+        add     = div [] [ button [ onClick address Add] [text "Add a bit"] ]
     in 
-        div [] ([remove, add] ++ bits)
+        div [] ([add] ++ bits ++ [remove])
 
 viewSpecificBit: Signal.Address Action -> (ID, Bit.Model) -> Html
 viewSpecificBit address (id, bit) = 
