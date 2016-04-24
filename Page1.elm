@@ -1,10 +1,10 @@
-import Bit exposing(updateBit, viewBit)
-import StartApp.Simple as StartApp
+import Bit exposing(..)
+import StartApp.Simple exposing(start)
 
 
-defaultBit = { value = 0
-            , location = {x=0,y=0}
-            , category ="data"
-            }
-
-main = StartApp.start { model = defaultBit, view = viewBit, update = updateBit }
+main = 
+    start { 
+        model = (defaultBit 0 {x=0,y=0} "data")
+    ,   view = viewBit
+    ,   update = updateBit 
+    }

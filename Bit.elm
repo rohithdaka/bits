@@ -17,9 +17,17 @@ type alias Bit =
             , category: String
             }
 
+
+defaultBit: Int -> Location -> String -> Bit
+defaultBit v l c = 
+    { value = v
+    , location = l
+    , category = c
+    }
+
 {- The length of the edges of each Bit block -}                 
 sizeOfBit: Float
-sizeOfBit = 100
+sizeOfBit = 50
 
 type Action = Click 
 
