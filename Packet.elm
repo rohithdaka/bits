@@ -10,14 +10,14 @@ import List
 
 
 -- Model
-type alias Packet = 
-    { bits  : List ( ID, Bit.Bit )
+type alias Model = 
+    { bits  : List ( ID, Bit.Model )
     , msb   : ID
     }
 
 type alias ID = Int
 
-emptyPacket : Packet 
+emptyPacket : Model 
 emptyPacket = 
     { bits = []
     , msb = 0
@@ -30,8 +30,8 @@ type Action
     | Remove 
     | Modify ID Bit.Action
 
-updatePacket: Action -> Packet -> Packet 
-updatePacket action packet = 
+update: Action -> Model -> Model 
+update action packet = 
     case action of
         Add -> 
             let newBitPosition = {x = 0, y = 0}
@@ -52,7 +52,7 @@ updatePacket action packet =
         Modify id bitAction -> 
             let updateSpecificBit (bitID, bit) = 
                     if bitID == id then
-                        (bitID, Bit.updateBit bitAction bit)
+                        (bitID, Bit.update bitAction bit)
                     else 
                         (bitID, bit)
             in
@@ -63,14 +63,14 @@ updatePacket action packet =
 
 
 -- View 
-viewPacket: Signal.Address Action -> Packet -> Html
-viewPacket address packet =
+view: Signal.Address Action -> Model -> Html
+view address packet =
     let bits = List.map (viewSpecificBit address) packet.bits
         remove  = button [ onClick address Remove] [text "Remove a bit"]
         add     = button [ onClick address Add] [text "Add a bit"] 
     in 
         div [] ([remove, add] ++ bits)
 
-viewSpecificBit: Signal.Address Action -> (ID, Bit.Bit) -> Html
+viewSpecificBit: Signal.Address Action -> (ID, Bit.Model) -> Html
 viewSpecificBit address (id, bit) = 
-    Bit.viewBit (Signal.forwardTo address (Modify id)) bit
+    Bit.view (Signal.forwardTo address (Modify id)) bit

@@ -11,14 +11,14 @@ type alias Location =
             , y: Float
             }
 
-type alias Bit =
+type alias Model =
             { value: Int
             , location: Location
             , category: String
             }
 
 
-defaultBit: Int -> Location -> String -> Bit
+defaultBit: Int -> Location -> String -> Model
 defaultBit v l c = 
     { value = v
     , location = l
@@ -31,8 +31,8 @@ sizeOfBit = 50
 
 type Action = Click 
 
-updateBit: Action -> Bit -> Bit
-updateBit action bit = 
+update: Action -> Model -> Model
+update action bit = 
     case action of
         Click -> (bitToggle bit)
 
@@ -44,14 +44,14 @@ colorOf category=
         _ -> "red"
 
 
-bitToggle : Bit -> Bit
+bitToggle : Model -> Model
 bitToggle bit = 
     case bit.category of 
         "data" -> {bit | value = (bit.value + 1) % 2}
         _ -> bit
 
-viewBit: Signal.Address Action -> Bit -> Html
-viewBit address bit =
+view: Signal.Address Action -> Model -> Html
+view address bit =
     let xOrigin = (toString bit.location.x)
         yOrigin = (toString bit.location.y)
         bitDimension = (toString sizeOfBit)
