@@ -2,6 +2,7 @@ import Packet
 import Header 
 import Html
 import StartApp.Simple exposing(start)
+import String exposing(concat)
 
 type alias AppModel = 
     { headerModel: Header.Model
@@ -11,7 +12,7 @@ type alias AppModel =
 initialModel: AppModel
 initialModel = 
     { headerModel = Header.initialModel
-    , packetModel = (Packet.emptyPacket)
+    , packetModel = (Packet.defaultPacket)
     }
 
 type Action 
@@ -30,6 +31,9 @@ view address model =
                 []
                 [ Html.text "This is a packet\n" ]
             , Packet.view (Signal.forwardTo address PacketAction) model.packetModel
+            , Html.p 
+                []
+                [ model.packetModel |> Packet.packetValue |> List.map toString |> concat |> Html.text]
             ]
         ]
 

@@ -7,7 +7,8 @@ import Svg.Attributes
 import Html exposing (Html,div,button)
 import Html.Events exposing (onClick)
 import List
-
+import Text exposing(fromString,concat)
+import Graphics.Element exposing(show)
 
 -- Model
 type alias Model = 
@@ -17,10 +18,10 @@ type alias Model =
 
 type alias ID = Int
 
-emptyPacket : Model 
-emptyPacket = 
-    { bits = []
-    , msb = 0
+defaultPacket : Model 
+defaultPacket = 
+    { bits = [(0, Bit.defaultBit 0 {x = 0, y = 0} "data")]
+    , msb = 1
     }
 
 -- Update
@@ -44,10 +45,13 @@ update action packet =
                 }
 
         Remove ->
-            { packet | 
-                bits = List.drop 1 packet.bits
-            ,   msb = packet.msb - 1
-            }
+            if packet.msb >1 then
+                { packet | 
+                    bits = List.drop 1 packet.bits
+                ,       msb = packet.msb - 1
+                }
+            else 
+                packet
 
         Modify id bitAction -> 
             let updateSpecificBit (bitID, bit) = 
@@ -60,6 +64,10 @@ update action packet =
                     bits = List.map updateSpecificBit packet.bits 
                 }
 
+packetValue: Model -> List Int
+packetValue packet =
+    let getBitValue (_, bit) = bit.value 
+    in List.map getBitValue packet.bits
 
 
 -- View 
@@ -74,3 +82,6 @@ view address packet =
 viewSpecificBit: Signal.Address Action -> (ID, Bit.Model) -> Html
 viewSpecificBit address (id, bit) = 
     Bit.view (Signal.forwardTo address (Modify id)) bit
+
+
+main = defaultPacket |> packetValue |> List.map toString |> show
