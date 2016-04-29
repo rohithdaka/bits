@@ -9,6 +9,7 @@ import Html.Events exposing (onClick)
 import List
 import Text exposing(fromString,concat)
 import Graphics.Element exposing(show)
+import String exposing(repeat,length)
 
 
 -- Model
@@ -82,7 +83,9 @@ dec2bin v =
 allPossibleValues : Int -> List String
 allPossibleValues n =
     let maxPossibleValue = 2^n - 1
-    in List.map dec2bin [0..maxPossibleValue]
+        valueStrings = List.map dec2bin [0..maxPossibleValue]
+        padZeroes binaryString = (String.repeat (n - (String.length binaryString)) "0" ) ++ binaryString 
+    in List.map padZeroes valueStrings
 
 
 -- View 
