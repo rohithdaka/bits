@@ -10,6 +10,7 @@ import List
 import Text exposing(fromString,concat)
 import Graphics.Element exposing(show)
 
+
 -- Model
 type alias Model = 
     { bits  : List ( ID, Bit.Model )
@@ -17,6 +18,8 @@ type alias Model =
     }
 
 type alias ID = Int
+
+
 
 defaultPacket : Model 
 defaultPacket = 
@@ -68,6 +71,18 @@ packetValue: Model -> List Int
 packetValue packet =
     let getBitValue (_, bit) = bit.value 
     in List.map getBitValue packet.bits
+
+dec2bin: Int -> String 
+dec2bin v =
+    case v of
+        1 -> "1"
+        0 -> "0"
+        _ -> ( dec2bin (v // 2) ) ++ (toString (v % 2))
+
+allPossibleValues : Int -> List String
+allPossibleValues n =
+    let maxPossibleValue = 2^n - 1
+    in List.map dec2bin [0..maxPossibleValue]
 
 
 -- View 
