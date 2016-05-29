@@ -1,7 +1,7 @@
 import Bit 
 import Header 
-import Html
-import StartApp.Simple exposing(start)
+import Html 
+import Html.App as HA
 
 type alias AppModel = 
     { headerModel: Header.Model
@@ -14,12 +14,12 @@ initialModel =
     , bitModel = (Bit.defaultBit 0 {x=0,y=0} "data")
     }
 
-type Action 
-    = BitAction Bit.Action
+type Msg 
+    = BitMsg Bit.Msg
 
 
-view: Signal.Address Action -> AppModel -> Html.Html
-view address model =
+view: AppModel -> Html.Html Msg
+view model =
     Html.div []
         [ Html.header 
             [] 
@@ -29,15 +29,15 @@ view address model =
             [ Html.p 
                 []
                 [ Html.text "This is a bit\n" ]
-            , Bit.view (Signal.forwardTo address BitAction) model.bitModel
+            , HA.map BitMsg (Bit.view model.bitModel)
             ]
         ]
 
 
-update: Action -> AppModel -> AppModel
-update action model =
-    case action of
-        BitAction subAction ->
+update: Msg -> AppModel -> AppModel
+update msg model =
+    case msg of
+        BitMsg subAction ->
             let 
                 updatedBitModel = 
                     Bit.update subAction model.bitModel
@@ -45,7 +45,7 @@ update action model =
                 {model | bitModel = updatedBitModel}
 
 main = 
-    start { 
+    HA.beginnerProgram { 
         model = initialModel
     ,   view = view
     ,   update = update 

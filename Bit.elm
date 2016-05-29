@@ -1,10 +1,10 @@
-module Bit where 
-
+module Bit exposing (..)
 import Basics exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
-import Html exposing (Html)
+import Html exposing (..)
 import Html.Events exposing (onClick)
+import Html.App as HA
 
 type alias Location = 
             { x: Float
@@ -25,15 +25,19 @@ defaultBit v l c =
     , category = c
     }
 
-{- The length of the edges of each Bit block -}                 
+initialModel = 
+    (defaultBit 1 {x=0,y=0} "data")
+
+-- The length of the edges of each Bit block 
+
 sizeOfBit: Float
 sizeOfBit = 50
 
-type Action = Click 
+type Msg = Click 
 
-update: Action -> Model -> Model
-update action bit = 
-    case action of
+update: Msg -> Model -> Model
+update msg bit = 
+    case msg of
         Click -> (bitToggle bit)
 
 colorOf : String -> String
@@ -50,21 +54,27 @@ bitToggle bit =
         "data" -> {bit | value = (bit.value + 1) % 2}
         _ -> bit
 
-view: Signal.Address Action -> Model -> Html
-view address bit =
+view bit =
     let xOrigin = (toString bit.location.x)
         yOrigin = (toString bit.location.y)
         bitDimension = (toString sizeOfBit)
         fillColor = colorOf(bit.category)
         textOrigin = (toString  (sizeOfBit/2))
     in 
-    svg 
-        [ onClick address Click, x xOrigin, y yOrigin,width bitDimension, height bitDimension]
+    Svg.svg 
+        [ onClick Click, x xOrigin, y yOrigin,width bitDimension, height bitDimension]
         [ 
             rect 
                 [ fill fillColor, x "0", y "0", width bitDimension, height bitDimension] 
                 []
         ,   text' 
                 [x textOrigin, y textOrigin, fill "black", fontFamily "monospace", fontSize textOrigin, textAnchor "middle", alignmentBaseline "middle"]
-                [text (toString bit.value)]
+                [Html.text (toString bit.value)]
         ]
+
+main = 
+    HA.beginnerProgram { 
+        model = initialModel
+    ,   view = view
+    ,   update = update 
+    }

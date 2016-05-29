@@ -1,4 +1,4 @@
-module Header where
+module Header exposing (..)
 
 import Html exposing (Html,div,h1,text)
 import Html.Events 
@@ -10,9 +10,6 @@ initialModel =
     "Hamming Code - An Interactive Primer"
 
 
-
-
-view: Model -> Html
 view model =
     Html.h1 
         []
