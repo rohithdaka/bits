@@ -1,7 +1,7 @@
 import Packet 
 import Header 
 import Html
-import StartApp.Simple exposing(start)
+import Html.App as HA
 import String exposing(concat)
 
 type alias AppModel = 
@@ -15,12 +15,11 @@ initialModel =
     , packetModel = (Packet.defaultPacket)
     }
 
-type Action 
-    = PacketAction Packet.Action
+type Msg 
+    = PacketAction Packet.Msg
 
 
-view: Signal.Address Action -> AppModel -> Html.Html
-view address model =
+view model =
     Html.div []
         [ Html.header 
             [] 
@@ -30,7 +29,7 @@ view address model =
             [ Html.p 
                 []
                 [ Html.text "This is a packet\n" ]
-            , Packet.view (Signal.forwardTo address PacketAction) model.packetModel
+            , HA.map PacketAction (Packet.view model.packetModel)
             , Html.p 
                 []
                 [ model.packetModel |> Packet.packetValue |> List.map toString |> concat |> Html.text]
@@ -38,9 +37,9 @@ view address model =
         ]
 
 
-update: Action -> AppModel -> AppModel
-update action model =
-    case action of
+update: Msg -> AppModel -> AppModel
+update msg model =
+    case msg of
         PacketAction subAction ->
             let 
                 updatedPacketModel = 
@@ -49,7 +48,7 @@ update action model =
                 {model | packetModel = updatedPacketModel}
 
 main = 
-    start { 
+    HA.beginnerProgram { 
         model = initialModel
     ,   view = view
     ,   update = update 

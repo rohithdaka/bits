@@ -1,15 +1,14 @@
-module Packet where
+module Packet exposing (..)
 
-import Bit
+import Bit 
 import Basics exposing (..)
 import Svg exposing (..)
 import Svg.Attributes
 import Html exposing (Html,div,button)
 import Html.Events exposing (onClick)
 import List
-import Text exposing(fromString,concat)
-import Graphics.Element exposing(show)
 import String exposing(repeat,length)
+import Html.App as HA
 
 
 -- Model
@@ -30,14 +29,14 @@ defaultPacket =
 
 -- Update
 
-type Action 
+type Msg 
     = Add
     | Remove 
-    | Modify ID Bit.Action
+    | Modify ID Bit.Msg
 
-update: Action -> Model -> Model 
-update action packet = 
-    case action of
+update: Msg -> Model -> Model 
+update msg packet = 
+    case msg of
         Add -> 
             let newBitPosition = {x = 0, y = 0}
                 newBit = (packet.msb, (Bit.defaultBit 0 newBitPosition "data"))
@@ -89,17 +88,14 @@ allPossibleValues n =
 
 
 -- View 
-view: Signal.Address Action -> Model -> Html
-view address packet =
-    let bits = List.map (viewSpecificBit address) packet.bits
-        remove  = div [] [button [ onClick address Remove] [text "Remove a bit"]]
-        add     = div [] [ button [ onClick address Add] [text "Add a bit"] ]
+view packet =
+    let bits = List.map viewSpecificBit packet.bits
+        remove  = div [] [button [ onClick Remove] [text "Remove a bit"]]
+        add     = div [] [ button [ onClick Add] [text "Add a bit"] ]
     in 
         div [] ([add] ++ bits ++ [remove])
 
-viewSpecificBit: Signal.Address Action -> (ID, Bit.Model) -> Html
-viewSpecificBit address (id, bit) = 
-    Bit.view (Signal.forwardTo address (Modify id)) bit
+viewSpecificBit: (ID, Bit.Model) -> Html Msg
+viewSpecificBit (id, bit) = 
+    HA.map (Modify id) (Bit.view  bit)
 
-
-main = defaultPacket |> packetValue |> List.map toString |> show
