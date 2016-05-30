@@ -24,10 +24,10 @@ type alias ID = Int
 defaultPacket : Model 
 defaultPacket = 
     { bits = 
-        [ (0, Bit.defaultBit 0 {x = 0, y = 0} "data")
-        , (1, Bit.defaultBit 1 {x = 0, y = 0} "data")
+        [ (3, Bit.defaultBit 0 {x = 0, y = 0} "data")
         , (2, Bit.defaultBit 0 {x = 0, y = 0} "data")
-        , (3, Bit.defaultBit 1 {x = 0, y = 0} "data")]
+        , (1, Bit.defaultBit 0 {x = 0, y = 0} "data")
+        , (0, Bit.defaultBit 1 {x = 0, y = 0} "data")]
     , msb = 4
     }
 
@@ -102,5 +102,3 @@ view packet =
 viewSpecificBit: (ID, Bit.Model) -> Html Msg
 viewSpecificBit (id, bit) = 
     HA.map (Modify id) (Bit.view  bit)
-
-

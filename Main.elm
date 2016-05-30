@@ -6,7 +6,7 @@ import Html.Attributes as HA
 import Html.App as HApp
 import Html.Events as HE
 import Json.Decode as J
-import String exposing(concat)
+import String exposing(concat,split,join,length)
 import Basics
 
 type alias AppModel = 
@@ -24,7 +24,7 @@ initialModel =
     , bitModel = Bit.initialModel
     , packetModel = Packet.defaultPacket
     , noParityReceivedPacket = Packet.defaultPacket
-    , bitProbability = 0.01
+    , bitProbability = 0
     , noise = 1
     }
 
@@ -32,6 +32,10 @@ type Msg
     = PacketMsg Packet.Msg
     | BitMsg Bit.Msg
     | UpdateProbability String 
+
+singleParity: AppModel -> Int
+singleParity model =
+    ( model.packetModel |> Packet.packetValue |> List.map toString |> concat |> split "0" |> join "" |> length ) % 2
 
 tutorialIntroText =
     Html.div []
@@ -74,11 +78,11 @@ errorProbability model =
         [Html.h4 [] [Html.text "Probability of Error"]
         , Html.p 
             []
-            [ Html.text "If we transmit the above packet, there is a chance of error in receiving the packet. We shall calculate the probability of correct reception of the packet."
+            [ Html.text "If we transmit, there is a chance of error while receiving the packet."
             , Html.br [] [] 
-            , Html.text "Suppose the probability of a bit error, P"
+            , Html.text "Suppose the probability of individual bit error, P"
             , Html.sub [] [Html.text "e"] 
-            , Html.text (" = " ++ (toString model.bitProbability))
+            , Html.text (", is " ++ (toString model.bitProbability))
             , Html.input 
                 [ HA.type' "range"
                 , HA.value (toString model.bitProbability) 
@@ -92,13 +96,24 @@ errorProbability model =
             , Html.text ("Then the probability of zero bit error in reception of " ++ (toString model.packetModel.msb) ++ " bit packet is (1 - ")
             , Html.text ((toString model.bitProbability) ++ ")")
             , Html.sup [] [Html.text (toString model.packetModel.msb)] 
-            , Html.text (" = " ++ (toString ((1- model.bitProbability)^(toFloat model.packetModel.msb))))
+            , Html.text (" which is " ++ (toString ((1- model.bitProbability)^(toFloat model.packetModel.msb) *100)) ++ "%" )
             , Html.br [][]
             , Html.text ("and probability of 1 bit error in reception of " ++ (toString model.packetModel.msb) ++ " bit packet is (1 - ")
             , Html.text ((toString model.bitProbability) ++ ")")
             , Html.sup [] [Html.text (toString (model.packetModel.msb-1))] 
             , Html.text (" * " ++ (toString model.bitProbability))
-            , Html.text (" = " ++ (toString ((1- model.bitProbability)^(toFloat (model.packetModel.msb-1)) * model.bitProbability)))
+            , Html.text (" which is " ++ (toString ((1- model.bitProbability)^(toFloat (model.packetModel.msb-1)) * model.bitProbability *100 )) ++ "%" )
+            , Html.br [] []
+            , Html.text ("and probability of 2 bit error in reception of " ++ (toString model.packetModel.msb) ++ " bit packet is (1 - ")
+            , Html.text ((toString model.bitProbability) ++ ")")
+            , Html.sup [] [Html.text (toString (model.packetModel.msb-2))] 
+            , Html.text (" * " ++ (toString model.bitProbability))
+            , Html.sup [] [Html.text "2"]
+            , Html.text (" which is " ++ (toString ((1- model.bitProbability)^(toFloat (model.packetModel.msb-2)) * (model.bitProbability^2) *100 )) ++ "%" )
+            , Html.br [] []
+            , Html.text "To get a better understanding of the probability of error, I highly recommend you play around with packet size and P"
+            , Html.sub [] [Html.text "e"]
+            , Html.text "."
             ]
         ]
 
@@ -108,12 +123,9 @@ parityIntro model=
         [Html.h4 [] [Html.text "Single Error Detection"]
         , Html.p 
                 []
-                [ Html.text "If we transmit the above packet, there are chances that " ]
+                [ Html.text "As you may have noticed from the probability model above, there is a need to at least detect that received packet has errors. Let us look at the most popular and oldest trick to detect a single error: parity check" ]
         , HApp.map PacketMsg (Packet.view model.packetModel)
-        , Html.p
-            []
-            [ Html.text "You can change the packet size and toggle the bits to set a value."     
-            ]
+        , HApp.map BitMsg (Bit.view (Bit.defaultBit (singleParity model) {x=0,y=0} "parity"))
         ]
 
 singleErrorCorrection model =
