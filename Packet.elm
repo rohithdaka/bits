@@ -103,3 +103,4 @@ viewSpecificBit: (ID, Bit.Model) -> Html Msg
 viewSpecificBit (id, bit) = 
     HA.map (Modify id) (Bit.view  bit)
 
+

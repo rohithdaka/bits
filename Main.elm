@@ -7,12 +7,15 @@ import Html.App as HApp
 import Html.Events as HE
 import Json.Decode as J
 import String exposing(concat)
+import Basics
 
 type alias AppModel = 
     { headerModel: Header.Model
     , bitModel: Bit.Model
     , packetModel: Packet.Model 
-    , noise: Int
+    , noParityReceivedPacket: Packet.Model
+    , noise: Int 
+    , bitProbability: Float
     }
 
 initialModel: AppModel
@@ -20,13 +23,15 @@ initialModel =
     { headerModel = Header.initialModel
     , bitModel = Bit.initialModel
     , packetModel = Packet.defaultPacket
+    , noParityReceivedPacket = Packet.defaultPacket
+    , bitProbability = 0.01
     , noise = 1
     }
 
 type Msg 
     = PacketMsg Packet.Msg
     | BitMsg Bit.Msg
-    | UpdateNoise String 
+    | UpdateProbability String 
 
 tutorialIntroText =
     Html.div []
@@ -43,7 +48,7 @@ tutorialIntroText =
 bitIntro model =
     Html.div
         []
-        [Html.h3 [] [Html.text "A Bit"]
+        [Html.h4 [] [Html.text "A Bit"]
         , Html.p 
                 []
                 [ Html.text "Let's start with the fundamental unit of communication: Binary Digit or a Bit" ]
@@ -56,45 +61,60 @@ bitIntro model =
 packetIntro model =
     Html.div
         []
-        [ Html.h3 [] [Html.text "A Packet"]
+        [ Html.h4 [] [Html.text "A Packet"]
         , Html.p 
                 []
-                [ Html.text "Now, lets build a packet. It is simply a group of bits. " ]
+                [ Html.text "Now, lets build a packet. It is simply a group of bits. You can change the packet size and toggle the bits to set a value." ]
         , HApp.map PacketMsg (Packet.view model.packetModel)
-        , Html.p
-            []
-            [ Html.text "Change the packet to whatever size you want and toggle the bits to set the packet value." ]
-        , Html.p
-            []
-            [Html.text "Current value is: "    
-            , Html.span 
-                []
-                [ model.packetModel |> Packet.packetValue |> List.map toString |> concat |> Html.text]
-            ]
         ]
 
-transmitPacket model =
+errorProbability model =
     Html.div 
         [] 
-        [ Html.h3 [] [Html.text "Transmitting this Packet "]
+        [Html.h4 [] [Html.text "Probability of Error"]
         , Html.p 
             []
-            [Html.text "The packet you just formed is transmitted to another machine. For the purpose of this tutorial, lets just assume that the noise of the channel can be represented by this number: "
-            , Html.text (toString model.noise)
+            [ Html.text "If we transmit the above packet, there is a chance of error in receiving the packet. We shall calculate the probability of correct reception of the packet."
+            , Html.br [] [] 
+            , Html.text "Suppose the probability of a bit error, P"
+            , Html.sub [] [Html.text "e"] 
+            , Html.text (" = " ++ (toString model.bitProbability))
             , Html.input 
                 [ HA.type' "range"
-                , HA.value (toString model.noise)
-                , HA.max "10"
+                , HA.value (toString model.bitProbability) 
+                , HA.max "1"
                 , HA.min "0"
-                , HA.step "1"
-                , HE.on "input" (J.map UpdateNoise HE.targetValue)
+                , HA.step "0.01"
+                , HE.on "change" (J.map UpdateProbability HE.targetValue)
                 ]
                 []
+            , Html.br [][]
+            , Html.text ("Then the probability of zero bit error in reception of " ++ (toString model.packetModel.msb) ++ " bit packet is (1 - ")
+            , Html.text ((toString model.bitProbability) ++ ")")
+            , Html.sup [] [Html.text (toString model.packetModel.msb)] 
+            , Html.text (" = " ++ (toString ((1- model.bitProbability)^(toFloat model.packetModel.msb))))
+            , Html.br [][]
+            , Html.text ("and probability of 1 bit error in reception of " ++ (toString model.packetModel.msb) ++ " bit packet is (1 - ")
+            , Html.text ((toString model.bitProbability) ++ ")")
+            , Html.sup [] [Html.text (toString (model.packetModel.msb-1))] 
+            , Html.text (" * " ++ (toString model.bitProbability))
+            , Html.text (" = " ++ (toString ((1- model.bitProbability)^(toFloat (model.packetModel.msb-1)) * model.bitProbability)))
             ]
         ]
 
 parityIntro model= 
-    Html.div [] []
+    Html.div 
+        [] 
+        [Html.h4 [] [Html.text "Single Error Detection"]
+        , Html.p 
+                []
+                [ Html.text "If we transmit the above packet, there are chances that " ]
+        , HApp.map PacketMsg (Packet.view model.packetModel)
+        , Html.p
+            []
+            [ Html.text "You can change the packet size and toggle the bits to set a value."     
+            ]
+        ]
 
 singleErrorCorrection model =
     Html.div [] []
@@ -109,31 +129,29 @@ view model =
             [ tutorialIntroText
             , bitIntro model 
             , packetIntro model
-            , transmitPacket model
+            , errorProbability model
             , parityIntro model
             , singleErrorCorrection model
             ]
         ]
 
 
-update: Msg -> AppModel -> AppModel 
+update: Msg -> AppModel -> AppModel
 update msg model =
     case msg of
         PacketMsg subAction ->
             let 
-            updatedPacketModel = 
-                Packet.update subAction model.packetModel
+            updatedPacketModel = Packet.update subAction model.packetModel
             in
                 {model | packetModel = updatedPacketModel}
         BitMsg subAction ->
             let 
-                updatedBitModel = 
-                    Bit.update subAction model.bitModel
+                updatedBitModel = Bit.update subAction model.bitModel
             in
                 {model | bitModel = updatedBitModel}
 
-        UpdateNoise n ->
-                {model | noise = (n |> String.toInt |> Result.toMaybe |> Maybe.withDefault 0)}
+        UpdateProbability n ->
+                {model | bitProbability = (n |> String.toFloat |> Result.toMaybe |> Maybe.withDefault 0.01)}
 
 
 main = 
