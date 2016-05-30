@@ -7,7 +7,7 @@ type alias Model = String
 
 initialModel: Model 
 initialModel = 
-    "Hamming Code - An Interactive Primer"
+    "Error Correction and Error Detection - An Interactive Primer"
 
 
 view model =
