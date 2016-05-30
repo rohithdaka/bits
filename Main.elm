@@ -14,7 +14,7 @@ type alias AppModel =
     , bitModel: Bit.Model
     , packetModel: Packet.Model 
     , noParityReceivedPacket: Packet.Model
-    , noise: Int 
+    , oddeven: Int 
     , bitProbability: Float
     }
 
@@ -25,17 +25,27 @@ initialModel =
     , packetModel = Packet.defaultPacket
     , noParityReceivedPacket = Packet.defaultPacket
     , bitProbability = 0
-    , noise = 1
+    , oddeven = 1
+    -- 1 for even and 0 for odd
     }
 
 type Msg 
     = PacketMsg Packet.Msg
     | BitMsg Bit.Msg
     | UpdateProbability String 
+    | ToggleOddEven
 
 singleParity: AppModel -> Int
 singleParity model =
-    ( model.packetModel |> Packet.packetValue |> List.map toString |> concat |> split "0" |> join "" |> length ) % 2
+    (( model.packetModel |> Packet.packetValue |> List.map toString |> concat |> split "0" |> join "" |> length) + model.oddeven) % 2 
+
+oddEven: AppModel -> String
+oddEven model =
+    case model.oddeven of 
+        1 -> "Even"
+        0 -> "Odd"
+        _ -> ""
+
 
 tutorialIntroText =
     Html.div []
@@ -122,13 +132,25 @@ parityIntro model=
         [] 
         [Html.h4 [] [Html.text "Single Error Detection"]
         , Html.p 
-                []
-                [ Html.text "As you may have noticed from the probability model above, there is a need to at least detect that received packet has errors. Let us look at the most popular and oldest trick to detect a single error: parity check" ]
-        , HApp.map PacketMsg (Packet.view model.packetModel)
-        , HApp.map BitMsg (Bit.view (Bit.defaultBit (singleParity model) {x=0,y=0} "parity"))
+            []
+            [ Html.text "As you may have noticed from the probability model above, there is a need to at least detect that received packet has errors. Let us look at the most popular and oldest trick to detect a single error: parity check"
+            , HApp.map PacketMsg (Packet.view model.packetModel)
+            , HApp.map BitMsg (Bit.view (Bit.defaultBit (singleParity model) {x=0,y=0} "parity"))
+            , Html.br [] []
+            , Html.text ("It is " ++ (oddEven model) ++ " Parity Check now. ")
+            , Html.button [ HE.onClick ToggleOddEven] [Html.text "Switch" ]
+            , Html.br [] []
+            , Html.text "The parity bit is shown in a different color. In Odd Parity Check, if number of 1s in the packet are odd, then parity bit is set to 1. Not surprisingly, in Even Parity Check, parity bit is set to 1 if number of 1s in the packet are even."
+            ]
+        , Html.p 
+            []
+            [Html.text "At the receiver, this parity check is helpful to detect error. This parity check is useful to detect errors if they occur in odd number. None of the even number of errors can be detected with single parity bit check method. Morever, We can't correct the errors that we can detect. In the next section, we shall discuss the fundamentals of building a packet with single error correction capabilities."]
         ]
 
 singleErrorCorrection model =
+    Html.div [] []
+
+transmissionEfficiency model =
     Html.div [] []
 
 view model =
@@ -143,6 +165,7 @@ view model =
             , packetIntro model
             , errorProbability model
             , parityIntro model
+            , transmissionEfficiency model
             , singleErrorCorrection model
             ]
         ]
@@ -164,6 +187,9 @@ update msg model =
 
         UpdateProbability n ->
                 {model | bitProbability = (n |> String.toFloat |> Result.toMaybe |> Maybe.withDefault 0.01)}
+
+        ToggleOddEven ->
+            {model | oddeven = (model.oddeven + 1 ) % 2 }
 
 
 main = 
