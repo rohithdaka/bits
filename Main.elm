@@ -2,13 +2,17 @@ import Bit
 import Packet 
 import Header 
 import Html
-import Html.App as HA
+import Html.Attributes as HA
+import Html.App as HApp
+import Html.Events as HE
+import Json.Decode as J
 import String exposing(concat)
 
 type alias AppModel = 
     { headerModel: Header.Model
     , bitModel: Bit.Model
     , packetModel: Packet.Model 
+    , noise: Int
     }
 
 initialModel: AppModel
@@ -16,10 +20,13 @@ initialModel =
     { headerModel = Header.initialModel
     , bitModel = Bit.initialModel
     , packetModel = Packet.defaultPacket
+    , noise = 1
     }
 
 type Msg 
-    = PacketAction Packet.Msg
+    = PacketMsg Packet.Msg
+    | BitMsg Bit.Msg
+    | UpdateNoise String 
 
 tutorialIntroText =
     Html.div []
@@ -33,6 +40,64 @@ tutorialIntroText =
             ]
         ]
 
+bitIntro model =
+    Html.div
+        []
+        [Html.h3 [] [Html.text "A Bit"]
+        , Html.p 
+                []
+                [ Html.text "Let's start with the fundamental unit of communication: Binary Digit or a Bit" ]
+        , HApp.map BitMsg (Bit.view model.bitModel)
+        , Html.p 
+            []
+            [ Html.text "You can click on the bit to toggle its value." ]
+        ]
+
+packetIntro model =
+    Html.div
+        []
+        [ Html.h3 [] [Html.text "A Packet"]
+        , Html.p 
+                []
+                [ Html.text "Now, lets build a packet. It is simply a group of bits. " ]
+        , HApp.map PacketMsg (Packet.view model.packetModel)
+        , Html.p
+            []
+            [ Html.text "Change the packet to whatever size you want and toggle the bits to set the packet value." ]
+        , Html.p
+            []
+            [Html.text "Current value is: "    
+            , Html.span 
+                []
+                [ model.packetModel |> Packet.packetValue |> List.map toString |> concat |> Html.text]
+            ]
+        ]
+
+transmitPacket model =
+    Html.div 
+        [] 
+        [ Html.h3 [] [Html.text "Transmitting this Packet "]
+        , Html.p 
+            []
+            [Html.text "The packet you just formed is transmitted to another machine. For the purpose of this tutorial, lets just assume that the noise of the channel can be represented by this number: "
+            , Html.text (toString model.noise)
+            , Html.input 
+                [ HA.type' "range"
+                , HA.value (toString model.noise)
+                , HA.max "10"
+                , HA.min "0"
+                , HA.step "1"
+                , HE.on "input" (J.map UpdateNoise HE.targetValue)
+                ]
+                []
+            ]
+        ]
+
+parityIntro model= 
+    Html.div [] []
+
+singleErrorCorrection model =
+    Html.div [] []
 
 view model =
     Html.div []
@@ -41,14 +106,12 @@ view model =
             [Header.view model.headerModel]
         , Html.body
             []
-            [ tutorialIntroText 
-            , Html.p 
-                []
-                [ Html.text "This is a packet\n" ]
-            , HA.map PacketAction (Packet.view model.packetModel)
-            , Html.p 
-                []
-                [ model.packetModel |> Packet.packetValue |> List.map toString |> concat |> Html.text]
+            [ tutorialIntroText
+            , bitIntro model 
+            , packetIntro model
+            , transmitPacket model
+            , parityIntro model
+            , singleErrorCorrection model
             ]
         ]
 
@@ -56,15 +119,25 @@ view model =
 update: Msg -> AppModel -> AppModel 
 update msg model =
     case msg of
-        PacketAction subAction ->
+        PacketMsg subAction ->
             let 
             updatedPacketModel = 
                 Packet.update subAction model.packetModel
             in
                 {model | packetModel = updatedPacketModel}
+        BitMsg subAction ->
+            let 
+                updatedBitModel = 
+                    Bit.update subAction model.bitModel
+            in
+                {model | bitModel = updatedBitModel}
+
+        UpdateNoise n ->
+                {model | noise = (n |> String.toInt |> Result.toMaybe |> Maybe.withDefault 0)}
+
 
 main = 
-    HA.beginnerProgram { 
+    HApp.beginnerProgram { 
         model = initialModel
     ,   view = view
     ,   update = update 

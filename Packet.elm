@@ -23,8 +23,12 @@ type alias ID = Int
 
 defaultPacket : Model 
 defaultPacket = 
-    { bits = [(0, Bit.defaultBit 0 {x = 0, y = 0} "data")]
-    , msb = 1
+    { bits = 
+        [ (0, Bit.defaultBit 0 {x = 0, y = 0} "data")
+        , (1, Bit.defaultBit 1 {x = 0, y = 0} "data")
+        , (2, Bit.defaultBit 0 {x = 0, y = 0} "data")
+        , (3, Bit.defaultBit 1 {x = 0, y = 0} "data")]
+    , msb = 4
     }
 
 -- Update
