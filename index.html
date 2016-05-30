@@ -7747,7 +7747,7 @@ var _user$project$Packet$defaultPacket = {
 			_0: 2,
 			_1: A3(
 				_user$project$Bit$defaultBit,
-				0,
+				1,
 				{x: 0, y: 0},
 				'data')
 		},
@@ -7853,7 +7853,7 @@ var _user$project$Main$update = F2(
 				return _elm_lang$core$Native_Utils.update(
 					model,
 					{bitModel: updatedBitModel});
-			default:
+			case 'UpdateProbability':
 				return _elm_lang$core$Native_Utils.update(
 					model,
 					{
@@ -7863,8 +7863,22 @@ var _user$project$Main$update = F2(
 							_elm_lang$core$Result$toMaybe(
 								_elm_lang$core$String$toFloat(_p0._0)))
 					});
+			default:
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						oddeven: A2(_elm_lang$core$Basics_ops['%'], model.oddeven + 1, 2)
+					});
 		}
 	});
+var _user$project$Main$transmissionEfficiency = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[]));
+};
 var _user$project$Main$singleErrorCorrection = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -7896,6 +7910,17 @@ var _user$project$Main$tutorialIntroText = A2(
 					_elm_lang$html$Html$text('In 1950, Richard Hamming introduced the concept of Error Detecting and Error Correcting mechanism. This essay is inspired by his original paper and written to serve as a preliminary guide to understand various concepts in this field. No prior knowledge of anykind is assumed. ')
 				]))
 		]));
+var _user$project$Main$oddEven = function (model) {
+	var _p1 = model.oddeven;
+	switch (_p1) {
+		case 1:
+			return 'Even';
+		case 0:
+			return 'Odd';
+		default:
+			return '';
+	}
+};
 var _user$project$Main$singleParity = function (model) {
 	return A2(
 		_elm_lang$core$Basics_ops['%'],
@@ -7910,14 +7935,15 @@ var _user$project$Main$singleParity = function (model) {
 						A2(
 							_elm_lang$core$List$map,
 							_elm_lang$core$Basics$toString,
-							_user$project$Packet$packetValue(model.packetModel)))))),
+							_user$project$Packet$packetValue(model.packetModel)))))) + model.oddeven,
 		2);
 };
-var _user$project$Main$initialModel = {headerModel: _user$project$Header$initialModel, bitModel: _user$project$Bit$initialModel, packetModel: _user$project$Packet$defaultPacket, noParityReceivedPacket: _user$project$Packet$defaultPacket, bitProbability: 0, noise: 1};
+var _user$project$Main$initialModel = {headerModel: _user$project$Header$initialModel, bitModel: _user$project$Bit$initialModel, packetModel: _user$project$Packet$defaultPacket, noParityReceivedPacket: _user$project$Packet$defaultPacket, bitProbability: 0, oddeven: 1};
 var _user$project$Main$AppModel = F6(
 	function (a, b, c, d, e, f) {
-		return {headerModel: a, bitModel: b, packetModel: c, noParityReceivedPacket: d, noise: e, bitProbability: f};
+		return {headerModel: a, bitModel: b, packetModel: c, noParityReceivedPacket: d, oddeven: e, bitProbability: f};
 	});
+var _user$project$Main$ToggleOddEven = {ctor: 'ToggleOddEven'};
 var _user$project$Main$UpdateProbability = function (a) {
 	return {ctor: 'UpdateProbability', _0: a};
 };
@@ -8227,21 +8253,60 @@ var _user$project$Main$parityIntro = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('As you may have noticed from the probability model above, there is a need to at least detect that received packet has errors. Let us look at the most popular and oldest trick to detect a single error: parity check')
+						_elm_lang$html$Html$text('As you may have noticed from the probability model above, there is a need to at least detect that received packet has errors. Let us look at the most popular and oldest trick to detect a single error: parity check'),
+						A2(
+						_elm_lang$html$Html_App$map,
+						_user$project$Main$PacketMsg,
+						_user$project$Packet$view(model.packetModel)),
+						A2(
+						_elm_lang$html$Html_App$map,
+						_user$project$Main$BitMsg,
+						_user$project$Bit$view(
+							A3(
+								_user$project$Bit$defaultBit,
+								_user$project$Main$singleParity(model),
+								{x: 0, y: 0},
+								'parity'))),
+						A2(
+						_elm_lang$html$Html$br,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						_elm_lang$html$Html$text(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'It is ',
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_user$project$Main$oddEven(model),
+								' Parity Check now. '))),
+						A2(
+						_elm_lang$html$Html$button,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Events$onClick(_user$project$Main$ToggleOddEven)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Switch')
+							])),
+						A2(
+						_elm_lang$html$Html$br,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						_elm_lang$html$Html$text('The parity bit is shown in a different color. In Odd Parity Check, if number of 1s in the packet are odd, then parity bit is set to 1. Not surprisingly, in Even Parity Check, parity bit is set to 1 if number of 1s in the packet are even.')
 					])),
 				A2(
-				_elm_lang$html$Html_App$map,
-				_user$project$Main$PacketMsg,
-				_user$project$Packet$view(model.packetModel)),
-				A2(
-				_elm_lang$html$Html_App$map,
-				_user$project$Main$BitMsg,
-				_user$project$Bit$view(
-					A3(
-						_user$project$Bit$defaultBit,
-						_user$project$Main$singleParity(model),
-						{x: 0, y: 0},
-						'parity')))
+				_elm_lang$html$Html$p,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('At the receiver, this parity check is helpful to detect error. This parity check is useful to detect errors if they occur in odd number. None of the even number of errors can be detected with single parity bit check method. Morever, We can\'t correct the errors that we can detect. In the next section, we shall discuss the fundamentals of building a packet with single error correction capabilities.')
+					]))
 			]));
 };
 var _user$project$Main$view = function (model) {
@@ -8270,6 +8335,7 @@ var _user$project$Main$view = function (model) {
 						_user$project$Main$packetIntro(model),
 						_user$project$Main$errorProbability(model),
 						_user$project$Main$parityIntro(model),
+						_user$project$Main$transmissionEfficiency(model),
 						_user$project$Main$singleErrorCorrection(model)
 					]))
 			]));
