@@ -82,6 +82,14 @@ packetIntro model =
         , HApp.map PacketMsg (Packet.view model.packetModel)
         ]
 
+combinatricsNotation x y =
+    Html.span
+        []
+        [ Html.sup [] [Html.text (toString x)]
+        , Html.text "C"
+        , Html.sub [] [Html.text (toString y)]
+        ]
+
 errorProbability model =
     Html.div 
         [] 
@@ -103,23 +111,41 @@ errorProbability model =
                 ]
                 []
             , Html.br [][]
-            , Html.text ("Then the probability of zero bit error in reception of " ++ (toString model.packetModel.msb) ++ " bit packet is (1 - ")
+            , Html.text ("Then the probability of zero bit error in reception of " ++ (toString model.packetModel.msb) ++ " bit packet is " )
+            , (combinatricsNotation model.packetModel.msb model.packetModel.msb) 
+            , Html.text " * (1 - "
             , Html.text ((toString model.bitProbability) ++ ")")
             , Html.sup [] [Html.text (toString model.packetModel.msb)] 
             , Html.text (" which is " ++ (toString ((1- model.bitProbability)^(toFloat model.packetModel.msb) *100)) ++ "%" )
             , Html.br [][]
-            , Html.text ("and probability of 1 bit error in reception of " ++ (toString model.packetModel.msb) ++ " bit packet is (1 - ")
+            , Html.text ("and probability of 1 bit error in reception of " ++ (toString model.packetModel.msb) ++ " bit packet is ")
+            , (combinatricsNotation model.packetModel.msb (model.packetModel.msb-1))
+            , Html.text " * (1 - "
             , Html.text ((toString model.bitProbability) ++ ")")
             , Html.sup [] [Html.text (toString (model.packetModel.msb-1))] 
             , Html.text (" * " ++ (toString model.bitProbability))
-            , Html.text (" which is " ++ (toString ((1- model.bitProbability)^(toFloat (model.packetModel.msb-1)) * model.bitProbability *100 )) ++ "%" )
+            , Html.text (" which is " ++ (toString ((1- model.bitProbability)^(toFloat (model.packetModel.msb-1)) * model.bitProbability *100 * (toFloat model.packetModel.msb))) ++ "%" )
             , Html.br [] []
-            , Html.text ("and probability of 2 bit error in reception of " ++ (toString model.packetModel.msb) ++ " bit packet is (1 - ")
+            , Html.text ("and probability of 2 bit error in reception of " ++ (toString model.packetModel.msb) ++ " bit packet is ")
+            , (combinatricsNotation model.packetModel.msb (model.packetModel.msb-2))
+            , Html.text "(1 - "
             , Html.text ((toString model.bitProbability) ++ ")")
             , Html.sup [] [Html.text (toString (model.packetModel.msb-2))] 
             , Html.text (" * " ++ (toString model.bitProbability))
             , Html.sup [] [Html.text "2"]
-            , Html.text (" which is " ++ (toString ((1- model.bitProbability)^(toFloat (model.packetModel.msb-2)) * (model.bitProbability^2) *100 )) ++ "%" )
+            , Html.text " which is "
+            , Html.text (toString 
+                            ( (1- model.bitProbability)^(toFloat (model.packetModel.msb-2))
+                            * (model.bitProbability^2) 
+                            * 50 
+                            * (toFloat 
+                                    ( model.packetModel.msb 
+                                    * (model.packetModel.msb - 1)
+                                    )
+                                )
+                            )
+                        )
+            , Html.text "%"
             , Html.br [] []
             , Html.text "To get a better understanding of the probability of error, I highly recommend you play around with packet size and P"
             , Html.sub [] [Html.text "e"]

@@ -1,4 +1,4 @@
-module Bit exposing (..)
+module Bit exposing (..) -- where
 import Basics exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
@@ -45,6 +45,7 @@ colorOf category=
     case category of 
         "data" -> "green"
         "parity" -> "blue"
+        "empty" -> "white"
         _ -> "red"
 
 

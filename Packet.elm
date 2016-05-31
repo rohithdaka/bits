@@ -1,4 +1,4 @@
-module Packet exposing (..)
+module Packet exposing (..) --where
 
 import Bit 
 import Basics exposing (..)
