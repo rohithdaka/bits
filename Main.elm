@@ -128,7 +128,7 @@ errorProbability model =
             , Html.br [] []
             , Html.text ("and probability of 2 bit error in reception of " ++ (toString model.packetModel.msb) ++ " bit packet is ")
             , (combinatricsNotation model.packetModel.msb (model.packetModel.msb-2))
-            , Html.text "(1 - "
+            , Html.text " * (1 - "
             , Html.text ((toString model.bitProbability) ++ ")")
             , Html.sup [] [Html.text (toString (model.packetModel.msb-2))] 
             , Html.text (" * " ++ (toString model.bitProbability))
