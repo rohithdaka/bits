@@ -7555,6 +7555,8 @@ var _user$project$Bit$colorOf = function (category) {
 			return 'green';
 		case 'parity':
 			return 'blue';
+		case 'empty':
+			return 'white';
 		default:
 			return 'red';
 	}
@@ -7887,6 +7889,35 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 		_elm_lang$core$Native_List.fromArray(
 			[]));
 };
+var _user$project$Main$combinatricsNotation = F2(
+	function (x, y) {
+		return A2(
+			_elm_lang$html$Html$span,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					A2(
+					_elm_lang$html$Html$sup,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(
+							_elm_lang$core$Basics$toString(x))
+						])),
+					_elm_lang$html$Html$text('C'),
+					A2(
+					_elm_lang$html$Html$sub,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text(
+							_elm_lang$core$Basics$toString(y))
+						]))
+				]));
+	});
 var _user$project$Main$tutorialIntroText = A2(
 	_elm_lang$html$Html$div,
 	_elm_lang$core$Native_List.fromArray(
@@ -8019,7 +8050,9 @@ var _user$project$Main$errorProbability = function (model) {
 							A2(
 								_elm_lang$core$Basics_ops['++'],
 								_elm_lang$core$Basics$toString(model.packetModel.msb),
-								' bit packet is (1 - '))),
+								' bit packet is '))),
+						A2(_user$project$Main$combinatricsNotation, model.packetModel.msb, model.packetModel.msb),
+						_elm_lang$html$Html$text(' * (1 - '),
 						_elm_lang$html$Html$text(
 						A2(
 							_elm_lang$core$Basics_ops['++'],
@@ -8058,7 +8091,9 @@ var _user$project$Main$errorProbability = function (model) {
 							A2(
 								_elm_lang$core$Basics_ops['++'],
 								_elm_lang$core$Basics$toString(model.packetModel.msb),
-								' bit packet is (1 - '))),
+								' bit packet is '))),
+						A2(_user$project$Main$combinatricsNotation, model.packetModel.msb, model.packetModel.msb - 1),
+						_elm_lang$html$Html$text(' * (1 - '),
 						_elm_lang$html$Html$text(
 						A2(
 							_elm_lang$core$Basics_ops['++'],
@@ -8085,9 +8120,9 @@ var _user$project$Main$errorProbability = function (model) {
 							A2(
 								_elm_lang$core$Basics_ops['++'],
 								_elm_lang$core$Basics$toString(
-									(Math.pow(
+									((Math.pow(
 										1 - model.bitProbability,
-										_elm_lang$core$Basics$toFloat(model.packetModel.msb - 1)) * model.bitProbability) * 100),
+										_elm_lang$core$Basics$toFloat(model.packetModel.msb - 1)) * model.bitProbability) * 100) * _elm_lang$core$Basics$toFloat(model.packetModel.msb)),
 								'%'))),
 						A2(
 						_elm_lang$html$Html$br,
@@ -8102,7 +8137,9 @@ var _user$project$Main$errorProbability = function (model) {
 							A2(
 								_elm_lang$core$Basics_ops['++'],
 								_elm_lang$core$Basics$toString(model.packetModel.msb),
-								' bit packet is (1 - '))),
+								' bit packet is '))),
+						A2(_user$project$Main$combinatricsNotation, model.packetModel.msb, model.packetModel.msb - 2),
+						_elm_lang$html$Html$text('(1 - '),
 						_elm_lang$html$Html$text(
 						A2(
 							_elm_lang$core$Basics_ops['++'],
@@ -8130,17 +8167,13 @@ var _user$project$Main$errorProbability = function (model) {
 							[
 								_elm_lang$html$Html$text('2')
 							])),
+						_elm_lang$html$Html$text(' which is '),
 						_elm_lang$html$Html$text(
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							' which is ',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(
-									(Math.pow(
-										1 - model.bitProbability,
-										_elm_lang$core$Basics$toFloat(model.packetModel.msb - 2)) * Math.pow(model.bitProbability, 2)) * 100),
-								'%'))),
+						_elm_lang$core$Basics$toString(
+							((Math.pow(
+								1 - model.bitProbability,
+								_elm_lang$core$Basics$toFloat(model.packetModel.msb - 2)) * Math.pow(model.bitProbability, 2)) * 50) * _elm_lang$core$Basics$toFloat(model.packetModel.msb * (model.packetModel.msb - 1)))),
+						_elm_lang$html$Html$text('%'),
 						A2(
 						_elm_lang$html$Html$br,
 						_elm_lang$core$Native_List.fromArray(
