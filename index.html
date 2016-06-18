@@ -1,6 +1,9 @@
 <!DOCTYPE HTML>
-<html><head><meta charset="UTF-8"><title>Main</title><style>html,head,body { padding:0; margin:0; }
-body { font-family: calibri, helvetica, arial, sans-serif; }</style><script type="text/javascript">
+<html><head><title>Error Detection and Error Correction</title>
+<meta charset="UTF-8">
+<meta name ="author" content ="Rohith Daka" >
+<meta name = "description" content = "A short primer of error detection and error correction codes">
+<link rel="stylesheet" href="main.css"><script type="text/javascript">
 (function() {
 'use strict';
 
@@ -7915,7 +7918,7 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 							[]),
 						_elm_lang$core$Native_List.fromArray(
 							[])),
-						_elm_lang$html$Html$text('Suppose we want to send m information bits and k parity bits. Remember that the goal of sending more than one parity bit is to identify the exact location of the error bit. As you may know the number of possibilities that can be represented by k bits are 2'),
+						_elm_lang$html$Html$text('Suppose we want to send n bit packet. The number of parity bits, k, in these n bits should be determined such that all possible single bit error cases can mapped to these k bits. The number of actual possibilities are no errors, error at location 1, error at location 2 ... error at location n. So a total of n+1. So all we have to do is to find minimum k such that 2'),
 						A2(
 						_elm_lang$html$Html$sup,
 						_elm_lang$core$Native_List.fromArray(
@@ -7924,25 +7927,7 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 							[
 								_elm_lang$html$Html$text('k')
 							])),
-						_elm_lang$html$Html$text('. The number of actual possibilities are no errors, error at location 1, error at location 2 ... error at location m+k. So total of m+k+1. So all we have to do is to find minimum k such that 2'),
-						A2(
-						_elm_lang$html$Html$sup,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('k')
-							])),
-						_elm_lang$html$Html$text('is equal to m+k+1. If you play with these values below, you may notice not all m and k combinations work. You can chose k such that 2'),
-						A2(
-						_elm_lang$html$Html$sup,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('k')
-							])),
-						_elm_lang$html$Html$text('is more than m+k+1. But this reduces the throughput as you are sending more bits than necessary. ')
+						_elm_lang$html$Html$text(' is greater or equal to n+1.')
 					]))
 			]));
 };

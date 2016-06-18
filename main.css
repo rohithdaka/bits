@@ -1,0 +1,17 @@
+html,head,body { padding:10; margin:10; }
+
+html {
+    min-width: 800px;
+    width:70%;
+}
+
+body {
+    text-align: left;    
+    font-family: sans-serif;
+    text-indent: 1em;
+}
+
+
+h1 {
+    text-align: center;
+}

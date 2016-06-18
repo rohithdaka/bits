@@ -188,13 +188,9 @@ singleErrorCorrection model =
             [ Html.text "Usually after detecting an error, recievers ask for retransmission. This reduces the number of bits we can send in a given amount of time (usually refered to as throughput). What if there is a way to identify the errorenous bit? We can simply toggle to correct it. So we must find a way to identiy that single error in the packet. In order to do this we need some extra parity bits that help us pin point the location."
             , Html.br [] []
             , Html.br [] []
-            , Html.text "Suppose we want to send m information bits and k parity bits. Remember that the goal of sending more than one parity bit is to identify the exact location of the error bit. As you may know the number of possibilities that can be represented by k bits are 2"
-            , Html.sup [] [Html.text "k"] 
-            , Html.text ". The number of actual possibilities are no errors, error at location 1, error at location 2 ... error at location m+k. So total of m+k+1. So all we have to do is to find minimum k such that 2"
+            , Html.text "Suppose we want to send n bit packet. The number of parity bits, k, in these n bits should be determined such that all possible single bit error cases can mapped to these k bits. The number of actual possibilities are no errors, error at location 1, error at location 2 ... error at location n. So a total of n+1. So all we have to do is to find minimum k such that 2"
             , Html.sup [] [Html.text "k"]
-            , Html.text "is equal to m+k+1. If you play with these values below, you may notice not all m and k combinations work. You can chose k such that 2"
-            , Html.sup [] [Html.text "k"]
-            , Html.text "is more than m+k+1. But this reduces the throughput as you are sending more bits than necessary. "
+            , Html.text " is greater or equal to n+1."
             ]
         ]
 
