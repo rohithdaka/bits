@@ -25,8 +25,8 @@ initialModel =
     , packetModel = Packet.defaultPacket
     , noParityReceivedPacket = Packet.defaultPacket
     , bitProbability = 0
-    , oddeven = 1
-    -- 1 for even and 0 for odd
+    , oddeven = 0
+    -- 0 for even and 1 for odd
     }
 
 type Msg 
@@ -37,13 +37,16 @@ type Msg
 
 singleParity: AppModel -> Int
 singleParity model =
-    (( model.packetModel |> Packet.packetValue |> List.map toString |> concat |> split "0" |> join "" |> length) + model.oddeven) % 2 
+    case ((( model.packetModel |> Packet.packetValue |> List.map toString |> concat |> split "0" |> join "" |> length) ) % 2 ) of 
+        0 -> model.oddeven
+        1 -> ( model.oddeven + 1) % 2 
+        _ -> 5 -- This should never happen as the case is determined by dividing with 2 
 
 oddEven: AppModel -> String
 oddEven model =
     case model.oddeven of 
-        1 -> "Even"
-        0 -> "Odd"
+        1 -> "Odd"
+        0 -> "Even"
         _ -> ""
 
 
@@ -96,13 +99,14 @@ errorProbability model =
         [Html.h4 [] [Html.text "Probability of Error"]
         , Html.p 
             []
-            [ Html.text "If we transmit, there is a chance of error while receiving the packet."
+            [ Html.text "The whole point of building the packet above is the transmit it. Unfortunately, there is a chance that a bit can be flippled/toggled when we transmit."
             , Html.br [] [] 
-            , Html.text "Suppose the probability of individual bit error, P"
+            , Html.text "Suppose the probability of error if we send just one bit at a time is, P"
             , Html.sub [] [Html.text "e"] 
             , Html.text (", is " ++ (toString model.bitProbability))
             , Html.input 
                 [ HA.type' "range"
+                , HA.size 100
                 , HA.value (toString model.bitProbability) 
                 , HA.max "1"
                 , HA.min "0"
@@ -111,14 +115,14 @@ errorProbability model =
                 ]
                 []
             , Html.br [][]
-            , Html.text ("Then the probability of zero bit error in reception of " ++ (toString model.packetModel.msb) ++ " bit packet is " )
+            , Html.text ("Then the probability of 0 errors during transmission of " ++ (toString model.packetModel.msb) ++ " bit packet is " )
             , (combinatricsNotation model.packetModel.msb model.packetModel.msb) 
             , Html.text " * (1 - "
             , Html.text ((toString model.bitProbability) ++ ")")
             , Html.sup [] [Html.text (toString model.packetModel.msb)] 
             , Html.text (" which is " ++ (toString ((1- model.bitProbability)^(toFloat model.packetModel.msb) *100)) ++ "%" )
             , Html.br [][]
-            , Html.text ("and probability of 1 bit error in reception of " ++ (toString model.packetModel.msb) ++ " bit packet is ")
+            , Html.text ("and the probability of 1 error during transmission of " ++ (toString model.packetModel.msb) ++ " bit packet is ")
             , (combinatricsNotation model.packetModel.msb (model.packetModel.msb-1))
             , Html.text " * (1 - "
             , Html.text ((toString model.bitProbability) ++ ")")
@@ -126,7 +130,7 @@ errorProbability model =
             , Html.text (" * " ++ (toString model.bitProbability))
             , Html.text (" which is " ++ (toString ((1- model.bitProbability)^(toFloat (model.packetModel.msb-1)) * model.bitProbability *100 * (toFloat model.packetModel.msb))) ++ "%" )
             , Html.br [] []
-            , Html.text ("and probability of 2 bit error in reception of " ++ (toString model.packetModel.msb) ++ " bit packet is ")
+            , Html.text ("and probability of 2 errors during transmission of" ++ (toString model.packetModel.msb) ++ " bit packet is ")
             , (combinatricsNotation model.packetModel.msb (model.packetModel.msb-2))
             , Html.text " * (1 - "
             , Html.text ((toString model.bitProbability) ++ ")")
@@ -147,7 +151,7 @@ errorProbability model =
                         )
             , Html.text "%"
             , Html.br [] []
-            , Html.text "To get a better understanding of the probability of error, I highly recommend you play around with packet size and P"
+            , Html.text "To understand the importance of upcoming sections, analysing these three probabilities are enough. As an engineer, it is essential to get an intuition of what is happening. So I highly recommend you play around with packet size and P"
             , Html.sub [] [Html.text "e"]
             , Html.text "."
             ]
@@ -159,28 +163,47 @@ parityIntro model=
         [Html.h4 [] [Html.text "Single Error Detection"]
         , Html.p 
             []
-            [ Html.text "As you may have noticed from the probability model above, there is a need to at least detect that received packet has errors. Let us look at the most popular and oldest trick to detect a single error: parity check"
+            [ Html.text "If you have played enough with the model above, you may have noticed some patterns. For small P"
+            , Html.sub [] [Html.text "e"]
+            , Html.text " < 0.2, vast majority of the transmissions are either zero errors or 1 error. This gives us some hope that if we somehow detect and correct one error during transmission, it will work most of the time. For that, we must first detect single error. So lets look at the most popular and oldest trick to detect a single error: parity check"
             , HApp.map PacketMsg (Packet.view model.packetModel)
             , HApp.map BitMsg (Bit.view (Bit.defaultBit (singleParity model) {x=0,y=0} "parity"))
             , Html.br [] []
-            , Html.text ("It is " ++ (oddEven model) ++ " Parity Check now. ")
-            , Html.button [ HE.onClick ToggleOddEven] [Html.text "Switch" ]
+            , Html.text ( (oddEven model) ++ " Parity Check ")
+            , Html.button [ HE.onClick ToggleOddEven] [Html.text "Change" ]
             , Html.br [] []
-            , Html.text "The parity bit is shown in a different color. In Odd Parity Check, if number of 1s in the packet are odd, then parity bit is set to 1. Not surprisingly, in Even Parity Check, parity bit is set to 1 if number of 1s in the packet are even."
+            , Html.text "The parity bit is shown in a different color and you can't toggle it. Its value is set based on the type of parity check we use. In Even Parity Check, the total number of 1s in the packet must be even. So the parity bit value is set to ensure that total 1s are even. Similarly, in Odd Parity Check, the parity bit value is set to make sure that total 1s are Odd"
             ]
         , Html.p 
             []
-            [Html.text "At the receiver, this parity check is helpful to detect error. This parity check is useful to detect errors if they occur in odd number. None of the even number of errors can be detected with single parity bit check method. Morever, We can't correct the errors that we can detect. In the next section, we shall discuss the fundamentals of building a packet with single error correction capabilities."]
+            [Html.text ("When, the receiver gets this packet. It knows that there must be " ++ (oddEven model) ++ " number of 1s in the packet. If not then we have detected an error. ") ]
         ]
 
 singleErrorCorrection model =
-    Html.div [] []
+    Html.div 
+        [] 
+        [ Html.h4 [] [Html.text "Single Error Correction"]
+        , Html.p 
+            []
+            [ Html.text "Usually after detecting an error, recievers ask for retransmission. This reduces the number of bits we can send in a given amount of time (usually refered to as throughput). What if there is a way to identify the errorenous bit? We can simply toggle to correct it. So we must find a way to identiy that single error in the packet. In order to do this we need some extra parity bits that help us pin point the location."
+            , Html.br [] []
+            , Html.br [] []
+            , Html.text "Suppose we want to send m information bits and k parity bits. Remember that the goal of sending more than one parity bit is to identify the exact location of the error bit. As you may know the number of possibilities that can be represented by k bits are 2"
+            , Html.sup [] [Html.text "k"] 
+            , Html.text ". The number of actual possibilities are no errors, error at location 1, error at location 2 ... error at location m+k. So total of m+k+1. So all we have to do is to find minimum k such that 2"
+            , Html.sup [] [Html.text "k"]
+            , Html.text "is equal to m+k+1. If you play with these values below, you may notice not all m and k combinations work. You can chose k such that 2"
+            , Html.sup [] [Html.text "k"]
+            , Html.text "is more than m+k+1. But this reduces the throughput as you are sending more bits than necessary. "
+            ]
+        ]
 
 transmissionEfficiency model =
     Html.div [] []
 
 view model =
-    Html.div []
+    Html.div 
+        [HA.width 900]
         [ Html.header 
             [] 
             [Header.view model.headerModel]

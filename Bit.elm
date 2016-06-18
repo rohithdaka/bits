@@ -45,7 +45,7 @@ colorOf category=
     case category of 
         "data" -> "green"
         "parity" -> "blue"
-        "empty" -> "white"
+        "empty" -> "black"
         _ -> "red"
 
 
@@ -63,10 +63,10 @@ view bit =
         textOrigin = (toString  (sizeOfBit/2))
     in 
     Svg.svg 
-        [ onClick Click, x xOrigin, y yOrigin,width bitDimension, height bitDimension]
+        [ onClick Click, x "0", y "0",width bitDimension, height bitDimension]
         [ 
             rect 
-                [ fill fillColor, x "0", y "0", width bitDimension, height bitDimension] 
+                [ fill fillColor, x xOrigin, y yOrigin, width bitDimension, height bitDimension] 
                 []
         ,   text' 
                 [x textOrigin, y textOrigin, fill "black", fontFamily "monospace", fontSize textOrigin, textAnchor "middle", alignmentBaseline "middle"]
