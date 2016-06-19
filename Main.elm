@@ -1,5 +1,6 @@
 import Bit
 import Packet 
+import HammingPacket
 import Header 
 import Html
 import Html.Attributes as HA
@@ -16,6 +17,7 @@ type alias AppModel =
     , noParityReceivedPacket: Packet.Model
     , oddeven: Int 
     , bitProbability: Float
+    , hammingModel: HammingPacket.Model
     }
 
 initialModel: AppModel
@@ -26,14 +28,18 @@ initialModel =
     , noParityReceivedPacket = Packet.defaultPacket
     , bitProbability = 0
     , oddeven = 0
+    , hammingModel = HammingPacket.defaultPacket
     -- 0 for even and 1 for odd
     }
+
+
 
 type Msg 
     = PacketMsg Packet.Msg
     | BitMsg Bit.Msg
     | UpdateProbability String 
     | ToggleOddEven
+    | HammingMsg HammingPacket.Msg
 
 singleParity: AppModel -> Int
 singleParity model =
@@ -176,7 +182,7 @@ parityIntro model=
             ]
         , Html.p 
             []
-            [Html.text ("When, the receiver gets this packet. It knows that there must be " ++ (oddEven model) ++ " number of 1s in the packet. If not then we have detected an error. ") ]
+            [Html.text ("When, the receiver gets this packet. It knows that there must be " ++ (oddEven model) ++ " number of 1s in the packet. If not, then we are certain that there is an error. ") ]
         ]
 
 singleErrorCorrection model =
@@ -192,6 +198,9 @@ singleErrorCorrection model =
             , Html.sup [] [Html.text "k"]
             , Html.text " is greater or equal to n+1."
             ]
+        , Html.p 
+            []
+            [HApp.map HammingMsg (HammingPacket.view model.hammingModel)]
         ]
 
 transmissionEfficiency model =
@@ -235,6 +244,12 @@ update msg model =
 
         ToggleOddEven ->
             {model | oddeven = (model.oddeven + 1 ) % 2 }
+
+        HammingMsg subAction ->
+            let 
+            updatedHammingModel = HammingPacket.update subAction model.hammingModel
+            in
+                {model | hammingModel = updatedHammingModel}
 
 
 main = 

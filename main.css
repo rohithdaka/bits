@@ -1,4 +1,4 @@
-html,head,body { padding:10; margin:10; }
+html,div,svg { padding:1px; margin:1px; }
 
 html {
     min-width: 800px;
@@ -8,7 +8,10 @@ html {
 body {
     text-align: left;    
     font-family: sans-serif;
-    text-indent: 1em;
+}
+
+p {
+	text-indent: 2em;
 }
 
 

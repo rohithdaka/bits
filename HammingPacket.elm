@@ -30,61 +30,46 @@ defaultPacket =
         , (3, Bit.defaultBit 1 {x = 0, y = 0} "data")
         , (2, Bit.defaultBit 0 {x = 0, y = 0} "parity")
         , (1, Bit.defaultBit 1 {x = 0, y = 0} "parity")]
-    , msb = 4
+    , msb = 8
     }
 
+hammingParityValue: Int -> Model -> Int
+hammingParityValue x packet =
+    x
 
 type Msg 
-    = AddParity
-    | AddData
-    | RemoveParity
-    | RemoveData
-    | ModifyParity ID Bit.Msg
-    | ModifyData ID Bit.Msg
+    = AddBit 
+    | RemoveBit
+    | ModifyBit Int Bit.Msg
 
 update: Msg -> Model -> Model 
 update msg packet = 
     case msg of
-        AddParity -> 
+        AddBit -> 
             let newBitPosition = {x = 0, y = 0}
-                newBit = (packet.msb, (Bit.defaultBit 0 newBitPosition "parity"))
-                newBits = [newBit] ++ packet.parityBits 
+                newBit = 
+                    if 2^(round (logBase 2 (toFloat packet.msb))) == packet.msb then 
+                        (packet.msb, (Bit.defaultBit (hammingParityValue packet.msb packet) newBitPosition "parity"))
+                    else
+                         (packet.msb, (Bit.defaultBit 0 newBitPosition "data"))
+
+                newBits = [newBit] ++ packet.bits 
             in 
                 { packet |
-                    parityBits = newBits
+                    bits = newBits
                 ,   msb = packet.msb + 1
                 }
-        AddData ->
-            let newBitPosition = {x = 0, y = 0}
-                newBit = (packet.msb, (Bit.defaultBit 0 newBitPosition "data"))
-                newBits = [newBit] ++ packet.dataBits 
-            in 
-                { packet |
-                    dataBits = newBits
-                ,   msb = packet.msb + 1
-                }
-
-
-        RemoveData ->
+    
+        RemoveBit ->
             if packet.msb >1 then
                 { packet | 
-                    dataBits = List.drop 1 packet.dataBits
+                    bits = List.drop 1 packet.bits
                 ,       msb = packet.msb - 1
                 }
             else 
                 packet
 
-        RemoveParity ->
-            if packet.msb >1 then
-                { packet | 
-                    parityBits = List.drop 1 packet.parityBits
-                ,       msb = packet.msb - 1
-                }
-            else 
-                packet
-
-
-        ModifyData id bitAction -> 
+        ModifyBit id bitAction -> 
             let updateSpecificBit (bitID, bit) = 
                     if bitID == id then
                         (bitID, Bit.update bitAction bit)
@@ -92,48 +77,30 @@ update msg packet =
                         (bitID, bit)
             in
                 { packet | 
-                    dataBits = List.map updateSpecificBit packet.dataBits 
+                    bits = List.map updateSpecificBit packet.bits 
                 }
-
-        ModifyParity id bitAction -> 
-            let updateSpecificBit (bitID, bit) = 
-                    if bitID == id then
-                        (bitID, Bit.update bitAction bit)
-                    else 
-                        (bitID, bit)
-            in
-                { packet | 
-                    parityBits = List.map updateSpecificBit packet.parityBits 
-                }
-
-
-
 
 
 view packet =
-    let dataBits = List.map viewSpecificBit packet.dataBits
-        parityBits = List.map viewSpecificBit packet.parityBits
-        removeData  = div [] [button [ onClick RemoveData] [text "data--"]]
-        addData     = div [] [ button [ onClick AddData] [text "data++"] ]
-        removeParity  = div [] [button [ onClick RemoveParity] [text "parity--"]]
-        addParity     = div [] [ button [ onClick AddParity] [text "parity++"] ]
+    let bits = List.map viewSpecificBit packet.bits
+        removeBit  = button [ onClick RemoveBit] [text "-"]
+        addBit     = button [ onClick AddBit] [text "+"]
     in 
         div 
             []
-            (   [addParity] ++
-                parityBits ++ 
-                [removeParity] ++
-                [addData] ++
-                dataBits ++
-                [removeData]
+            (   [addBit] ++ 
+                [Html.text ("n = " ++ (toString (packet.msb-1)))] ++
+                [removeBit] ++ 
+                [Html.br [] []] ++
+                bits 
             )
 
 viewSpecificBit: (ID, Bit.Model) -> Html Msg
 viewSpecificBit (id, bit) = 
     case bit.category of
-        "data" ->  HA.map (ModifyData id) (Bit.view  bit)
-        "parity" -> HA.map (ModifyParity id) (Bit.view  bit)
-        _ -> HA.map (ModifyParity id) (Bit.view  bit)
+        "data" ->  HA.map (ModifyBit id) (Bit.view  bit)
+        "parity" -> HA.map (ModifyBit id) (Bit.view  bit)
+        _ -> HA.map (ModifyBit id) (Bit.view  bit)
 
 
 main = 
