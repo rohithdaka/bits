@@ -197,11 +197,23 @@ singleErrorCorrection model =
             , Html.text "Suppose we want to send n bit packet. The number of parity bits, k, in these n bits should be determined such that all possible single bit error cases can mapped to these k bits. The number of actual possibilities are no errors, error at location 1, error at location 2 ... error at location n. So a total of n+1. So all we have to do is to find minimum k such that 2"
             , Html.sup [] [Html.text "k"]
             , Html.text " is greater or equal to n+1."
+            , Html.br [] []
+            , Html.text "For the packet below, (n+1) = " 
+            , Html.text (toString (model.hammingModel.n))
+            , Html.text " and k = "
+            , Html.text (toString (model.hammingModel.k)) 
+            , Html.text " as 2"
+            , Html.sup [] [Html.text (toString (model.hammingModel.k))]
+            , Html.text " = "
+            , Html.text (toString (2^model.hammingModel.k))
+            , Html.br [] []
+            , Html.text "Before seeing how this packet can correct one error, play with the packet size. Which packet sizes do you think are the most efficient in terms of sending more data bits per packet?"
             ]
         , Html.p 
             []
             [HApp.map HammingMsg (HammingPacket.view model.hammingModel)]
         ]
+
 
 transmissionEfficiency model =
     Html.div [] []

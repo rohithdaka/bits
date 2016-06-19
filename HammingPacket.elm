@@ -14,11 +14,11 @@ import Html.App as HA
 -- Model
 
 type alias Model = 
-    { bits  : List ( ID, Bit.Model )
-    , msb: ID
+    { bits  : List ( Int, Bit.Model )
+    , n: Int
+    , k : Int
     }
 
-type alias ID = Int
 
 defaultPacket: Model
 defaultPacket =  
@@ -26,12 +26,14 @@ defaultPacket =
         [ (7, Bit.defaultBit 0 {x = 0, y = 0} "data")
         , (6, Bit.defaultBit 0 {x = 0, y = 0} "data")
         , (5, Bit.defaultBit 0 {x = 0, y = 0} "data")
-        , (4, Bit.defaultBit 0 {x = 0, y = 0} "parity")
+        , (4, Bit.defaultBit (hammingParityValue 4 defaultPacket) {x = 0, y = 0} "parity")
         , (3, Bit.defaultBit 1 {x = 0, y = 0} "data")
-        , (2, Bit.defaultBit 0 {x = 0, y = 0} "parity")
-        , (1, Bit.defaultBit 1 {x = 0, y = 0} "parity")]
-    , msb = 8
+        , (2, Bit.defaultBit (hammingParityValue 2 defaultPacket) {x = 0, y = 0} "parity")
+        , (1, Bit.defaultBit (hammingParityValue 1 defaultPacket) {x = 0, y = 0} "parity")]
+    , n = 8
+    , k = 3
     }
+
 
 hammingParityValue: Int -> Model -> Int
 hammingParityValue x packet =
@@ -48,23 +50,25 @@ update msg packet =
         AddBit -> 
             let newBitPosition = {x = 0, y = 0}
                 newBit = 
-                    if 2^(round (logBase 2 (toFloat packet.msb))) == packet.msb then 
-                        (packet.msb, (Bit.defaultBit (hammingParityValue packet.msb packet) newBitPosition "parity"))
+                    if 2^(round (logBase 2 (toFloat packet.n))) == packet.n then 
+                        (packet.n, (Bit.defaultBit (hammingParityValue packet.n packet) newBitPosition "parity"))
                     else
-                         (packet.msb, (Bit.defaultBit 0 newBitPosition "data"))
+                         (packet.n, (Bit.defaultBit 0 newBitPosition "data"))
 
                 newBits = [newBit] ++ packet.bits 
             in 
                 { packet |
                     bits = newBits
-                ,   msb = packet.msb + 1
+                ,   n = packet.n + 1
+                ,   k = ceiling (logBase 2 (toFloat packet.n))
                 }
     
         RemoveBit ->
-            if packet.msb >1 then
+            if packet.n >1 then
                 { packet | 
                     bits = List.drop 1 packet.bits
-                ,       msb = packet.msb - 1
+                ,   n = packet.n - 1
+                ,   k = ceiling (logBase 2 (toFloat packet.n))
                 }
             else 
                 packet
@@ -89,13 +93,13 @@ view packet =
         div 
             []
             (   [addBit] ++ 
-                [Html.text ("n = " ++ (toString (packet.msb-1)))] ++
+                [Html.text ("n = " ++ (toString (packet.n-1)))] ++
                 [removeBit] ++ 
                 [Html.br [] []] ++
                 bits 
             )
 
-viewSpecificBit: (ID, Bit.Model) -> Html Msg
+viewSpecificBit: (Int, Bit.Model) -> Html Msg
 viewSpecificBit (id, bit) = 
     case bit.category of
         "data" ->  HA.map (ModifyBit id) (Bit.view  bit)

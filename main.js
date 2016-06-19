@@ -7687,18 +7687,18 @@ var _user$project$HammingPacket$update = F2(
 							A2(
 								_elm_lang$core$Basics$logBase,
 								2,
-								_elm_lang$core$Basics$toFloat(packet.msb)))),
-					packet.msb) ? {
+								_elm_lang$core$Basics$toFloat(packet.n)))),
+					packet.n) ? {
 					ctor: '_Tuple2',
-					_0: packet.msb,
+					_0: packet.n,
 					_1: A3(
 						_user$project$Bit$defaultBit,
-						A2(_user$project$HammingPacket$hammingParityValue, packet.msb, packet),
+						A2(_user$project$HammingPacket$hammingParityValue, packet.n, packet),
 						newBitPosition,
 						'parity')
 				} : {
 					ctor: '_Tuple2',
-					_0: packet.msb,
+					_0: packet.n,
 					_1: A3(_user$project$Bit$defaultBit, 0, newBitPosition, 'data')
 				};
 				var newBits = A2(
@@ -7708,13 +7708,26 @@ var _user$project$HammingPacket$update = F2(
 					packet.bits);
 				return _elm_lang$core$Native_Utils.update(
 					packet,
-					{bits: newBits, msb: packet.msb + 1});
+					{
+						bits: newBits,
+						n: packet.n + 1,
+						k: _elm_lang$core$Basics$ceiling(
+							A2(
+								_elm_lang$core$Basics$logBase,
+								2,
+								_elm_lang$core$Basics$toFloat(packet.n)))
+					});
 			case 'RemoveBit':
-				return (_elm_lang$core$Native_Utils.cmp(packet.msb, 1) > 0) ? _elm_lang$core$Native_Utils.update(
+				return (_elm_lang$core$Native_Utils.cmp(packet.n, 1) > 0) ? _elm_lang$core$Native_Utils.update(
 					packet,
 					{
 						bits: A2(_elm_lang$core$List$drop, 1, packet.bits),
-						msb: packet.msb - 1
+						n: packet.n - 1,
+						k: _elm_lang$core$Basics$ceiling(
+							A2(
+								_elm_lang$core$Basics$logBase,
+								2,
+								_elm_lang$core$Basics$toFloat(packet.n)))
 					}) : packet;
 			default:
 				var updateSpecificBit = function (_p1) {
@@ -7769,7 +7782,7 @@ var _user$project$HammingPacket$defaultPacket = {
 			_0: 4,
 			_1: A3(
 				_user$project$Bit$defaultBit,
-				0,
+				A2(_user$project$HammingPacket$hammingParityValue, 4, _user$project$HammingPacket$defaultPacket),
 				{x: 0, y: 0},
 				'parity')
 		},
@@ -7787,7 +7800,7 @@ var _user$project$HammingPacket$defaultPacket = {
 			_0: 2,
 			_1: A3(
 				_user$project$Bit$defaultBit,
-				0,
+				A2(_user$project$HammingPacket$hammingParityValue, 2, _user$project$HammingPacket$defaultPacket),
 				{x: 0, y: 0},
 				'parity')
 		},
@@ -7796,16 +7809,17 @@ var _user$project$HammingPacket$defaultPacket = {
 			_0: 1,
 			_1: A3(
 				_user$project$Bit$defaultBit,
-				1,
+				A2(_user$project$HammingPacket$hammingParityValue, 1, _user$project$HammingPacket$defaultPacket),
 				{x: 0, y: 0},
 				'parity')
 		}
 		]),
-	msb: 8
+	n: 8,
+	k: 3
 };
-var _user$project$HammingPacket$Model = F2(
-	function (a, b) {
-		return {bits: a, msb: b};
+var _user$project$HammingPacket$Model = F3(
+	function (a, b, c) {
+		return {bits: a, n: b, k: c};
 	});
 var _user$project$HammingPacket$ModifyBit = F2(
 	function (a, b) {
@@ -7874,7 +7888,7 @@ var _user$project$HammingPacket$view = function (packet) {
 						A2(
 							_elm_lang$core$Basics_ops['++'],
 							'n = ',
-							_elm_lang$core$Basics$toString(packet.msb - 1)))
+							_elm_lang$core$Basics$toString(packet.n - 1)))
 					]),
 				A2(
 					_elm_lang$core$Basics_ops['++'],
@@ -8287,7 +8301,40 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 							[
 								_elm_lang$html$Html$text('k')
 							])),
-						_elm_lang$html$Html$text(' is greater or equal to n+1.')
+						_elm_lang$html$Html$text(' is greater or equal to n+1.'),
+						A2(
+						_elm_lang$html$Html$br,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						_elm_lang$html$Html$text('For the packet below, (n+1) = '),
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(model.hammingModel.n)),
+						_elm_lang$html$Html$text(' and k = '),
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(model.hammingModel.k)),
+						_elm_lang$html$Html$text(' as 2'),
+						A2(
+						_elm_lang$html$Html$sup,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(
+								_elm_lang$core$Basics$toString(model.hammingModel.k))
+							])),
+						_elm_lang$html$Html$text(' = '),
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(
+							Math.pow(2, model.hammingModel.k))),
+						A2(
+						_elm_lang$html$Html$br,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[])),
+						_elm_lang$html$Html$text('Before seeing how this packet can correct one error, play with the packet size. Which packet sizes do you think are the most efficient in terms of sending more data bits per packet?')
 					])),
 				A2(
 				_elm_lang$html$Html$p,
