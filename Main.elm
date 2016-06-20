@@ -60,11 +60,11 @@ tutorialIntroText =
     Html.div []
         [ Html.p 
             []
-            [ Html.text "This explorable essay is a quick introduction to the concept of Error Correcting Codes. As you may already know, all data in computers is stored and transmitted in binary format, a set of 0s and 1s. For efficient storage and transmission mechanisms, the systems need to know a way to detect errors and correct them if necessary. "
+            [ Html.text "This explorable essay is a quick introduction to the concept of Error Correcting Codes. As you may already know, all information in computers is stored and exchanged with other computers in binary format, a set of 0s and 1s. For prolonged storage and to efficiently exchange this information, we had to invent techniques that can increase the reliability of the information. "
             ]
         , Html.p
             []
-            [ Html.text "In 1950, Richard Hamming introduced the concept of Error Detecting and Error Correcting mechanism. This essay is inspired by his original paper and written to serve as a preliminary guide to understand some concepts in this field. No prior knowledge of anykind is assumed. "
+            [ Html.text "In April 1950, Richard Hamming introduced one such technique: Error Detecting and Error Correcting Codes. This essay is inspired by his original paper and written to serve as a preliminary guide to understand some concepts in this paper. No prior knowledge of anykind is assumed on the part of the reader. This essay intends to reason about the decisions that make this technique work. The models that are presented for you to explore, hopefully, will provide necessary insights to grasp the concepts. However, this essay doesnt deal with implementation details of this technique."
             ]
         ]
 
@@ -74,11 +74,11 @@ bitIntro model =
         [Html.h4 [] [Html.text "A Bit"]
         , Html.p 
                 []
-                [ Html.text "Let's start with the fundamental unit of communication: Binary Digit or a Bit" ]
+                [ Html.text "Let's start with the fundamental unit of communication: Binary Digit or a Bit. In English, we have 26 alphabets, 10 digits and several punctuation marks to store and exchange information. In computers, we have just 2. " ]
         , HApp.map BitMsg (Bit.view model.bitModel)
         , Html.p 
             []
-            [ Html.text "You can click on the bit to toggle its value." ]
+            [ Html.text "Click anywhere within the green square to toggle its value between 0 and 1." ]
         ]
 
 packetIntro model =
@@ -86,8 +86,11 @@ packetIntro model =
         []
         [ Html.h4 [] [Html.text "A Packet"]
         , Html.p 
-                []
-                [ Html.text "Now, lets build a packet. It is simply a group of bits. You can change the packet size and toggle the bits to set a value." ]
+            []
+            [ Html.text "A Packet is like a word. It is simply a group of bits. You can build whatever word you want to build with the bits you have. The computers which use this word must understand what it means. Just like how we can talk to some of our close friends with seemingly random words but can make total sense to each other, a packet can be of any set of bits as long as the computers that have to deal with this packet understand the meaning behind it. " ]
+        , Html.p 
+            [] 
+            [ Html.text "Go ahead and build a packet. You can increase or decrease the packet size by adding or removing a bit. And of course, you can set the value of each bit by clicking within the green squares. "]
         , HApp.map PacketMsg (Packet.view model.packetModel)
         ]
 
@@ -99,17 +102,25 @@ combinatricsNotation x y =
         , Html.sub [] [Html.text (toString y)]
         ]
 
+
+pluralString: (String, String) -> Int -> String
+pluralString (a, b) n =
+    if n == 1 then
+        " " ++ a
+    else 
+        " " ++ b
+
 errorProbability model =
     Html.div 
         [] 
         [Html.h4 [] [Html.text "Probability of Error"]
         , Html.p 
             []
-            [ Html.text "The whole point of building the packet above is the transmit it. Unfortunately, there is a chance that a bit can be flippled/toggled when we transmit."
+            [ Html.text "The whole point of building a vocabulary of words is to store your memories on a diary or send letters to someone else. Unfortunately, pages on which the words are written can get partially spoiled and make certain words illegible. Similary, in computers, we build a set of packets so that we can store or transmit information. However, the disk drives we store the information on can get corrupted (scratches, lose mechanical parts etc); the cables/wireless environment through which we transmit the information can distort the packets. "
             , Html.br [] [] 
-            , Html.text "Suppose the probability of error if we send just one bit at a time is, P"
+            , Html.text "Such corruption and distortion increases the chance of accidental toggling of a single bit. P"
             , Html.sub [] [Html.text "e"] 
-            , Html.text (", is " ++ (toString model.bitProbability))
+            , Html.text (" = " ++ (toString model.bitProbability) ++ " " )
             , Html.input 
                 [ HA.type' "range"
                 , HA.size 100
@@ -121,12 +132,16 @@ errorProbability model =
                 ]
                 []
             , Html.br [][]
-            , Html.text ("Then the probability of 0 errors during transmission of " ++ (toString model.packetModel.msb) ++ " bit packet is " )
+            , Html.text "Higher the number, more the chances of corruption. So for the packet built above with "
+            , Html.text (toString model.packetModel.msb)
+            , Html.text (pluralString ("bit","bits") model.packetModel.msb)
+            , Html.br [] []
+            , Html.text ("the chance of having absolutely no corrupt bits is " )
             , (combinatricsNotation model.packetModel.msb model.packetModel.msb) 
             , Html.text " * (1 - "
             , Html.text ((toString model.bitProbability) ++ ")")
             , Html.sup [] [Html.text (toString model.packetModel.msb)] 
-            , Html.text " which is "
+            , Html.text " = "
             , Html.text (toString 
                             (
                                 (toFloat 
@@ -140,15 +155,15 @@ errorProbability model =
                                 ) / 100  
                             )
                         ) 
-            , Html.text "%" 
+            , Html.text "%, " 
             , Html.br [][]
-            , Html.text ("and the probability of 1 error during transmission of " ++ (toString model.packetModel.msb) ++ " bit packet is ")
+            , Html.text ("the chance of having exactly 1 corrupt bit is ")
             , (combinatricsNotation model.packetModel.msb (model.packetModel.msb-1))
             , Html.text " * (1 - "
             , Html.text ((toString model.bitProbability) ++ ")")
             , Html.sup [] [Html.text (toString (model.packetModel.msb-1))] 
             , Html.text (" * " ++ (toString model.bitProbability))
-            , Html.text " which is "
+            , Html.text " = "
             , Html.text (toString 
                              (
                                 (toFloat 
@@ -167,14 +182,14 @@ errorProbability model =
                         ) 
             , Html.text "%" 
             , Html.br [] []
-            , Html.text ("and probability of 2 errors during transmission of" ++ (toString model.packetModel.msb) ++ " bit packet is ")
+            , Html.text ("and chances of exactly 2 corrupt bits is ")
             , (combinatricsNotation model.packetModel.msb (model.packetModel.msb-2))
             , Html.text " * (1 - "
             , Html.text ((toString model.bitProbability) ++ ")")
             , Html.sup [] [Html.text (toString (model.packetModel.msb-2))] 
             , Html.text (" * " ++ (toString model.bitProbability))
             , Html.sup [] [Html.text "2"]
-            , Html.text " which is "
+            , Html.text " = "
             , Html.text (toString 
                             (
                                 (toFloat 
