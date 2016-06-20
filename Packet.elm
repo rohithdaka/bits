@@ -95,10 +95,12 @@ allPossibleValues n =
 -- View 
 view packet =
     let bits = List.map viewSpecificBit packet.bits
-        remove  = div [] [button [ onClick Remove] [text "Remove a bit"]]
-        add     = div [] [ button [ onClick Add] [text "Add a bit"] ]
+        remove  = button [ onClick Remove] [text "Remove a bit"]
+        add     = button [ onClick Add] [text "Add a bit"]
     in 
-        div [] ([add] ++ bits ++ [remove])
+        div [] 
+            ([remove] ++ [add] ++ [div [] bits])
+
 
 viewSpecificBit: (ID, Bit.Model) -> Html Msg
 viewSpecificBit (id, bit) = 

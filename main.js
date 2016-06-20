@@ -8068,38 +8068,24 @@ var _user$project$Packet$Remove = {ctor: 'Remove'};
 var _user$project$Packet$Add = {ctor: 'Add'};
 var _user$project$Packet$view = function (packet) {
 	var add = A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
+		_elm_lang$html$Html$button,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Packet$Add)
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$svg$Svg$text('Add a bit')
-					]))
+				_elm_lang$html$Html_Events$onClick(_user$project$Packet$Add)
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg$text('Add a bit')
 			]));
 	var remove = A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
+		_elm_lang$html$Html$button,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Packet$Remove)
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$svg$Svg$text('Remove a bit')
-					]))
+				_elm_lang$html$Html_Events$onClick(_user$project$Packet$Remove)
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg$text('Remove a bit')
 			]));
 	var bits = A2(_elm_lang$core$List$map, _user$project$Packet$viewSpecificBit, packet.bits);
 	return A2(
@@ -8109,12 +8095,19 @@ var _user$project$Packet$view = function (packet) {
 		A2(
 			_elm_lang$core$Basics_ops['++'],
 			_elm_lang$core$Native_List.fromArray(
-				[add]),
+				[remove]),
 			A2(
 				_elm_lang$core$Basics_ops['++'],
-				bits,
 				_elm_lang$core$Native_List.fromArray(
-					[remove]))));
+					[add]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html$div,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						bits)
+					]))));
 };
 
 var _user$project$Main$update = F2(
@@ -8203,7 +8196,7 @@ var _user$project$Main$tutorialIntroText = A2(
 				[]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html$text('This essay a quick introduction to the concept of Error Correcting Codes. As you may already know, all data in computers is stored and transmitted in binary format, a set of 0s and 1s. For efficient storage and transmission mechanisms, the systems need to know a way to detect errors and correct them if necessary. ')
+					_elm_lang$html$Html$text('This explorable essay is a quick introduction to the concept of Error Correcting Codes. As you may already know, all data in computers is stored and transmitted in binary format, a set of 0s and 1s. For efficient storage and transmission mechanisms, the systems need to know a way to detect errors and correct them if necessary. ')
 				])),
 			A2(
 			_elm_lang$html$Html$p,
@@ -8211,7 +8204,7 @@ var _user$project$Main$tutorialIntroText = A2(
 				[]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html$text('In 1950, Richard Hamming introduced the concept of Error Detecting and Error Correcting mechanism. This essay is inspired by his original paper and written to serve as a preliminary guide to understand various concepts in this field. No prior knowledge of anykind is assumed. ')
+					_elm_lang$html$Html$text('In 1950, Richard Hamming introduced the concept of Error Detecting and Error Correcting mechanism. This essay is inspired by his original paper and written to serve as a preliminary guide to understand some concepts in this field. No prior knowledge of anykind is assumed. ')
 				]))
 		]));
 var _user$project$Main$oddEven = function (model) {
@@ -8279,7 +8272,7 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('Usually after detecting an error, recievers ask for retransmission. This reduces the number of bits we can send in a given amount of time (usually refered to as throughput). What if there is a way to identify the errorenous bit? We can simply toggle to correct it. So we must find a way to identiy that single error in the packet. In order to do this we need some extra parity bits that help us pin point the location.'),
+						_elm_lang$html$Html$text('Usually after detecting an error, recievers ask for retransmission. This reduces the number of bits we can send in a given amount of time (usually refered to as throughput). What if there is a way to identify the erroneous bit? We can simply toggle to correct it. So we must find a way to identiy that single error in the packet. In order to do this we need some extra parity bits that help us pin point the location.'),
 						A2(
 						_elm_lang$html$Html$br,
 						_elm_lang$core$Native_List.fromArray(
@@ -8292,7 +8285,7 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 							[]),
 						_elm_lang$core$Native_List.fromArray(
 							[])),
-						_elm_lang$html$Html$text('Suppose we want to send n bit packet. The number of parity bits, k, in these n bits should be determined such that all possible single bit error cases can mapped to these k bits. The number of actual possibilities are no errors, error at location 1, error at location 2 ... error at location n. So a total of n+1. So all we have to do is to find minimum k such that 2'),
+						_elm_lang$html$Html$text('Suppose we want to send n bit packet. The number of parity bits, k, in these n bits should be determined such that all possible single bit error cases can mapped to these k bits. The actual possibilities are no errors, error at location 1, error at location 2 ... error at location n. So a total of n+1. So all we have to do is to find minimum k such that 2'),
 						A2(
 						_elm_lang$html$Html$sup,
 						_elm_lang$core$Native_List.fromArray(
@@ -8443,17 +8436,15 @@ var _user$project$Main$errorProbability = function (model) {
 								_elm_lang$html$Html$text(
 								_elm_lang$core$Basics$toString(model.packetModel.msb))
 							])),
+						_elm_lang$html$Html$text(' which is '),
 						_elm_lang$html$Html$text(
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							' which is ',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(
-									Math.pow(
+						_elm_lang$core$Basics$toString(
+							_elm_lang$core$Basics$toFloat(
+								_elm_lang$core$Basics$round(
+									(Math.pow(
 										1 - model.bitProbability,
-										_elm_lang$core$Basics$toFloat(model.packetModel.msb)) * 100),
-								'%'))),
+										_elm_lang$core$Basics$toFloat(model.packetModel.msb)) * 100) * 100)) / 100)),
+						_elm_lang$html$Html$text('%'),
 						A2(
 						_elm_lang$html$Html$br,
 						_elm_lang$core$Native_List.fromArray(
@@ -8489,17 +8480,15 @@ var _user$project$Main$errorProbability = function (model) {
 							_elm_lang$core$Basics_ops['++'],
 							' * ',
 							_elm_lang$core$Basics$toString(model.bitProbability))),
+						_elm_lang$html$Html$text(' which is '),
 						_elm_lang$html$Html$text(
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							' which is ',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(
-									((Math.pow(
+						_elm_lang$core$Basics$toString(
+							_elm_lang$core$Basics$toFloat(
+								_elm_lang$core$Basics$round(
+									(((Math.pow(
 										1 - model.bitProbability,
-										_elm_lang$core$Basics$toFloat(model.packetModel.msb - 1)) * model.bitProbability) * 100) * _elm_lang$core$Basics$toFloat(model.packetModel.msb)),
-								'%'))),
+										_elm_lang$core$Basics$toFloat(model.packetModel.msb - 1)) * model.bitProbability) * 100) * _elm_lang$core$Basics$toFloat(model.packetModel.msb)) * 100)) / 100)),
+						_elm_lang$html$Html$text('%'),
 						A2(
 						_elm_lang$html$Html$br,
 						_elm_lang$core$Native_List.fromArray(
@@ -8546,9 +8535,11 @@ var _user$project$Main$errorProbability = function (model) {
 						_elm_lang$html$Html$text(' which is '),
 						_elm_lang$html$Html$text(
 						_elm_lang$core$Basics$toString(
-							((Math.pow(
-								1 - model.bitProbability,
-								_elm_lang$core$Basics$toFloat(model.packetModel.msb - 2)) * Math.pow(model.bitProbability, 2)) * 50) * _elm_lang$core$Basics$toFloat(model.packetModel.msb * (model.packetModel.msb - 1)))),
+							_elm_lang$core$Basics$toFloat(
+								_elm_lang$core$Basics$round(
+									(((Math.pow(
+										1 - model.bitProbability,
+										_elm_lang$core$Basics$toFloat(model.packetModel.msb - 2)) * Math.pow(model.bitProbability, 2)) * 50) * _elm_lang$core$Basics$toFloat(model.packetModel.msb * (model.packetModel.msb - 1))) * 100)) / 100)),
 						_elm_lang$html$Html$text('%'),
 						A2(
 						_elm_lang$html$Html$br,
@@ -8671,47 +8662,48 @@ var _user$project$Main$parityIntro = function (model) {
 							[
 								_elm_lang$html$Html$text('e')
 							])),
-						_elm_lang$html$Html$text(' < 0.2, vast majority of the transmissions are either zero errors or 1 error. This gives us some hope that if we somehow detect and correct one error during transmission, it will work most of the time. For that, we must first detect single error. So lets look at the most popular and oldest trick to detect a single error: parity check'),
-						A2(
-						_elm_lang$html$Html_App$map,
-						_user$project$Main$PacketMsg,
-						_user$project$Packet$view(model.packetModel)),
-						A2(
-						_elm_lang$html$Html_App$map,
-						_user$project$Main$BitMsg,
-						_user$project$Bit$view(
-							A3(
-								_user$project$Bit$defaultBit,
-								_user$project$Main$singleParity(model),
-								{x: 0, y: 0},
-								'parity'))),
-						A2(
-						_elm_lang$html$Html$br,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[])),
-						_elm_lang$html$Html$text(
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_user$project$Main$oddEven(model),
-							' Parity Check ')),
-						A2(
-						_elm_lang$html$Html$button,
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html_Events$onClick(_user$project$Main$ToggleOddEven)
-							]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('Change')
-							])),
-						A2(
-						_elm_lang$html$Html$br,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[])),
+						_elm_lang$html$Html$text(' < 0.2, vast majority of the transmissions are either zero errors or 1 error. This gives us some hope that if we somehow detect and correct one error during transmission, it will work most of the time. For that, we must first detect single error. So lets look at the most popular and oldest trick to detect a single error: parity check')
+					])),
+				A2(
+				_elm_lang$html$Html_App$map,
+				_user$project$Main$PacketMsg,
+				_user$project$Packet$view(model.packetModel)),
+				A2(
+				_elm_lang$html$Html_App$map,
+				_user$project$Main$BitMsg,
+				_user$project$Bit$view(
+					A3(
+						_user$project$Bit$defaultBit,
+						_user$project$Main$singleParity(model),
+						{x: 0, y: 0},
+						'parity'))),
+				A2(
+				_elm_lang$html$Html$br,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[])),
+				_elm_lang$html$Html$text(
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_user$project$Main$oddEven(model),
+					' Parity Check ')),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$Main$ToggleOddEven)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Change')
+					])),
+				A2(
+				_elm_lang$html$Html$p,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
 						_elm_lang$html$Html$text('The parity bit is shown in a different color and you can\'t toggle it. Its value is set based on the type of parity check we use. In Even Parity Check, the total number of 1s in the packet must be even. So the parity bit value is set to ensure that total 1s are even. Similarly, in Odd Parity Check, the parity bit value is set to make sure that total 1s are Odd')
 					])),
 				A2(
