@@ -116,9 +116,11 @@ errorProbability model =
         [Html.h4 [] [Html.text "Probability of Error"]
         , Html.p 
             []
-            [ Html.text "The whole point of building a vocabulary of words is to store your memories on a diary or send letters to someone else. Unfortunately, pages on which the words are written can get partially spoiled and make certain words illegible. Similary, in computers, we build a set of packets so that we can store or transmit information. However, the disk drives we store the information on can get corrupted (scratches, lose mechanical parts etc); the cables/wireless environment through which we transmit the information can distort the packets. "
-            , Html.br [] [] 
-            , Html.text "Such corruption and distortion increases the chance of accidental toggling of a single bit. P"
+            [ Html.text "The whole point of building a vocabulary of words is to store your memories on a diary or send letters to someone else. Unfortunately, pages on which the words are written can get partially spoiled and make certain words illegible. Similary, in computers, we build a set of packets so that we can store or transmit information. However, the disk drives we store the information on can get corrupted (scratches, lose mechanical parts etc); the cables/wireless environment through which we transmit the information can distort the packets. The exact mechanism of such corruption is beyond the scope of this essay. Let us just focus on how to deal with such corrupted bits."
+            ]
+        , Html.p 
+            []
+            [ Html.text "Such corruption and distortion increases the chance of accidental toggling of a single bit. P"
             , Html.sub [] [Html.text "e"] 
             , Html.text (" = " ++ (toString model.bitProbability) ++ " " )
             , Html.input 
@@ -211,12 +213,17 @@ errorProbability model =
                             )
                         ) 
             , Html.text "%"
-            , Html.br [] []
-            , Html.text "To understand the importance of upcoming sections, analysing these three probabilities are enough. As an engineer, it is essential to get an intuition of what is happening. So I highly recommend you play around with packet size and P"
+            ]
+        , Html.p 
+            []
+            [ Html.text "play around with packet size (by adding/removing bits from packet) and P"
             , Html.sub [] [Html.text "e"]
-            , Html.text "."
+            , Html.text ". "
             ]
         ]
+
+se = Html.sub [] [Html.text "e"]
+
 
 parityIntro model= 
     Html.div 
@@ -224,18 +231,22 @@ parityIntro model=
         [Html.h4 [] [Html.text "Single Error Detection"]
         , Html.p 
             []
-            [ Html.text "If you have played enough with the model above, you may have noticed some patterns. For small P"
+            [ Html.text "If you have played enough with the model above, you may have noticed some patterns. Try to see which packet size and which P"
+            , se
+            , Html.text " has the highest chance of zero corrupt bits and 1 corrupt bits. In real world application, we usually deal with low P"
             , Html.sub [] [Html.text "e"]
-            , Html.text " < 0.2, vast majority of the transmissions are either zero errors or 1 error. This gives us some hope that if we somehow detect and correct one error during transmission, it will work most of the time. For that, we must first detect single error. So lets look at the most popular and oldest trick to detect a single error: parity check"
+            , Html.text ". If it is so high, we will try to fix that situation by other means. Using the words and letters analogy, we can tolerate ink blotting of certain words in our letters but if the letters get torn/burnt/lost during travel, we change the postal service first but not think about how to write stuff so that words are torn/burn proof. So for smaller P"
+            , Html.sub [] [Html.text "e"]
+            , Html.text ", it will be wise to deal with 1 bit corruptions as it will improve the reliability. In order to detect such single error, lets look at the most popular and oldest trick: parity check"
             ]
         , HApp.map PacketMsg (Packet.view model.packetModel)
-        , HApp.map BitMsg (Bit.view (Bit.defaultBit (singleParity model) {x=0,y=0} "parity"))    
+        , HApp.map BitMsg (Bit.view (Bit.defaultBit (singleParity model) 1 "parity"))    
         , Html.br [] []
         , Html.text ( (oddEven model) ++ " Parity Check ")
         , Html.button [ HE.onClick ToggleOddEven] [Html.text "Change" ]
         , Html.p 
             []
-            [ Html.text "The parity bit is shown in a different color and you can't toggle it. Its value is set based on the type of parity check we use. In Even Parity Check, the total number of 1s in the packet must be even. So the parity bit value is set to ensure that total 1s are even. Similarly, in Odd Parity Check, the parity bit value is set to make sure that total 1s are Odd"
+            [ Html.text "The parity bit is shown in blue and you can't set its value directly by clicking on it. Its value is set based on the type of parity check we use. In Even Parity Check, the total number of 1s in the packet (including that of blue parity bit) must be even. So the parity bit value is set to ensure that total 1s are even. Similarly, in Odd Parity Check, the parity bit value is set to make sure that total 1s are Odd."
             ]
         , Html.p 
             []
@@ -247,13 +258,16 @@ parityIntro model=
 singleErrorCorrection model =
     Html.div 
         [] 
-        [ Html.h4 [] [Html.text "Single Error Correction"]
+        [ Html.h4 [HA.id "ec"] [Html.text "Single Error Correction"]
         , Html.p 
             []
-            [ Html.text "Usually after detecting an error, recievers ask for retransmission. This reduces the number of bits we can send in a given amount of time (usually refered to as throughput). What if there is a way to identify the erroneous bit? We can simply toggle to correct it. So we must find a way to identiy that single error in the packet. In order to do this we need some extra parity bits that help us pin point the location."
-            , Html.br [] []
-            , Html.br [] []
-            , Html.text "Suppose we want to send n bit packet. The number of parity bits, k, in these n bits should be determined such that all possible single bit error cases can mapped to these k bits. The actual possibilities are no errors, error at location 1, error at location 2 ... error at location n. So a total of n+1. So all we have to do is to find minimum k such that 2"
+            [ Html.text "If your friend detects an error in your letter but doesn't know where is it, he/she will request you to send the letter again. It may look inefficient but when the chances of no corruption are high hence is used only for really small P"
+            , Html.sub [] [Html.text "e"]
+            , Html.text " as such requests would be small in number. Similarly the receivers request a retransmission of such error packets. Try to play with the knobs above to see which values enable us to resort to retransmission method to correct the error packets. "
+            ]
+        , Html.p 
+            []
+            [ Html.text "But for other cases, we need to correct a single error. Since there are only two alphabets (or bits) in our case, we can correct an error by identifying the error position within the packet and toggling it. Hence, we need identifiers. So we use k parity bits. As you may know, with k bits we can create 2^k possible names. The actual possibilities are no errors, error at location 1, error at location 2, error at location n. So a total of n+1. So all we have to do is to find minimum k such that 2"
             , Html.sup [] [Html.text "k"]
             , Html.text " is greater or equal to n+1."
             , Html.br [] []
@@ -318,7 +332,7 @@ update msg model =
 
         HammingMsg subAction ->
             let 
-            updatedHammingModel = HammingPacket.update subAction model.hammingModel
+                updatedHammingModel = HammingPacket.update subAction model.hammingModel
             in
                 {model | hammingModel = updatedHammingModel}
 

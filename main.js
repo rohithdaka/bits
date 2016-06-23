@@ -7597,31 +7597,24 @@ var _user$project$Bit$update = F2(
 		var _p2 = msg;
 		return _user$project$Bit$bitToggle(bit);
 	});
-var _user$project$Bit$sizeOfBit = 50;
+var _user$project$Bit$sizeOfBit = 60;
 var _user$project$Bit$defaultBit = F3(
-	function (v, l, c) {
-		return {value: v, location: l, category: c};
+	function (v, p, c) {
+		return {value: v, position: p, category: c};
 	});
-var _user$project$Bit$initialModel = A3(
-	_user$project$Bit$defaultBit,
-	1,
-	{x: 0, y: 0},
-	'data');
-var _user$project$Bit$Location = F2(
-	function (a, b) {
-		return {x: a, y: b};
-	});
+var _user$project$Bit$initialModel = A3(_user$project$Bit$defaultBit, 1, 1, 'data');
 var _user$project$Bit$Model = F3(
 	function (a, b, c) {
-		return {value: a, location: b, category: c};
+		return {value: a, position: b, category: c};
 	});
 var _user$project$Bit$Click = {ctor: 'Click'};
 var _user$project$Bit$view = function (bit) {
+	var idOrigin = _elm_lang$core$Basics$toString(_user$project$Bit$sizeOfBit / 6);
 	var textOrigin = _elm_lang$core$Basics$toString(_user$project$Bit$sizeOfBit / 2);
 	var fillColor = _user$project$Bit$colorOf(bit.category);
 	var bitDimension = _elm_lang$core$Basics$toString(_user$project$Bit$sizeOfBit);
-	var yOrigin = _elm_lang$core$Basics$toString(bit.location.y);
-	var xOrigin = _elm_lang$core$Basics$toString(bit.location.x);
+	var yOrigin = _elm_lang$core$Basics$toString(0);
+	var xOrigin = _elm_lang$core$Basics$toString(0);
 	return A2(
 		_elm_lang$svg$Svg$svg,
 		_elm_lang$core$Native_List.fromArray(
@@ -7662,6 +7655,23 @@ var _user$project$Bit$view = function (bit) {
 					[
 						_elm_lang$html$Html$text(
 						_elm_lang$core$Basics$toString(bit.value))
+					])),
+				A2(
+				_elm_lang$svg$Svg$text$,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$svg$Svg_Attributes$x(idOrigin),
+						_elm_lang$svg$Svg_Attributes$y(idOrigin),
+						_elm_lang$svg$Svg_Attributes$fill('black'),
+						_elm_lang$svg$Svg_Attributes$fontFamily('monospace'),
+						_elm_lang$svg$Svg_Attributes$fontSize(idOrigin),
+						_elm_lang$svg$Svg_Attributes$textAnchor('left'),
+						_elm_lang$svg$Svg_Attributes$alignmentBaseline('top')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(bit.position))
 					]))
 			]));
 };
@@ -7679,7 +7689,8 @@ var _user$project$HammingPacket$update = F2(
 		var _p0 = msg;
 		switch (_p0.ctor) {
 			case 'AddBit':
-				var newBitPosition = {x: 0, y: 0};
+				var nPlusPlus = packet.n + 1;
+				var newBitPosition = packet.n;
 				var newBit = _elm_lang$core$Native_Utils.eq(
 					Math.pow(
 						2,
@@ -7688,19 +7699,11 @@ var _user$project$HammingPacket$update = F2(
 								_elm_lang$core$Basics$logBase,
 								2,
 								_elm_lang$core$Basics$toFloat(packet.n)))),
-					packet.n) ? {
-					ctor: '_Tuple2',
-					_0: packet.n,
-					_1: A3(
-						_user$project$Bit$defaultBit,
-						A2(_user$project$HammingPacket$hammingParityValue, packet.n, packet),
-						newBitPosition,
-						'parity')
-				} : {
-					ctor: '_Tuple2',
-					_0: packet.n,
-					_1: A3(_user$project$Bit$defaultBit, 0, newBitPosition, 'data')
-				};
+					packet.n) ? A3(
+					_user$project$Bit$defaultBit,
+					A2(_user$project$HammingPacket$hammingParityValue, packet.n, packet),
+					newBitPosition,
+					'parity') : A3(_user$project$Bit$defaultBit, 0, newBitPosition, 'data');
 				var newBits = A2(
 					_elm_lang$core$Basics_ops['++'],
 					_elm_lang$core$Native_List.fromArray(
@@ -7710,35 +7713,29 @@ var _user$project$HammingPacket$update = F2(
 					packet,
 					{
 						bits: newBits,
-						n: packet.n + 1,
+						n: nPlusPlus,
 						k: _elm_lang$core$Basics$ceiling(
 							A2(
 								_elm_lang$core$Basics$logBase,
 								2,
-								_elm_lang$core$Basics$toFloat(packet.n)))
+								_elm_lang$core$Basics$toFloat(nPlusPlus)))
 					});
 			case 'RemoveBit':
+				var nMinusMinus = packet.n - 1;
 				return (_elm_lang$core$Native_Utils.cmp(packet.n, 1) > 0) ? _elm_lang$core$Native_Utils.update(
 					packet,
 					{
 						bits: A2(_elm_lang$core$List$drop, 1, packet.bits),
-						n: packet.n - 1,
+						n: nMinusMinus,
 						k: _elm_lang$core$Basics$ceiling(
 							A2(
 								_elm_lang$core$Basics$logBase,
 								2,
-								_elm_lang$core$Basics$toFloat(packet.n)))
+								_elm_lang$core$Basics$toFloat(nMinusMinus)))
 					}) : packet;
 			default:
-				var updateSpecificBit = function (_p1) {
-					var _p2 = _p1;
-					var _p4 = _p2._0;
-					var _p3 = _p2._1;
-					return _elm_lang$core$Native_Utils.eq(_p4, _p0._0) ? {
-						ctor: '_Tuple2',
-						_0: _p4,
-						_1: A2(_user$project$Bit$update, _p0._1, _p3)
-					} : {ctor: '_Tuple2', _0: _p4, _1: _p3};
+				var updateSpecificBit = function (bit) {
+					return _elm_lang$core$Native_Utils.eq(bit.position, _p0._0) ? A2(_user$project$Bit$update, _p0._1, bit) : bit;
 				};
 				return _elm_lang$core$Native_Utils.update(
 					packet,
@@ -7750,69 +7747,25 @@ var _user$project$HammingPacket$update = F2(
 var _user$project$HammingPacket$defaultPacket = {
 	bits: _elm_lang$core$Native_List.fromArray(
 		[
-			{
-			ctor: '_Tuple2',
-			_0: 7,
-			_1: A3(
-				_user$project$Bit$defaultBit,
-				0,
-				{x: 0, y: 0},
-				'data')
-		},
-			{
-			ctor: '_Tuple2',
-			_0: 6,
-			_1: A3(
-				_user$project$Bit$defaultBit,
-				0,
-				{x: 0, y: 0},
-				'data')
-		},
-			{
-			ctor: '_Tuple2',
-			_0: 5,
-			_1: A3(
-				_user$project$Bit$defaultBit,
-				0,
-				{x: 0, y: 0},
-				'data')
-		},
-			{
-			ctor: '_Tuple2',
-			_0: 4,
-			_1: A3(
-				_user$project$Bit$defaultBit,
-				A2(_user$project$HammingPacket$hammingParityValue, 4, _user$project$HammingPacket$defaultPacket),
-				{x: 0, y: 0},
-				'parity')
-		},
-			{
-			ctor: '_Tuple2',
-			_0: 3,
-			_1: A3(
-				_user$project$Bit$defaultBit,
-				1,
-				{x: 0, y: 0},
-				'data')
-		},
-			{
-			ctor: '_Tuple2',
-			_0: 2,
-			_1: A3(
-				_user$project$Bit$defaultBit,
-				A2(_user$project$HammingPacket$hammingParityValue, 2, _user$project$HammingPacket$defaultPacket),
-				{x: 0, y: 0},
-				'parity')
-		},
-			{
-			ctor: '_Tuple2',
-			_0: 1,
-			_1: A3(
-				_user$project$Bit$defaultBit,
-				A2(_user$project$HammingPacket$hammingParityValue, 1, _user$project$HammingPacket$defaultPacket),
-				{x: 0, y: 0},
-				'parity')
-		}
+			A3(_user$project$Bit$defaultBit, 0, 7, 'data'),
+			A3(_user$project$Bit$defaultBit, 0, 6, 'data'),
+			A3(_user$project$Bit$defaultBit, 0, 5, 'data'),
+			A3(
+			_user$project$Bit$defaultBit,
+			A2(_user$project$HammingPacket$hammingParityValue, 4, _user$project$HammingPacket$defaultPacket),
+			4,
+			'parity'),
+			A3(_user$project$Bit$defaultBit, 1, 3, 'data'),
+			A3(
+			_user$project$Bit$defaultBit,
+			A2(_user$project$HammingPacket$hammingParityValue, 2, _user$project$HammingPacket$defaultPacket),
+			2,
+			'parity'),
+			A3(
+			_user$project$Bit$defaultBit,
+			A2(_user$project$HammingPacket$hammingParityValue, 1, _user$project$HammingPacket$defaultPacket),
+			1,
+			'parity')
 		]),
 	n: 8,
 	k: 3
@@ -7825,27 +7778,24 @@ var _user$project$HammingPacket$ModifyBit = F2(
 	function (a, b) {
 		return {ctor: 'ModifyBit', _0: a, _1: b};
 	});
-var _user$project$HammingPacket$viewSpecificBit = function (_p5) {
-	var _p6 = _p5;
-	var _p9 = _p6._0;
-	var _p8 = _p6._1;
-	var _p7 = _p8.category;
-	switch (_p7) {
+var _user$project$HammingPacket$viewSpecificBit = function (bit) {
+	var _p1 = bit.category;
+	switch (_p1) {
 		case 'data':
 			return A2(
 				_elm_lang$html$Html_App$map,
-				_user$project$HammingPacket$ModifyBit(_p9),
-				_user$project$Bit$view(_p8));
+				_user$project$HammingPacket$ModifyBit(bit.position),
+				_user$project$Bit$view(bit));
 		case 'parity':
 			return A2(
 				_elm_lang$html$Html_App$map,
-				_user$project$HammingPacket$ModifyBit(_p9),
-				_user$project$Bit$view(_p8));
+				_user$project$HammingPacket$ModifyBit(bit.position),
+				_user$project$Bit$view(bit));
 		default:
 			return A2(
 				_elm_lang$html$Html_App$map,
-				_user$project$HammingPacket$ModifyBit(_p9),
-				_user$project$Bit$view(_p8));
+				_user$project$HammingPacket$ModifyBit(bit.position),
+				_user$project$Bit$view(bit));
 	}
 };
 var _user$project$HammingPacket$RemoveBit = {ctor: 'RemoveBit'};
@@ -7879,7 +7829,7 @@ var _user$project$HammingPacket$view = function (packet) {
 		A2(
 			_elm_lang$core$Basics_ops['++'],
 			_elm_lang$core$Native_List.fromArray(
-				[addBit]),
+				[removeBit]),
 			A2(
 				_elm_lang$core$Basics_ops['++'],
 				_elm_lang$core$Native_List.fromArray(
@@ -7893,7 +7843,7 @@ var _user$project$HammingPacket$view = function (packet) {
 				A2(
 					_elm_lang$core$Basics_ops['++'],
 					_elm_lang$core$Native_List.fromArray(
-						[removeBit]),
+						[addBit]),
 					A2(
 						_elm_lang$core$Basics_ops['++'],
 						_elm_lang$core$Native_List.fromArray(
@@ -7957,23 +7907,18 @@ var _user$project$Packet$allPossibleValues = function (n) {
 	return A2(_elm_lang$core$List$map, padZeroes, valueStrings);
 };
 var _user$project$Packet$packetValue = function (packet) {
-	var getBitValue = function (_p1) {
-		var _p2 = _p1;
-		return _p2._1.value;
+	var getBitValue = function (bit) {
+		return bit.value;
 	};
 	return A2(_elm_lang$core$List$map, getBitValue, packet.bits);
 };
 var _user$project$Packet$update = F2(
 	function (msg, packet) {
-		var _p3 = msg;
-		switch (_p3.ctor) {
+		var _p1 = msg;
+		switch (_p1.ctor) {
 			case 'Add':
-				var newBitPosition = {x: 0, y: 0};
-				var newBit = {
-					ctor: '_Tuple2',
-					_0: packet.msb,
-					_1: A3(_user$project$Bit$defaultBit, 0, newBitPosition, 'data')
-				};
+				var newBitPosition = packet.msb;
+				var newBit = A3(_user$project$Bit$defaultBit, 0, newBitPosition, 'data');
 				var newBits = A2(
 					_elm_lang$core$Basics_ops['++'],
 					_elm_lang$core$Native_List.fromArray(
@@ -7990,15 +7935,8 @@ var _user$project$Packet$update = F2(
 						msb: packet.msb - 1
 					}) : packet;
 			default:
-				var updateSpecificBit = function (_p4) {
-					var _p5 = _p4;
-					var _p7 = _p5._0;
-					var _p6 = _p5._1;
-					return _elm_lang$core$Native_Utils.eq(_p7, _p3._0) ? {
-						ctor: '_Tuple2',
-						_0: _p7,
-						_1: A2(_user$project$Bit$update, _p3._1, _p6)
-					} : {ctor: '_Tuple2', _0: _p7, _1: _p6};
+				var updateSpecificBit = function (bit) {
+					return _elm_lang$core$Native_Utils.eq(bit.position, _p1._0) ? A2(_user$project$Bit$update, _p1._1, bit) : bit;
 				};
 				return _elm_lang$core$Native_Utils.update(
 					packet,
@@ -8010,44 +7948,12 @@ var _user$project$Packet$update = F2(
 var _user$project$Packet$defaultPacket = {
 	bits: _elm_lang$core$Native_List.fromArray(
 		[
-			{
-			ctor: '_Tuple2',
-			_0: 3,
-			_1: A3(
-				_user$project$Bit$defaultBit,
-				0,
-				{x: 0, y: 0},
-				'data')
-		},
-			{
-			ctor: '_Tuple2',
-			_0: 2,
-			_1: A3(
-				_user$project$Bit$defaultBit,
-				1,
-				{x: 0, y: 0},
-				'data')
-		},
-			{
-			ctor: '_Tuple2',
-			_0: 1,
-			_1: A3(
-				_user$project$Bit$defaultBit,
-				0,
-				{x: 0, y: 0},
-				'data')
-		},
-			{
-			ctor: '_Tuple2',
-			_0: 0,
-			_1: A3(
-				_user$project$Bit$defaultBit,
-				1,
-				{x: 0, y: 0},
-				'data')
-		}
+			A3(_user$project$Bit$defaultBit, 0, 4, 'data'),
+			A3(_user$project$Bit$defaultBit, 1, 3, 'data'),
+			A3(_user$project$Bit$defaultBit, 0, 2, 'data'),
+			A3(_user$project$Bit$defaultBit, 1, 1, 'data')
 		]),
-	msb: 4
+	msb: 5
 };
 var _user$project$Packet$Model = F2(
 	function (a, b) {
@@ -8057,12 +7963,11 @@ var _user$project$Packet$Modify = F2(
 	function (a, b) {
 		return {ctor: 'Modify', _0: a, _1: b};
 	});
-var _user$project$Packet$viewSpecificBit = function (_p8) {
-	var _p9 = _p8;
+var _user$project$Packet$viewSpecificBit = function (bit) {
 	return A2(
 		_elm_lang$html$Html_App$map,
-		_user$project$Packet$Modify(_p9._0),
-		_user$project$Bit$view(_p9._1));
+		_user$project$Packet$Modify(bit.position),
+		_user$project$Bit$view(bit));
 };
 var _user$project$Packet$Remove = {ctor: 'Remove'};
 var _user$project$Packet$Add = {ctor: 'Add'};
@@ -8155,6 +8060,14 @@ var _user$project$Main$transmissionEfficiency = function (model) {
 		_elm_lang$core$Native_List.fromArray(
 			[]));
 };
+var _user$project$Main$se = A2(
+	_elm_lang$html$Html$sub,
+	_elm_lang$core$Native_List.fromArray(
+		[]),
+	_elm_lang$core$Native_List.fromArray(
+		[
+			_elm_lang$html$Html$text('e')
+		]));
 var _user$project$Main$pluralString = F2(
 	function (_p1, n) {
 		var _p2 = _p1;
@@ -8266,7 +8179,9 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 				A2(
 				_elm_lang$html$Html$h4,
 				_elm_lang$core$Native_List.fromArray(
-					[]),
+					[
+						_elm_lang$html$Html_Attributes$id('ec')
+					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html$text('Single Error Correction')
@@ -8277,20 +8192,24 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('Usually after detecting an error, recievers ask for retransmission. This reduces the number of bits we can send in a given amount of time (usually refered to as throughput). What if there is a way to identify the erroneous bit? We can simply toggle to correct it. So we must find a way to identiy that single error in the packet. In order to do this we need some extra parity bits that help us pin point the location.'),
+						_elm_lang$html$Html$text('If your friend detects an error in your letter but doesn\'t know where is it, he/she will request you to send the letter again. It may look inefficient but when the chances of no corruption are high hence is used only for really small P'),
 						A2(
-						_elm_lang$html$Html$br,
+						_elm_lang$html$Html$sub,
 						_elm_lang$core$Native_List.fromArray(
 							[]),
 						_elm_lang$core$Native_List.fromArray(
-							[])),
-						A2(
-						_elm_lang$html$Html$br,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[])),
-						_elm_lang$html$Html$text('Suppose we want to send n bit packet. The number of parity bits, k, in these n bits should be determined such that all possible single bit error cases can mapped to these k bits. The actual possibilities are no errors, error at location 1, error at location 2 ... error at location n. So a total of n+1. So all we have to do is to find minimum k such that 2'),
+							[
+								_elm_lang$html$Html$text('e')
+							])),
+						_elm_lang$html$Html$text(' as such requests would be small in number. Similarly the receivers request a retransmission of such error packets. Try to play with the knobs above to see which values enable us to resort to retransmission method to correct the error packets. ')
+					])),
+				A2(
+				_elm_lang$html$Html$p,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('But for other cases, we need to correct a single error. Since there are only two alphabets (or bits) in our case, we can correct an error by identifying the error position within the packet and toggling it. Hence, we need identifiers. So we use k parity bits. As you may know, with k bits we can create 2^k possible names. The actual possibilities are no errors, error at location 1, error at location 2, error at location n. So a total of n+1. So all we have to do is to find minimum k such that 2'),
 						A2(
 						_elm_lang$html$Html$sup,
 						_elm_lang$core$Native_List.fromArray(
@@ -8372,13 +8291,14 @@ var _user$project$Main$errorProbability = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('The whole point of building a vocabulary of words is to store your memories on a diary or send letters to someone else. Unfortunately, pages on which the words are written can get partially spoiled and make certain words illegible. Similary, in computers, we build a set of packets so that we can store or transmit information. However, the disk drives we store the information on can get corrupted (scratches, lose mechanical parts etc); the cables/wireless environment through which we transmit the information can distort the packets. '),
-						A2(
-						_elm_lang$html$Html$br,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[])),
+						_elm_lang$html$Html$text('The whole point of building a vocabulary of words is to store your memories on a diary or send letters to someone else. Unfortunately, pages on which the words are written can get partially spoiled and make certain words illegible. Similary, in computers, we build a set of packets so that we can store or transmit information. However, the disk drives we store the information on can get corrupted (scratches, lose mechanical parts etc); the cables/wireless environment through which we transmit the information can distort the packets. The exact mechanism of such corruption is beyond the scope of this essay. Let us just focus on how to deal with such corrupted bits.')
+					])),
+				A2(
+				_elm_lang$html$Html$p,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
 						_elm_lang$html$Html$text('Such corruption and distortion increases the chance of accidental toggling of a single bit. P'),
 						A2(
 						_elm_lang$html$Html$sub,
@@ -8541,14 +8461,15 @@ var _user$project$Main$errorProbability = function (model) {
 									(((Math.pow(
 										1 - model.bitProbability,
 										_elm_lang$core$Basics$toFloat(model.packetModel.msb - 2)) * Math.pow(model.bitProbability, 2)) * 50) * _elm_lang$core$Basics$toFloat(model.packetModel.msb * (model.packetModel.msb - 1))) * 100)) / 100)),
-						_elm_lang$html$Html$text('%'),
-						A2(
-						_elm_lang$html$Html$br,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[])),
-						_elm_lang$html$Html$text('To understand the importance of upcoming sections, analysing these three probabilities are enough. As an engineer, it is essential to get an intuition of what is happening. So I highly recommend you play around with packet size and P'),
+						_elm_lang$html$Html$text('%')
+					])),
+				A2(
+				_elm_lang$html$Html$p,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('play around with packet size (by adding/removing bits from packet) and P'),
 						A2(
 						_elm_lang$html$Html$sub,
 						_elm_lang$core$Native_List.fromArray(
@@ -8557,7 +8478,7 @@ var _user$project$Main$errorProbability = function (model) {
 							[
 								_elm_lang$html$Html$text('e')
 							])),
-						_elm_lang$html$Html$text('.')
+						_elm_lang$html$Html$text('. ')
 					]))
 			]));
 };
@@ -8662,7 +8583,9 @@ var _user$project$Main$parityIntro = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('If you have played enough with the model above, you may have noticed some patterns. For small P'),
+						_elm_lang$html$Html$text('If you have played enough with the model above, you may have noticed some patterns. Try to see which packet size and which P'),
+						_user$project$Main$se,
+						_elm_lang$html$Html$text(' has the highest chance of zero corrupt bits and 1 corrupt bits. In real world application, we usually deal with low P'),
 						A2(
 						_elm_lang$html$Html$sub,
 						_elm_lang$core$Native_List.fromArray(
@@ -8671,7 +8594,16 @@ var _user$project$Main$parityIntro = function (model) {
 							[
 								_elm_lang$html$Html$text('e')
 							])),
-						_elm_lang$html$Html$text(' < 0.2, vast majority of the transmissions are either zero errors or 1 error. This gives us some hope that if we somehow detect and correct one error during transmission, it will work most of the time. For that, we must first detect single error. So lets look at the most popular and oldest trick to detect a single error: parity check')
+						_elm_lang$html$Html$text('. If it is so high, we will try to fix that situation by other means. Using the words and letters analogy, we can tolerate ink blotting of certain words in our letters but if the letters get torn/burnt/lost during travel, we change the postal service first but not think about how to write stuff so that words are torn/burn proof. So for smaller P'),
+						A2(
+						_elm_lang$html$Html$sub,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('e')
+							])),
+						_elm_lang$html$Html$text(', it will be wise to deal with 1 bit corruptions as it will improve the reliability. In order to detect such single error, lets look at the most popular and oldest trick: parity check')
 					])),
 				A2(
 				_elm_lang$html$Html_App$map,
@@ -8684,7 +8616,7 @@ var _user$project$Main$parityIntro = function (model) {
 					A3(
 						_user$project$Bit$defaultBit,
 						_user$project$Main$singleParity(model),
-						{x: 0, y: 0},
+						1,
 						'parity'))),
 				A2(
 				_elm_lang$html$Html$br,
@@ -8713,7 +8645,7 @@ var _user$project$Main$parityIntro = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('The parity bit is shown in a different color and you can\'t toggle it. Its value is set based on the type of parity check we use. In Even Parity Check, the total number of 1s in the packet must be even. So the parity bit value is set to ensure that total 1s are even. Similarly, in Odd Parity Check, the parity bit value is set to make sure that total 1s are Odd')
+						_elm_lang$html$Html$text('The parity bit is shown in blue and you can\'t set its value directly by clicking on it. Its value is set based on the type of parity check we use. In Even Parity Check, the total number of 1s in the packet (including that of blue parity bit) must be even. So the parity bit value is set to ensure that total 1s are even. Similarly, in Odd Parity Check, the parity bit value is set to make sure that total 1s are Odd.')
 					])),
 				A2(
 				_elm_lang$html$Html$p,

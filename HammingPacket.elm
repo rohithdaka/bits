@@ -14,7 +14,7 @@ import Html.App as HA
 -- Model
 
 type alias Model = 
-    { bits  : List ( Int, Bit.Model )
+    { bits  : List Bit.Model
     , n: Int
     , k : Int
     }
@@ -23,13 +23,13 @@ type alias Model =
 defaultPacket: Model
 defaultPacket =  
     { bits = 
-        [ (7, Bit.defaultBit 0 {x = 0, y = 0} "data")
-        , (6, Bit.defaultBit 0 {x = 0, y = 0} "data")
-        , (5, Bit.defaultBit 0 {x = 0, y = 0} "data")
-        , (4, Bit.defaultBit (hammingParityValue 4 defaultPacket) {x = 0, y = 0} "parity")
-        , (3, Bit.defaultBit 1 {x = 0, y = 0} "data")
-        , (2, Bit.defaultBit (hammingParityValue 2 defaultPacket) {x = 0, y = 0} "parity")
-        , (1, Bit.defaultBit (hammingParityValue 1 defaultPacket) {x = 0, y = 0} "parity")]
+        [ Bit.defaultBit 0 7 "data"
+        , Bit.defaultBit 0 6 "data"
+        , Bit.defaultBit 0 5 "data"
+        , Bit.defaultBit (hammingParityValue 4 defaultPacket) 4 "parity"
+        , Bit.defaultBit 1 3 "data"
+        , Bit.defaultBit (hammingParityValue 2 defaultPacket) 2 "parity"
+        , Bit.defaultBit (hammingParityValue 1 defaultPacket) 1 "parity"]
     , n = 8
     , k = 3
     }
@@ -48,37 +48,40 @@ update: Msg -> Model -> Model
 update msg packet = 
     case msg of
         AddBit -> 
-            let newBitPosition = {x = 0, y = 0}
+            let newBitPosition = packet.n
                 newBit = 
                     if 2^(round (logBase 2 (toFloat packet.n))) == packet.n then 
-                        (packet.n, (Bit.defaultBit (hammingParityValue packet.n packet) newBitPosition "parity"))
+                        Bit.defaultBit (hammingParityValue packet.n packet) newBitPosition "parity"
                     else
-                         (packet.n, (Bit.defaultBit 0 newBitPosition "data"))
+                         Bit.defaultBit 0 newBitPosition "data"
 
                 newBits = [newBit] ++ packet.bits 
+                nPlusPlus = packet.n + 1
             in 
                 { packet |
                     bits = newBits
-                ,   n = packet.n + 1
-                ,   k = ceiling (logBase 2 (toFloat packet.n))
+                ,   n = nPlusPlus
+                ,   k = ceiling (logBase 2 (toFloat nPlusPlus))
                 }
     
         RemoveBit ->
-            if packet.n >1 then
-                { packet | 
-                    bits = List.drop 1 packet.bits
-                ,   n = packet.n - 1
-                ,   k = ceiling (logBase 2 (toFloat packet.n))
-                }
-            else 
-                packet
+            let nMinusMinus = packet.n - 1
+            in 
+                if packet.n > 1 then
+                    { packet | 
+                        bits = List.drop 1 packet.bits
+                    ,   n = nMinusMinus
+                    ,   k = ceiling (logBase 2 (toFloat nMinusMinus))
+                    }
+                else 
+                    packet
 
         ModifyBit id bitAction -> 
-            let updateSpecificBit (bitID, bit) = 
-                    if bitID == id then
-                        (bitID, Bit.update bitAction bit)
+            let updateSpecificBit bit = 
+                    if bit.position == id then
+                        Bit.update bitAction bit
                     else 
-                        (bitID, bit)
+                        bit
             in
                 { packet | 
                     bits = List.map updateSpecificBit packet.bits 
@@ -92,19 +95,19 @@ view packet =
     in 
         div 
             []
-            (   [addBit] ++ 
+            (   [removeBit] ++ 
                 [Html.text ("n = " ++ (toString (packet.n-1)))] ++
-                [removeBit] ++ 
+                [addBit] ++ 
                 [Html.br [] []] ++
                 bits 
             )
 
-viewSpecificBit: (Int, Bit.Model) -> Html Msg
-viewSpecificBit (id, bit) = 
+viewSpecificBit: Bit.Model -> Html Msg
+viewSpecificBit bit = 
     case bit.category of
-        "data" ->  HA.map (ModifyBit id) (Bit.view  bit)
-        "parity" -> HA.map (ModifyBit id) (Bit.view  bit)
-        _ -> HA.map (ModifyBit id) (Bit.view  bit)
+        "data" ->  HA.map (ModifyBit bit.position) (Bit.view  bit)
+        "parity" -> HA.map (ModifyBit bit.position) (Bit.view  bit)
+        _ -> HA.map (ModifyBit bit.position) (Bit.view  bit)
 
 
 main = 

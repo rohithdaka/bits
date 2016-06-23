@@ -13,7 +13,7 @@ import Html.App as HA
 
 -- Model
 type alias Model = 
-    { bits  : List ( ID, Bit.Model )
+    { bits  : List Bit.Model
     , msb   : ID
     }
 
@@ -24,11 +24,12 @@ type alias ID = Int
 defaultPacket : Model 
 defaultPacket = 
     { bits = 
-        [ (3, Bit.defaultBit 0 {x = 0, y = 0} "data")
-        , (2, Bit.defaultBit 1 {x = 0, y = 0} "data")
-        , (1, Bit.defaultBit 0 {x = 0, y = 0} "data")
-        , (0, Bit.defaultBit 1 {x = 0, y = 0} "data")]
-    , msb = 4
+        [ Bit.defaultBit 0 4 "data"
+        , Bit.defaultBit 1 3 "data"
+        , Bit.defaultBit 0 2 "data"
+        , Bit.defaultBit 1 1 "data"
+        ]
+    , msb = 5
     }
 
 
@@ -43,8 +44,8 @@ update: Msg -> Model -> Model
 update msg packet = 
     case msg of
         Add -> 
-            let newBitPosition = {x = 0, y = 0}
-                newBit = (packet.msb, (Bit.defaultBit 0 newBitPosition "data"))
+            let newBitPosition = packet.msb 
+                newBit = (Bit.defaultBit 0 newBitPosition "data")
                 newBits = [newBit] ++ packet.bits 
             in 
                 { packet |
@@ -62,11 +63,11 @@ update msg packet =
                 packet
 
         Modify id bitAction -> 
-            let updateSpecificBit (bitID, bit) = 
-                    if bitID == id then
-                        (bitID, Bit.update bitAction bit)
+            let updateSpecificBit bit = 
+                    if bit.position == id then
+                        Bit.update bitAction bit
                     else 
-                        (bitID, bit)
+                        bit
             in
                 { packet | 
                     bits = List.map updateSpecificBit packet.bits 
@@ -74,7 +75,7 @@ update msg packet =
 
 packetValue: Model -> List Int
 packetValue packet =
-    let getBitValue (_, bit) = bit.value 
+    let getBitValue bit = bit.value 
     in List.map getBitValue packet.bits
 
 dec2bin: Int -> String 
@@ -102,6 +103,6 @@ view packet =
             ([remove] ++ [add] ++ [div [] bits])
 
 
-viewSpecificBit: (ID, Bit.Model) -> Html Msg
-viewSpecificBit (id, bit) = 
-    HA.map (Modify id) (Bit.view  bit)
+viewSpecificBit: Bit.Model -> Html Msg
+viewSpecificBit bit = 
+    HA.map (Modify bit.position) (Bit.view  bit)

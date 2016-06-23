@@ -12,9 +12,10 @@ body {
 
 p {
 	text-indent: 2em;
+	line-height: 1.5em;
 }
 
 
-h1 {
+h1,h4 {
     text-align: center;
 }

@@ -6,32 +6,27 @@ import Html exposing (..)
 import Html.Events exposing (onClick)
 import Html.App as HA
 
-type alias Location = 
-            { x: Float
-            , y: Float
-            }
-
 type alias Model =
             { value: Int
-            , location: Location
+            , position: Int
             , category: String
             }
 
 
-defaultBit: Int -> Location -> String -> Model
-defaultBit v l c = 
+defaultBit: Int -> Int -> String -> Model
+defaultBit v p c = 
     { value = v
-    , location = l
+    , position = p
     , category = c
     }
 
 initialModel = 
-    (defaultBit 1 {x=0,y=0} "data")
+    defaultBit 1 1 "data"
 
 -- The length of the edges of each Bit block 
 
 sizeOfBit: Float
-sizeOfBit = 50
+sizeOfBit = 60
 
 type Msg = Click 
 
@@ -56,11 +51,12 @@ bitToggle bit =
         _ -> bit
 
 view bit =
-    let xOrigin = (toString bit.location.x)
-        yOrigin = (toString bit.location.y)
+    let xOrigin = (toString 0)
+        yOrigin = (toString 0)
         bitDimension = (toString sizeOfBit)
         fillColor = colorOf(bit.category)
         textOrigin = (toString  (sizeOfBit/2))
+        idOrigin = (toString (sizeOfBit/6))
     in 
     Svg.svg 
         [ onClick Click, x "0", y "0",width bitDimension, height bitDimension]
@@ -71,6 +67,9 @@ view bit =
         ,   text' 
                 [x textOrigin, y textOrigin, fill "black", fontFamily "monospace", fontSize textOrigin, textAnchor "middle", alignmentBaseline "middle"]
                 [Html.text (toString bit.value)]
+        ,   text' 
+                [x idOrigin, y idOrigin, fill "black", fontFamily "monospace", fontSize idOrigin, textAnchor "left", alignmentBaseline "top"]
+                [Html.text (toString bit.position)]
         ]
 
 main = 
