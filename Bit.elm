@@ -3,7 +3,7 @@ import Basics exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Html exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick,onMouseEnter,onMouseLeave)
 import Html.App as HA
 
 type alias Model =
@@ -32,7 +32,8 @@ sizeOfBit = 60
 
 type Msg 
     = Click   
-    | Highlight
+    | MouseHover
+    | MouseOut
 
 bitHighlighter: Model -> Model
 bitHighlighter bit =
@@ -42,7 +43,8 @@ update: Msg -> Model -> Model
 update msg bit = 
     case msg of
         Click -> (bitToggle bit)
-        Highlight -> (bitHighlighter bit)
+        MouseHover -> (bitHighlighter bit)
+        MouseOut -> (bitHighlighter bit)
 
 colorOf : String -> String
 colorOf category=
@@ -57,7 +59,7 @@ bitToggle : Model -> Model
 bitToggle bit = 
     case bit.category of 
         "data" -> {bit | value = (bit.value + 1) % 2}
-        "parity"-> { bit | highlight = (not bit.highlight) }
+      --  "parity"-> { bit | highlight = (not bit.highlight) }
         _ -> bit
 
 highlightValue bit = 
@@ -74,7 +76,7 @@ view bit =
         idOrigin = (toString (sizeOfBit/6))
     in 
     Svg.svg 
-        [ onClick Click, x "0", y "0",width bitDimension, height bitDimension]
+        [ onClick Click, onMouseEnter MouseHover, onMouseLeave MouseOut, x "0", y "0",width bitDimension, height bitDimension]
         [ 
             rect 
                 [ fill fillColor, x xOrigin, y yOrigin, width bitDimension, height bitDimension, fillOpacity (highlightValue bit)] 

@@ -79,15 +79,15 @@ update msg packet =
 
         ModifyBit id bitAction -> 
             let updateSpecificBit bit = 
-                if bit.position == id then
-                    Bit.update bitAction bit
-                else if 2^(round (logBase 2 (toFloat id))) == id then 
-                    if (Array.get (round (logBase 2 (toFloat id))) (dec2bin bit.position) |> Maybe.withDefault 0 ) == 1 then
-                        Bit.update Bit.Highlight bit
-                    else 
+                    if bit.position == id then
+                        Bit.update bitAction bit
+                    else if 2^(round (logBase 2 (toFloat id))) == id then 
+                        if (Array.get (round (logBase 2 (toFloat id))) (dec2bin bit.position) |> Maybe.withDefault 0 ) == 1 then
+                            Bit.bitHighlighter bit
+                        else 
+                            bit 
+                    else
                         bit
-                else
-                    bit
             in
                 { packet | 
                     bits = List.map updateSpecificBit packet.bits 
