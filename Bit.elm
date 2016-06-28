@@ -30,12 +30,19 @@ initialModel =
 sizeOfBit: Float
 sizeOfBit = 60
 
-type Msg = Click 
+type Msg 
+    = Click   
+    | Highlight
+
+bitHighlighter: Model -> Model
+bitHighlighter bit =
+    { bit | highlight = (not bit.highlight) }
 
 update: Msg -> Model -> Model
 update msg bit = 
     case msg of
         Click -> (bitToggle bit)
+        Highlight -> (bitHighlighter bit)
 
 colorOf : String -> String
 colorOf category=
@@ -50,6 +57,7 @@ bitToggle : Model -> Model
 bitToggle bit = 
     case bit.category of 
         "data" -> {bit | value = (bit.value + 1) % 2}
+        "parity"-> { bit | highlight = (not bit.highlight) }
         _ -> bit
 
 highlightValue bit = 

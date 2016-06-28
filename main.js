@@ -7577,14 +7577,21 @@ var _user$project$Bit$highlightValue = function (bit) {
 };
 var _user$project$Bit$bitToggle = function (bit) {
 	var _p1 = bit.category;
-	if (_p1 === 'data') {
-		return _elm_lang$core$Native_Utils.update(
-			bit,
-			{
-				value: A2(_elm_lang$core$Basics_ops['%'], bit.value + 1, 2)
-			});
-	} else {
-		return bit;
+	switch (_p1) {
+		case 'data':
+			return _elm_lang$core$Native_Utils.update(
+				bit,
+				{
+					value: A2(_elm_lang$core$Basics_ops['%'], bit.value + 1, 2)
+				});
+		case 'parity':
+			return _elm_lang$core$Native_Utils.update(
+				bit,
+				{
+					highlight: _elm_lang$core$Basics$not(bit.highlight)
+				});
+		default:
+			return bit;
 	}
 };
 var _user$project$Bit$colorOf = function (category) {
@@ -7600,10 +7607,21 @@ var _user$project$Bit$colorOf = function (category) {
 			return 'red';
 	}
 };
+var _user$project$Bit$bitHighlighter = function (bit) {
+	return _elm_lang$core$Native_Utils.update(
+		bit,
+		{
+			highlight: _elm_lang$core$Basics$not(bit.highlight)
+		});
+};
 var _user$project$Bit$update = F2(
 	function (msg, bit) {
 		var _p3 = msg;
-		return _user$project$Bit$bitToggle(bit);
+		if (_p3.ctor === 'Click') {
+			return _user$project$Bit$bitToggle(bit);
+		} else {
+			return _user$project$Bit$bitHighlighter(bit);
+		}
 	});
 var _user$project$Bit$sizeOfBit = 60;
 var _user$project$Bit$defaultBit = F4(
@@ -7615,6 +7633,7 @@ var _user$project$Bit$Model = F4(
 	function (a, b, c, d) {
 		return {value: a, position: b, category: c, highlight: d};
 	});
+var _user$project$Bit$Highlight = {ctor: 'Highlight'};
 var _user$project$Bit$Click = {ctor: 'Click'};
 var _user$project$Bit$view = function (bit) {
 	var idOrigin = _elm_lang$core$Basics$toString(_user$project$Bit$sizeOfBit / 6);
@@ -7690,14 +7709,31 @@ var _user$project$Bit$main = {
 		{model: _user$project$Bit$initialModel, view: _user$project$Bit$view, update: _user$project$Bit$update})
 };
 
+var _user$project$HammingPacket$dec2bin = function (v) {
+	var _p0 = v;
+	switch (_p0) {
+		case 1:
+			return A2(_elm_lang$core$Array$repeat, 1, 1);
+		case 0:
+			return A2(_elm_lang$core$Array$repeat, 1, 0);
+		default:
+			return A2(
+				_elm_lang$core$Array$append,
+				A2(
+					_elm_lang$core$Array$repeat,
+					1,
+					A2(_elm_lang$core$Basics_ops['%'], v, 2)),
+				_user$project$HammingPacket$dec2bin((v / 2) | 0));
+	}
+};
 var _user$project$HammingPacket$hammingParityValue = F2(
 	function (x, packet) {
 		return x;
 	});
 var _user$project$HammingPacket$update = F2(
 	function (msg, packet) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
+		var _p1 = msg;
+		switch (_p1.ctor) {
 			case 'AddBit':
 				var nPlusPlus = packet.n + 1;
 				var newBitPosition = packet.n;
@@ -7745,8 +7781,29 @@ var _user$project$HammingPacket$update = F2(
 								_elm_lang$core$Basics$toFloat(nMinusMinus)))
 					}) : packet;
 			default:
+				var _p2 = _p1._0;
 				var updateSpecificBit = function (bit) {
-					return _elm_lang$core$Native_Utils.eq(bit.position, _p0._0) ? A2(_user$project$Bit$update, _p0._1, bit) : bit;
+					return _elm_lang$core$Native_Utils.eq(bit.position, _p2) ? A2(_user$project$Bit$update, _p1._1, bit) : (_elm_lang$core$Native_Utils.eq(
+						Math.pow(
+							2,
+							_elm_lang$core$Basics$round(
+								A2(
+									_elm_lang$core$Basics$logBase,
+									2,
+									_elm_lang$core$Basics$toFloat(_p2)))),
+						_p2) ? (_elm_lang$core$Native_Utils.eq(
+						A2(
+							_elm_lang$core$Maybe$withDefault,
+							0,
+							A2(
+								_elm_lang$core$Array$get,
+								_elm_lang$core$Basics$round(
+									A2(
+										_elm_lang$core$Basics$logBase,
+										2,
+										_elm_lang$core$Basics$toFloat(_p2))),
+								_user$project$HammingPacket$dec2bin(bit.position))),
+						1) ? A2(_user$project$Bit$update, _user$project$Bit$Highlight, bit) : bit) : bit);
 				};
 				return _elm_lang$core$Native_Utils.update(
 					packet,
@@ -7767,7 +7824,7 @@ var _user$project$HammingPacket$defaultPacket = {
 			4,
 			'parity',
 			false),
-			A4(_user$project$Bit$defaultBit, 1, 3, 'data', true),
+			A4(_user$project$Bit$defaultBit, 1, 3, 'data', false),
 			A4(
 			_user$project$Bit$defaultBit,
 			A2(_user$project$HammingPacket$hammingParityValue, 2, _user$project$HammingPacket$defaultPacket),
@@ -7793,8 +7850,8 @@ var _user$project$HammingPacket$ModifyBit = F2(
 		return {ctor: 'ModifyBit', _0: a, _1: b};
 	});
 var _user$project$HammingPacket$viewSpecificBit = function (bit) {
-	var _p1 = bit.category;
-	switch (_p1) {
+	var _p3 = bit.category;
+	switch (_p3) {
 		case 'data':
 			return A2(
 				_elm_lang$html$Html_App$map,
