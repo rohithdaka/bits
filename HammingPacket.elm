@@ -23,13 +23,13 @@ type alias Model =
 defaultPacket: Model
 defaultPacket =  
     { bits = 
-        [ Bit.defaultBit 0 7 "data"
-        , Bit.defaultBit 0 6 "data"
-        , Bit.defaultBit 0 5 "data"
-        , Bit.defaultBit (hammingParityValue 4 defaultPacket) 4 "parity"
-        , Bit.defaultBit 1 3 "data"
-        , Bit.defaultBit (hammingParityValue 2 defaultPacket) 2 "parity"
-        , Bit.defaultBit (hammingParityValue 1 defaultPacket) 1 "parity"]
+        [ Bit.defaultBit 0 7 "data" False
+        , Bit.defaultBit 0 6 "data" False
+        , Bit.defaultBit 0 5 "data" False
+        , Bit.defaultBit (hammingParityValue 4 defaultPacket) 4 "parity" False
+        , Bit.defaultBit 1 3 "data" True
+        , Bit.defaultBit (hammingParityValue 2 defaultPacket) 2 "parity" False
+        , Bit.defaultBit (hammingParityValue 1 defaultPacket) 1 "parity" False]
     , n = 8
     , k = 3
     }
@@ -51,9 +51,9 @@ update msg packet =
             let newBitPosition = packet.n
                 newBit = 
                     if 2^(round (logBase 2 (toFloat packet.n))) == packet.n then 
-                        Bit.defaultBit (hammingParityValue packet.n packet) newBitPosition "parity"
+                        Bit.defaultBit (hammingParityValue packet.n packet) newBitPosition "parity" False
                     else
-                         Bit.defaultBit 0 newBitPosition "data"
+                         Bit.defaultBit 0 newBitPosition "data" False
 
                 newBits = [newBit] ++ packet.bits 
                 nPlusPlus = packet.n + 1

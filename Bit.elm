@@ -10,18 +10,20 @@ type alias Model =
             { value: Int
             , position: Int
             , category: String
+            , highlight: Bool
             }
 
 
-defaultBit: Int -> Int -> String -> Model
-defaultBit v p c = 
+defaultBit: Int -> Int -> String -> Bool -> Model
+defaultBit v p c h = 
     { value = v
     , position = p
     , category = c
+    , highlight = h
     }
 
 initialModel = 
-    defaultBit 1 1 "data"
+    defaultBit 1 1 "data" False
 
 -- The length of the edges of each Bit block 
 
@@ -50,6 +52,11 @@ bitToggle bit =
         "data" -> {bit | value = (bit.value + 1) % 2}
         _ -> bit
 
+highlightValue bit = 
+    case bit.highlight of
+        True -> "1"
+        False -> "0.5"
+
 view bit =
     let xOrigin = (toString 0)
         yOrigin = (toString 0)
@@ -62,7 +69,7 @@ view bit =
         [ onClick Click, x "0", y "0",width bitDimension, height bitDimension]
         [ 
             rect 
-                [ fill fillColor, x xOrigin, y yOrigin, width bitDimension, height bitDimension] 
+                [ fill fillColor, x xOrigin, y yOrigin, width bitDimension, height bitDimension, fillOpacity (highlightValue bit)] 
                 []
         ,   text' 
                 [x textOrigin, y textOrigin, fill "black", fontFamily "monospace", fontSize textOrigin, textAnchor "middle", alignmentBaseline "middle"]

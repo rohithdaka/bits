@@ -24,10 +24,10 @@ type alias ID = Int
 defaultPacket : Model 
 defaultPacket = 
     { bits = 
-        [ Bit.defaultBit 0 4 "data"
-        , Bit.defaultBit 1 3 "data"
-        , Bit.defaultBit 0 2 "data"
-        , Bit.defaultBit 1 1 "data"
+        [ Bit.defaultBit 0 4 "data" False
+        , Bit.defaultBit 1 3 "data" False
+        , Bit.defaultBit 0 2 "data" False
+        , Bit.defaultBit 1 1 "data" False
         ]
     , msb = 5
     }
@@ -45,7 +45,7 @@ update msg packet =
     case msg of
         Add -> 
             let newBitPosition = packet.msb 
-                newBit = (Bit.defaultBit 0 newBitPosition "data")
+                newBit = (Bit.defaultBit 0 newBitPosition "data" False)
                 newBits = [newBit] ++ packet.bits 
             in 
                 { packet |

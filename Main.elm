@@ -234,13 +234,13 @@ parityIntro model=
             [ Html.text "If you have played enough with the model above, you may have noticed some patterns. Try to see which packet size and which P"
             , se
             , Html.text " has the highest chance of zero corrupt bits and 1 corrupt bits. In real world application, we usually deal with low P"
-            , Html.sub [] [Html.text "e"]
+            , se
             , Html.text ". If it is so high, we will try to fix that situation by other means. Using the words and letters analogy, we can tolerate ink blotting of certain words in our letters but if the letters get torn/burnt/lost during travel, we change the postal service first but not think about how to write stuff so that words are torn/burn proof. So for smaller P"
-            , Html.sub [] [Html.text "e"]
+            , se
             , Html.text ", it will be wise to deal with 1 bit corruptions as it will improve the reliability. In order to detect such single error, lets look at the most popular and oldest trick: parity check"
             ]
         , HApp.map PacketMsg (Packet.view model.packetModel)
-        , HApp.map BitMsg (Bit.view (Bit.defaultBit (singleParity model) 1 "parity"))    
+        , HApp.map BitMsg (Bit.view (Bit.defaultBit (singleParity model) 1 "parity" False))    
         , Html.br [] []
         , Html.text ( (oddEven model) ++ " Parity Check ")
         , Html.button [ HE.onClick ToggleOddEven] [Html.text "Change" ]

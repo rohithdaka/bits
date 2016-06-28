@@ -7567,9 +7567,17 @@ var _elm_lang$svg$Svg_Attributes$accumulate = _elm_lang$virtual_dom$VirtualDom$a
 var _elm_lang$svg$Svg_Attributes$accelerate = _elm_lang$virtual_dom$VirtualDom$attribute('accelerate');
 var _elm_lang$svg$Svg_Attributes$accentHeight = _elm_lang$virtual_dom$VirtualDom$attribute('accent-height');
 
+var _user$project$Bit$highlightValue = function (bit) {
+	var _p0 = bit.highlight;
+	if (_p0 === true) {
+		return '1';
+	} else {
+		return '0.5';
+	}
+};
 var _user$project$Bit$bitToggle = function (bit) {
-	var _p0 = bit.category;
-	if (_p0 === 'data') {
+	var _p1 = bit.category;
+	if (_p1 === 'data') {
 		return _elm_lang$core$Native_Utils.update(
 			bit,
 			{
@@ -7580,8 +7588,8 @@ var _user$project$Bit$bitToggle = function (bit) {
 	}
 };
 var _user$project$Bit$colorOf = function (category) {
-	var _p1 = category;
-	switch (_p1) {
+	var _p2 = category;
+	switch (_p2) {
 		case 'data':
 			return 'green';
 		case 'parity':
@@ -7594,18 +7602,18 @@ var _user$project$Bit$colorOf = function (category) {
 };
 var _user$project$Bit$update = F2(
 	function (msg, bit) {
-		var _p2 = msg;
+		var _p3 = msg;
 		return _user$project$Bit$bitToggle(bit);
 	});
 var _user$project$Bit$sizeOfBit = 60;
-var _user$project$Bit$defaultBit = F3(
-	function (v, p, c) {
-		return {value: v, position: p, category: c};
+var _user$project$Bit$defaultBit = F4(
+	function (v, p, c, h) {
+		return {value: v, position: p, category: c, highlight: h};
 	});
-var _user$project$Bit$initialModel = A3(_user$project$Bit$defaultBit, 1, 1, 'data');
-var _user$project$Bit$Model = F3(
-	function (a, b, c) {
-		return {value: a, position: b, category: c};
+var _user$project$Bit$initialModel = A4(_user$project$Bit$defaultBit, 1, 1, 'data', false);
+var _user$project$Bit$Model = F4(
+	function (a, b, c, d) {
+		return {value: a, position: b, category: c, highlight: d};
 	});
 var _user$project$Bit$Click = {ctor: 'Click'};
 var _user$project$Bit$view = function (bit) {
@@ -7635,7 +7643,9 @@ var _user$project$Bit$view = function (bit) {
 						_elm_lang$svg$Svg_Attributes$x(xOrigin),
 						_elm_lang$svg$Svg_Attributes$y(yOrigin),
 						_elm_lang$svg$Svg_Attributes$width(bitDimension),
-						_elm_lang$svg$Svg_Attributes$height(bitDimension)
+						_elm_lang$svg$Svg_Attributes$height(bitDimension),
+						_elm_lang$svg$Svg_Attributes$fillOpacity(
+						_user$project$Bit$highlightValue(bit))
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[])),
@@ -7699,11 +7709,12 @@ var _user$project$HammingPacket$update = F2(
 								_elm_lang$core$Basics$logBase,
 								2,
 								_elm_lang$core$Basics$toFloat(packet.n)))),
-					packet.n) ? A3(
+					packet.n) ? A4(
 					_user$project$Bit$defaultBit,
 					A2(_user$project$HammingPacket$hammingParityValue, packet.n, packet),
 					newBitPosition,
-					'parity') : A3(_user$project$Bit$defaultBit, 0, newBitPosition, 'data');
+					'parity',
+					false) : A4(_user$project$Bit$defaultBit, 0, newBitPosition, 'data', false);
 				var newBits = A2(
 					_elm_lang$core$Basics_ops['++'],
 					_elm_lang$core$Native_List.fromArray(
@@ -7747,25 +7758,28 @@ var _user$project$HammingPacket$update = F2(
 var _user$project$HammingPacket$defaultPacket = {
 	bits: _elm_lang$core$Native_List.fromArray(
 		[
-			A3(_user$project$Bit$defaultBit, 0, 7, 'data'),
-			A3(_user$project$Bit$defaultBit, 0, 6, 'data'),
-			A3(_user$project$Bit$defaultBit, 0, 5, 'data'),
-			A3(
+			A4(_user$project$Bit$defaultBit, 0, 7, 'data', false),
+			A4(_user$project$Bit$defaultBit, 0, 6, 'data', false),
+			A4(_user$project$Bit$defaultBit, 0, 5, 'data', false),
+			A4(
 			_user$project$Bit$defaultBit,
 			A2(_user$project$HammingPacket$hammingParityValue, 4, _user$project$HammingPacket$defaultPacket),
 			4,
-			'parity'),
-			A3(_user$project$Bit$defaultBit, 1, 3, 'data'),
-			A3(
+			'parity',
+			false),
+			A4(_user$project$Bit$defaultBit, 1, 3, 'data', true),
+			A4(
 			_user$project$Bit$defaultBit,
 			A2(_user$project$HammingPacket$hammingParityValue, 2, _user$project$HammingPacket$defaultPacket),
 			2,
-			'parity'),
-			A3(
+			'parity',
+			false),
+			A4(
 			_user$project$Bit$defaultBit,
 			A2(_user$project$HammingPacket$hammingParityValue, 1, _user$project$HammingPacket$defaultPacket),
 			1,
-			'parity')
+			'parity',
+			false)
 		]),
 	n: 8,
 	k: 3
@@ -7918,7 +7932,7 @@ var _user$project$Packet$update = F2(
 		switch (_p1.ctor) {
 			case 'Add':
 				var newBitPosition = packet.msb;
-				var newBit = A3(_user$project$Bit$defaultBit, 0, newBitPosition, 'data');
+				var newBit = A4(_user$project$Bit$defaultBit, 0, newBitPosition, 'data', false);
 				var newBits = A2(
 					_elm_lang$core$Basics_ops['++'],
 					_elm_lang$core$Native_List.fromArray(
@@ -7948,10 +7962,10 @@ var _user$project$Packet$update = F2(
 var _user$project$Packet$defaultPacket = {
 	bits: _elm_lang$core$Native_List.fromArray(
 		[
-			A3(_user$project$Bit$defaultBit, 0, 4, 'data'),
-			A3(_user$project$Bit$defaultBit, 1, 3, 'data'),
-			A3(_user$project$Bit$defaultBit, 0, 2, 'data'),
-			A3(_user$project$Bit$defaultBit, 1, 1, 'data')
+			A4(_user$project$Bit$defaultBit, 0, 4, 'data', false),
+			A4(_user$project$Bit$defaultBit, 1, 3, 'data', false),
+			A4(_user$project$Bit$defaultBit, 0, 2, 'data', false),
+			A4(_user$project$Bit$defaultBit, 1, 1, 'data', false)
 		]),
 	msb: 5
 };
@@ -8586,23 +8600,9 @@ var _user$project$Main$parityIntro = function (model) {
 						_elm_lang$html$Html$text('If you have played enough with the model above, you may have noticed some patterns. Try to see which packet size and which P'),
 						_user$project$Main$se,
 						_elm_lang$html$Html$text(' has the highest chance of zero corrupt bits and 1 corrupt bits. In real world application, we usually deal with low P'),
-						A2(
-						_elm_lang$html$Html$sub,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('e')
-							])),
+						_user$project$Main$se,
 						_elm_lang$html$Html$text('. If it is so high, we will try to fix that situation by other means. Using the words and letters analogy, we can tolerate ink blotting of certain words in our letters but if the letters get torn/burnt/lost during travel, we change the postal service first but not think about how to write stuff so that words are torn/burn proof. So for smaller P'),
-						A2(
-						_elm_lang$html$Html$sub,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('e')
-							])),
+						_user$project$Main$se,
 						_elm_lang$html$Html$text(', it will be wise to deal with 1 bit corruptions as it will improve the reliability. In order to detect such single error, lets look at the most popular and oldest trick: parity check')
 					])),
 				A2(
@@ -8613,11 +8613,12 @@ var _user$project$Main$parityIntro = function (model) {
 				_elm_lang$html$Html_App$map,
 				_user$project$Main$BitMsg,
 				_user$project$Bit$view(
-					A3(
+					A4(
 						_user$project$Bit$defaultBit,
 						_user$project$Main$singleParity(model),
 						1,
-						'parity'))),
+						'parity',
+						false))),
 				A2(
 				_elm_lang$html$Html$br,
 				_elm_lang$core$Native_List.fromArray(
