@@ -86,13 +86,22 @@ update msg packet =
                             Bit.bitHighlighter bit
                         else 
                             bit 
-                    else
+                    else if ( isParityBit bit.position id) then
+                        Bit.bitHighlighter bit
+                    else 
                         bit
             in
                 { packet | 
                     bits = List.map updateSpecificBit packet.bits 
                 }
 
+
+isParityBit: Int -> Int -> Bool
+isParityBit p i =
+    if 2^(round (logBase 2 (toFloat p))) == p then
+        (dec2bin i) |> Array.toIndexedList |> List.member ( (round (logBase 2 (toFloat p))) , 1)
+    else
+        False
 
 dec2bin: Int -> Array.Array Int 
 dec2bin v =

@@ -7610,13 +7610,10 @@ var _user$project$Bit$bitHighlighter = function (bit) {
 var _user$project$Bit$update = F2(
 	function (msg, bit) {
 		var _p3 = msg;
-		switch (_p3.ctor) {
-			case 'Click':
-				return _user$project$Bit$bitToggle(bit);
-			case 'MouseHover':
-				return _user$project$Bit$bitHighlighter(bit);
-			default:
-				return _user$project$Bit$bitHighlighter(bit);
+		if (_p3.ctor === 'Click') {
+			return _user$project$Bit$bitToggle(bit);
+		} else {
+			return _user$project$Bit$bitHighlighter(bit);
 		}
 	});
 var _user$project$Bit$sizeOfBit = 60;
@@ -7629,7 +7626,6 @@ var _user$project$Bit$Model = F4(
 	function (a, b, c, d) {
 		return {value: a, position: b, category: c, highlight: d};
 	});
-var _user$project$Bit$MouseOut = {ctor: 'MouseOut'};
 var _user$project$Bit$MouseHover = {ctor: 'MouseHover'};
 var _user$project$Bit$Click = {ctor: 'Click'};
 var _user$project$Bit$view = function (bit) {
@@ -7645,7 +7641,7 @@ var _user$project$Bit$view = function (bit) {
 			[
 				_elm_lang$html$Html_Events$onClick(_user$project$Bit$Click),
 				_elm_lang$html$Html_Events$onMouseEnter(_user$project$Bit$MouseHover),
-				_elm_lang$html$Html_Events$onMouseLeave(_user$project$Bit$MouseOut),
+				_elm_lang$html$Html_Events$onMouseLeave(_user$project$Bit$MouseHover),
 				_elm_lang$svg$Svg_Attributes$x('0'),
 				_elm_lang$svg$Svg_Attributes$y('0'),
 				_elm_lang$svg$Svg_Attributes$width(bitDimension),
@@ -7725,6 +7721,30 @@ var _user$project$HammingPacket$dec2bin = function (v) {
 				_user$project$HammingPacket$dec2bin((v / 2) | 0));
 	}
 };
+var _user$project$HammingPacket$isParityBit = F2(
+	function (p, i) {
+		return _elm_lang$core$Native_Utils.eq(
+			Math.pow(
+				2,
+				_elm_lang$core$Basics$round(
+					A2(
+						_elm_lang$core$Basics$logBase,
+						2,
+						_elm_lang$core$Basics$toFloat(p)))),
+			p) ? A2(
+			_elm_lang$core$List$member,
+			{
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Basics$round(
+					A2(
+						_elm_lang$core$Basics$logBase,
+						2,
+						_elm_lang$core$Basics$toFloat(p))),
+				_1: 1
+			},
+			_elm_lang$core$Array$toIndexedList(
+				_user$project$HammingPacket$dec2bin(i))) : false;
+	});
 var _user$project$HammingPacket$hammingParityValue = F2(
 	function (x, packet) {
 		return x;
@@ -7802,7 +7822,7 @@ var _user$project$HammingPacket$update = F2(
 										2,
 										_elm_lang$core$Basics$toFloat(_p2))),
 								_user$project$HammingPacket$dec2bin(bit.position))),
-						1) ? _user$project$Bit$bitHighlighter(bit) : bit) : bit);
+						1) ? _user$project$Bit$bitHighlighter(bit) : bit) : (A2(_user$project$HammingPacket$isParityBit, bit.position, _p2) ? _user$project$Bit$bitHighlighter(bit) : bit));
 				};
 				return _elm_lang$core$Native_Utils.update(
 					packet,

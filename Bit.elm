@@ -33,7 +33,6 @@ sizeOfBit = 60
 type Msg 
     = Click   
     | MouseHover
-    | MouseOut
 
 bitHighlighter: Model -> Model
 bitHighlighter bit =
@@ -44,7 +43,6 @@ update msg bit =
     case msg of
         Click -> (bitToggle bit)
         MouseHover -> (bitHighlighter bit)
-        MouseOut -> (bitHighlighter bit)
 
 colorOf : String -> String
 colorOf category=
@@ -59,7 +57,7 @@ bitToggle : Model -> Model
 bitToggle bit = 
     case bit.category of 
         "data" -> {bit | value = (bit.value + 1) % 2}
-      --  "parity"-> { bit | highlight = (not bit.highlight) }
+        -- "parity"-> { bit | highlight = (not bit.highlight) }
         _ -> bit
 
 highlightValue bit = 
@@ -76,7 +74,7 @@ view bit =
         idOrigin = (toString (sizeOfBit/6))
     in 
     Svg.svg 
-        [ onClick Click, onMouseEnter MouseHover, onMouseLeave MouseOut, x "0", y "0",width bitDimension, height bitDimension]
+        [ onClick Click, onMouseEnter MouseHover, onMouseLeave MouseHover, x "0", y "0",width bitDimension, height bitDimension]
         [ 
             rect 
                 [ fill fillColor, x xOrigin, y yOrigin, width bitDimension, height bitDimension, fillOpacity (highlightValue bit)] 
