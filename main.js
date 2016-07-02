@@ -7576,20 +7576,15 @@ var _user$project$Bit$highlightValue = function (bit) {
 	}
 };
 var _user$project$Bit$bitToggle = function (bit) {
-	var _p1 = bit.category;
-	if (_p1 === 'data') {
-		return _elm_lang$core$Native_Utils.update(
-			bit,
-			{
-				value: A2(_elm_lang$core$Basics_ops['%'], bit.value + 1, 2)
-			});
-	} else {
-		return bit;
-	}
+	return _elm_lang$core$Native_Utils.update(
+		bit,
+		{
+			value: A2(_elm_lang$core$Basics_ops['%'], bit.value + 1, 2)
+		});
 };
 var _user$project$Bit$colorOf = function (category) {
-	var _p2 = category;
-	switch (_p2) {
+	var _p1 = category;
+	switch (_p1) {
 		case 'data':
 			return 'green';
 		case 'parity':
@@ -7600,20 +7595,29 @@ var _user$project$Bit$colorOf = function (category) {
 			return 'red';
 	}
 };
-var _user$project$Bit$bitHighlighter = function (bit) {
-	return _elm_lang$core$Native_Utils.update(
-		bit,
-		{
-			highlight: _elm_lang$core$Basics$not(bit.highlight)
-		});
-};
+var _user$project$Bit$bitHighlighter = F2(
+	function (bit, msg) {
+		var _p2 = msg;
+		if (_p2.ctor === 'MouseHover') {
+			return _elm_lang$core$Native_Utils.update(
+				bit,
+				{
+					highlight: _elm_lang$core$Basics$not(bit.highlight)
+				});
+		} else {
+			return bit;
+		}
+	});
 var _user$project$Bit$update = F2(
 	function (msg, bit) {
 		var _p3 = msg;
-		if (_p3.ctor === 'Click') {
-			return _user$project$Bit$bitToggle(bit);
-		} else {
-			return _user$project$Bit$bitHighlighter(bit);
+		switch (_p3.ctor) {
+			case 'Click':
+				return _user$project$Bit$bitToggle(bit);
+			case 'MouseHover':
+				return A2(_user$project$Bit$bitHighlighter, bit, msg);
+			default:
+				return bit;
 		}
 	});
 var _user$project$Bit$sizeOfBit = 60;
@@ -7626,9 +7630,22 @@ var _user$project$Bit$Model = F4(
 	function (a, b, c, d) {
 		return {value: a, position: b, category: c, highlight: d};
 	});
+var _user$project$Bit$ParityMouseClick = {ctor: 'ParityMouseClick'};
 var _user$project$Bit$MouseHover = {ctor: 'MouseHover'};
 var _user$project$Bit$Click = {ctor: 'Click'};
+var _user$project$Bit$clickType = function (category) {
+	var _p4 = category;
+	switch (_p4) {
+		case 'data':
+			return _user$project$Bit$Click;
+		case 'parity':
+			return _user$project$Bit$ParityMouseClick;
+		default:
+			return _user$project$Bit$MouseHover;
+	}
+};
 var _user$project$Bit$view = function (bit) {
+	var clickEvent = _user$project$Bit$clickType(bit.category);
 	var idOrigin = _elm_lang$core$Basics$toString(_user$project$Bit$sizeOfBit / 6);
 	var textOrigin = _elm_lang$core$Basics$toString(_user$project$Bit$sizeOfBit / 2);
 	var fillColor = _user$project$Bit$colorOf(bit.category);
@@ -7639,7 +7656,7 @@ var _user$project$Bit$view = function (bit) {
 		_elm_lang$svg$Svg$svg,
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html_Events$onClick(_user$project$Bit$Click),
+				_elm_lang$html$Html_Events$onClick(clickEvent),
 				_elm_lang$html$Html_Events$onMouseEnter(_user$project$Bit$MouseHover),
 				_elm_lang$html$Html_Events$onMouseLeave(_user$project$Bit$MouseHover),
 				_elm_lang$svg$Svg_Attributes$x('0'),
@@ -7745,14 +7762,58 @@ var _user$project$HammingPacket$isParityBit = F2(
 			_elm_lang$core$Array$toIndexedList(
 				_user$project$HammingPacket$dec2bin(i))) : false;
 	});
-var _user$project$HammingPacket$hammingParityValue = F2(
+var _user$project$HammingPacket$specificParityValue = F2(
 	function (x, packet) {
-		return x;
+		var getBitValue = function (bit) {
+			var _p1 = A2(
+				_elm_lang$core$Maybe$withDefault,
+				0,
+				A2(
+					_elm_lang$core$Array$get,
+					_elm_lang$core$Basics$round(
+						A2(
+							_elm_lang$core$Basics$logBase,
+							2,
+							_elm_lang$core$Basics$toFloat(x))),
+					_user$project$HammingPacket$dec2bin(packet.n)));
+			if (_p1 === 1) {
+				return bit.value;
+			} else {
+				return 0;
+			}
+		};
+		return A2(_elm_lang$core$List$map, getBitValue, packet.bits);
+	});
+var _user$project$HammingPacket$hammingParity = F2(
+	function (x, packet) {
+		var _p2 = A2(
+			_elm_lang$core$Basics_ops['%'],
+			_elm_lang$core$String$length(
+				A2(
+					_elm_lang$core$String$join,
+					'',
+					A2(
+						_elm_lang$core$String$split,
+						'0',
+						_elm_lang$core$String$concat(
+							A2(
+								_elm_lang$core$List$map,
+								_elm_lang$core$Basics$toString,
+								A2(_user$project$HammingPacket$specificParityValue, x, packet)))))),
+			2);
+		switch (_p2) {
+			case 0:
+				return 0;
+			case 1:
+				return 1;
+			default:
+				return 5;
+		}
 	});
 var _user$project$HammingPacket$update = F2(
 	function (msg, packet) {
-		var _p1 = msg;
-		switch (_p1.ctor) {
+		var _p3 = msg;
+		switch (_p3.ctor) {
 			case 'AddBit':
 				var nPlusPlus = packet.n + 1;
 				var newBitPosition = packet.n;
@@ -7766,7 +7827,7 @@ var _user$project$HammingPacket$update = F2(
 								_elm_lang$core$Basics$toFloat(packet.n)))),
 					packet.n) ? A4(
 					_user$project$Bit$defaultBit,
-					A2(_user$project$HammingPacket$hammingParityValue, packet.n, packet),
+					A2(_user$project$HammingPacket$hammingParity, packet.n, packet),
 					newBitPosition,
 					'parity',
 					false) : A4(_user$project$Bit$defaultBit, 0, newBitPosition, 'data', false);
@@ -7788,7 +7849,7 @@ var _user$project$HammingPacket$update = F2(
 					});
 			case 'RemoveBit':
 				var nMinusMinus = packet.n - 1;
-				return (_elm_lang$core$Native_Utils.cmp(packet.n, 1) > 0) ? _elm_lang$core$Native_Utils.update(
+				return (_elm_lang$core$Native_Utils.cmp(packet.n, 0) > 0) ? _elm_lang$core$Native_Utils.update(
 					packet,
 					{
 						bits: A2(_elm_lang$core$List$drop, 1, packet.bits),
@@ -7800,17 +7861,18 @@ var _user$project$HammingPacket$update = F2(
 								_elm_lang$core$Basics$toFloat(nMinusMinus)))
 					}) : packet;
 			default:
-				var _p2 = _p1._0;
+				var _p5 = _p3._0;
+				var _p4 = _p3._1;
 				var updateSpecificBit = function (bit) {
-					return _elm_lang$core$Native_Utils.eq(bit.position, _p2) ? A2(_user$project$Bit$update, _p1._1, bit) : (_elm_lang$core$Native_Utils.eq(
+					return _elm_lang$core$Native_Utils.eq(bit.position, _p5) ? A2(_user$project$Bit$update, _p4, bit) : (_elm_lang$core$Native_Utils.eq(
 						Math.pow(
 							2,
 							_elm_lang$core$Basics$round(
 								A2(
 									_elm_lang$core$Basics$logBase,
 									2,
-									_elm_lang$core$Basics$toFloat(_p2)))),
-						_p2) ? (_elm_lang$core$Native_Utils.eq(
+									_elm_lang$core$Basics$toFloat(_p5)))),
+						_p5) ? (_elm_lang$core$Native_Utils.eq(
 						A2(
 							_elm_lang$core$Maybe$withDefault,
 							0,
@@ -7820,9 +7882,9 @@ var _user$project$HammingPacket$update = F2(
 									A2(
 										_elm_lang$core$Basics$logBase,
 										2,
-										_elm_lang$core$Basics$toFloat(_p2))),
+										_elm_lang$core$Basics$toFloat(_p5))),
 								_user$project$HammingPacket$dec2bin(bit.position))),
-						1) ? _user$project$Bit$bitHighlighter(bit) : bit) : (A2(_user$project$HammingPacket$isParityBit, bit.position, _p2) ? _user$project$Bit$bitHighlighter(bit) : bit));
+						1) ? A2(_user$project$Bit$bitHighlighter, bit, _p4) : bit) : (A2(_user$project$HammingPacket$isParityBit, bit.position, _p5) ? A2(_user$project$Bit$update, _p4, bit) : bit));
 				};
 				return _elm_lang$core$Native_Utils.update(
 					packet,
@@ -7836,26 +7898,11 @@ var _user$project$HammingPacket$defaultPacket = {
 		[
 			A4(_user$project$Bit$defaultBit, 0, 7, 'data', false),
 			A4(_user$project$Bit$defaultBit, 0, 6, 'data', false),
-			A4(_user$project$Bit$defaultBit, 0, 5, 'data', false),
-			A4(
-			_user$project$Bit$defaultBit,
-			A2(_user$project$HammingPacket$hammingParityValue, 4, _user$project$HammingPacket$defaultPacket),
-			4,
-			'parity',
-			false),
-			A4(_user$project$Bit$defaultBit, 1, 3, 'data', false),
-			A4(
-			_user$project$Bit$defaultBit,
-			A2(_user$project$HammingPacket$hammingParityValue, 2, _user$project$HammingPacket$defaultPacket),
-			2,
-			'parity',
-			false),
-			A4(
-			_user$project$Bit$defaultBit,
-			A2(_user$project$HammingPacket$hammingParityValue, 1, _user$project$HammingPacket$defaultPacket),
-			1,
-			'parity',
-			false)
+			A4(_user$project$Bit$defaultBit, 1, 5, 'data', false),
+			A4(_user$project$Bit$defaultBit, 1, 4, 'parity', false),
+			A4(_user$project$Bit$defaultBit, 0, 3, 'data', false),
+			A4(_user$project$Bit$defaultBit, 0, 2, 'parity', false),
+			A4(_user$project$Bit$defaultBit, 1, 1, 'parity', false)
 		]),
 	n: 8,
 	k: 3
@@ -7869,8 +7916,8 @@ var _user$project$HammingPacket$ModifyBit = F2(
 		return {ctor: 'ModifyBit', _0: a, _1: b};
 	});
 var _user$project$HammingPacket$viewSpecificBit = function (bit) {
-	var _p3 = bit.category;
-	switch (_p3) {
+	var _p6 = bit.category;
+	switch (_p6) {
 		case 'data':
 			return A2(
 				_elm_lang$html$Html_App$map,

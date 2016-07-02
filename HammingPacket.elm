@@ -7,7 +7,7 @@ import Svg.Attributes
 import Html exposing (Html,div,button)
 import Html.Events exposing (onClick)
 import List
-import String exposing(repeat,length)
+import String exposing(concat,split,join,length)
 import Html.App as HA
 import Array 
 
@@ -26,19 +26,32 @@ defaultPacket =
     { bits = 
         [ Bit.defaultBit 0 7 "data" False
         , Bit.defaultBit 0 6 "data" False
-        , Bit.defaultBit 0 5 "data" False
-        , Bit.defaultBit (hammingParityValue 4 defaultPacket) 4 "parity" False
-        , Bit.defaultBit 1 3 "data" False
-        , Bit.defaultBit (hammingParityValue 2 defaultPacket) 2 "parity" False
-        , Bit.defaultBit (hammingParityValue 1 defaultPacket) 1 "parity" False]
+        , Bit.defaultBit 1 5 "data" False
+        , Bit.defaultBit 1 4 "parity" False
+        , Bit.defaultBit 0 3 "data" False
+        , Bit.defaultBit 0 2 "parity" False
+        , Bit.defaultBit 1 1 "parity" False]
     , n = 8
     , k = 3
     }
 
 
-hammingParityValue: Int -> Model -> Int
-hammingParityValue x packet =
-    x
+
+specificParityValue: Int -> Model -> List Int
+specificParityValue x packet =
+    let getBitValue bit = 
+        case (Array.get (round (logBase 2 (toFloat x))) (dec2bin packet.n) |> Maybe.withDefault 0 ) of 
+            1 -> bit.value 
+            _ -> 0
+    in List.map getBitValue packet.bits
+
+hammingParity: Int -> Model -> Int
+hammingParity x packet =
+    case ((( packet |> (specificParityValue x) |> List.map toString |> concat |> split "0" |> join "" |> length) ) % 2 ) of 
+        0 -> 0
+        1 -> 1
+        _ -> 5 -- This should never happen as the case is determined by dividing with 2 
+
 
 type Msg 
     = AddBit 
@@ -52,9 +65,9 @@ update msg packet =
             let newBitPosition = packet.n
                 newBit = 
                     if 2^(round (logBase 2 (toFloat packet.n))) == packet.n then 
-                        Bit.defaultBit (hammingParityValue packet.n packet) newBitPosition "parity" False
+                        Bit.defaultBit (hammingParity packet.n packet) newBitPosition "parity" False
                     else
-                         Bit.defaultBit 0 newBitPosition "data" False
+                        Bit.defaultBit 0 newBitPosition "data" False
 
                 newBits = [newBit] ++ packet.bits 
                 nPlusPlus = packet.n + 1
@@ -68,7 +81,7 @@ update msg packet =
         RemoveBit ->
             let nMinusMinus = packet.n - 1
             in 
-                if packet.n > 1 then
+                if packet.n > 0 then
                     { packet | 
                         bits = List.drop 1 packet.bits
                     ,   n = nMinusMinus
@@ -81,13 +94,15 @@ update msg packet =
             let updateSpecificBit bit = 
                     if bit.position == id then
                         Bit.update bitAction bit
+                    -- highlights data bits that are associated with hovered parity bit
                     else if 2^(round (logBase 2 (toFloat id))) == id then 
                         if (Array.get (round (logBase 2 (toFloat id))) (dec2bin bit.position) |> Maybe.withDefault 0 ) == 1 then
-                            Bit.bitHighlighter bit
+                            Bit.bitHighlighter bit bitAction
                         else 
                             bit 
+                    -- highlights parity bits that are influenced by the hovered data bit
                     else if ( isParityBit bit.position id) then
-                        Bit.bitHighlighter bit
+                        Bit.update bitAction bit
                     else 
                         bit
             in

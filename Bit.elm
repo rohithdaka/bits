@@ -33,16 +33,21 @@ sizeOfBit = 60
 type Msg 
     = Click   
     | MouseHover
+    | ParityMouseClick
 
-bitHighlighter: Model -> Model
-bitHighlighter bit =
-    { bit | highlight = (not bit.highlight) }
+bitHighlighter: Model -> Msg -> Model
+bitHighlighter bit msg =
+    case msg of 
+        MouseHover -> { bit | highlight = (not bit.highlight) }
+        _ -> bit
 
 update: Msg -> Model -> Model
 update msg bit = 
     case msg of
         Click -> (bitToggle bit)
-        MouseHover -> (bitHighlighter bit)
+        MouseHover -> (bitHighlighter bit msg)
+        ParityMouseClick -> bit
+
 
 colorOf : String -> String
 colorOf category=
@@ -52,13 +57,16 @@ colorOf category=
         "empty" -> "black"
         _ -> "red"
 
+clickType : String -> Msg
+clickType category=
+    case category of 
+        "data" -> Click
+        "parity" -> ParityMouseClick
+        _ -> MouseHover
 
 bitToggle : Model -> Model
-bitToggle bit = 
-    case bit.category of 
-        "data" -> {bit | value = (bit.value + 1) % 2}
-        -- "parity"-> { bit | highlight = (not bit.highlight) }
-        _ -> bit
+bitToggle bit = {bit | value = (bit.value + 1) % 2}
+
 
 highlightValue bit = 
     case bit.highlight of
@@ -69,12 +77,13 @@ view bit =
     let xOrigin = (toString 0)
         yOrigin = (toString 0)
         bitDimension = (toString sizeOfBit)
-        fillColor = colorOf(bit.category)
+        fillColor = (colorOf bit.category)
         textOrigin = (toString  (sizeOfBit/2))
         idOrigin = (toString (sizeOfBit/6))
+        clickEvent = clickType bit.category
     in 
     Svg.svg 
-        [ onClick Click, onMouseEnter MouseHover, onMouseLeave MouseHover, x "0", y "0",width bitDimension, height bitDimension]
+        [ onClick clickEvent, onMouseEnter MouseHover, onMouseLeave MouseHover, x "0", y "0",width bitDimension, height bitDimension]
         [ 
             rect 
                 [ fill fillColor, x xOrigin, y yOrigin, width bitDimension, height bitDimension, fillOpacity (highlightValue bit)] 
