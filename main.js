@@ -9377,7 +9377,7 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('Lets see how the receiver can detect the exact bit that is corrupted. Click the button below to transmit the packet above. It will randomly flip a bit. You can then follow these simple rules to detect that corrupted bit.'),
+						_elm_lang$html$Html$text('Lets see how the receiver can detect the exact bit that is corrupted. Click the button below to transmit the packet above. It will randomly flip a bit. Everytime you change the packet above. Click the transmit button again. You can then follow these simple rules to detect that corrupted bit.'),
 						A2(
 						_elm_lang$html$Html$ol,
 						_elm_lang$core$Native_List.fromArray(
@@ -9390,7 +9390,7 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 									[]),
 								_elm_lang$core$Native_List.fromArray(
 									[
-										_elm_lang$html$Html$text('Check every parity bit and see if they follow the even parity check rule.')
+										_elm_lang$html$Html$text('Hover/Click on the parity bits to highlight the data bits that contribute to that parity bit. ')
 									])),
 								A2(
 								_elm_lang$html$Html$li,
@@ -9398,7 +9398,7 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 									[]),
 								_elm_lang$core$Native_List.fromArray(
 									[
-										_elm_lang$html$Html$text('Note the parity (blue) bit positions (on top left corner) that violate the even parity check rule.')
+										_elm_lang$html$Html$text('Verify if the parity bit satisfies the even parity check rule.')
 									])),
 								A2(
 								_elm_lang$html$Html$li,
@@ -9406,7 +9406,7 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 									[]),
 								_elm_lang$core$Native_List.fromArray(
 									[
-										_elm_lang$html$Html$text('Find the data (green) bit that is common to all the parity bits that violated the even parity check rule.')
+										_elm_lang$html$Html$text('Note the parity (blue) bit positions (top left corner) that violate rule.')
 									])),
 								A2(
 								_elm_lang$html$Html$li,
@@ -9414,7 +9414,15 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 									[]),
 								_elm_lang$core$Native_List.fromArray(
 									[
-										_elm_lang$html$Html$text('Voila! That bit is the error bit. If there is no such bit then there was no error.')
+										_elm_lang$html$Html$text('Add these position numbers')
+									])),
+								A2(
+								_elm_lang$html$Html$li,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('Voila! You found the corrupted bit!! You can verify by comparing it with the packet above.')
 									]))
 							]))
 					])),
@@ -9466,7 +9474,7 @@ var _user$project$Main$errorProbability = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('The whole point of building a vocabulary of words is to store your memories on a diary or send letters to someone else. Unfortunately, pages on which the words are written can get partially spoiled and make certain words illegible. Similary, in computers, we build a set of packets so that we can store or transmit information. However, the disk drives we store the information on can get corrupted (scratches, lose mechanical parts etc); the cables/wireless environment through which we transmit the information can distort the packets. The exact mechanism of such corruption is beyond the scope of this essay. Let us just focus on how to deal with such corrupted bits.')
+						_elm_lang$html$Html$text('The whole point of building a vocabulary of words is to store your memories on a diary or send letters to someone else. Unfortunately, pages on which the words are written can get partially spoiled and make certain words illegible. Similary, in computers, we build a set of packets so that we can store or transmit information. However, the disk drives we store the information can get corrupted, the cables/wireless environment through which we transmit the information can distort the packets. The exact mechanism of such corruption is beyond the scope of this essay. Let us just focus on how to deal with such corrupted bits.')
 					])),
 				A2(
 				_elm_lang$html$Html$p,
