@@ -9109,15 +9109,14 @@ var _user$project$Main$update = F2(
 					model,
 					{bitModel: updatedBitModel});
 			case 'UpdateProbability':
-				return _elm_lang$core$Native_Utils.update(
+				var x = A2(
+					_elm_lang$core$Maybe$withDefault,
+					1.0e-2,
+					_elm_lang$core$Result$toMaybe(
+						_elm_lang$core$String$toFloat(_p0._0)));
+				return ((_elm_lang$core$Native_Utils.cmp(x, 0) > -1) && (_elm_lang$core$Native_Utils.cmp(x, 1) < 1)) ? _elm_lang$core$Native_Utils.update(
 					model,
-					{
-						bitProbability: A2(
-							_elm_lang$core$Maybe$withDefault,
-							1.0e-2,
-							_elm_lang$core$Result$toMaybe(
-								_elm_lang$core$String$toFloat(_p0._0)))
-					});
+					{bitProbability: x}) : model;
 			case 'ToggleOddEven':
 				return _elm_lang$core$Native_Utils.update(
 					model,
@@ -9217,7 +9216,7 @@ var _user$project$Main$tutorialIntroText = A2(
 				[]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html$text('This explorable essay is a quick introduction to the concept of Error Correcting Codes. As you may already know, all information in computers is stored and exchanged with other computers in binary format, a set of 0s and 1s. For prolonged storage and to efficiently exchange this information, we had to invent techniques that can increase the reliability of the information. ')
+					_elm_lang$html$Html$text('This explorable essay is a quick introduction to the concept of Error Correcting Codes. All information in computers is stored and exchanged with other computers in binary format, a set of 0s and 1s. For prolonged storage and to efficiently exchange this information, we had to invent techniques that can increase the reliability of the information. ')
 				])),
 			A2(
 			_elm_lang$html$Html$p,
@@ -9225,7 +9224,7 @@ var _user$project$Main$tutorialIntroText = A2(
 				[]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html$text('In April 1950, Richard Hamming introduced one such technique: Error Detecting and Error Correcting Codes. This essay is inspired by his original paper and written to serve as a preliminary guide to understand some concepts in this paper. No prior knowledge of anykind is assumed on the part of the reader. This essay intends to reason about the decisions that make this technique work. The models that are presented for you to explore, hopefully, will provide necessary insights to grasp the concepts. However, this essay doesnt deal with implementation details of this technique.')
+					_elm_lang$html$Html$text('In April 1950, Richard Hamming introduced one such technique: Error Detecting and Error Correcting Codes. This essay is inspired by his original paper and written to serve as a preliminary guide to understand some concepts in that paper. No prior knowledge of anykind is assumed on the part of the reader. This essay intends to reason about the decisions that make this technique work. The models that are presented for you to explore, hopefully, will provide necessary insights to grasp the concepts. However, this essay doesnt deal with implementation details of this technique.')
 				]))
 		]));
 var _user$project$Main$oddEven = function (model) {
@@ -9264,7 +9263,7 @@ var _user$project$Main$singleParity = function (model) {
 			return 5;
 	}
 };
-var _user$project$Main$initialModel = {headerModel: _user$project$Header$initialModel, bitModel: _user$project$Bit$initialModel, packetModel: _user$project$Packet$defaultPacket, noParityReceivedPacket: _user$project$Packet$defaultPacket, bitProbability: 0, oddeven: 0, hammingModel: _user$project$HammingPacket$defaultPacket, hammingReceivedModel: _user$project$HammingPacket$receivedDefaultPacket};
+var _user$project$Main$initialModel = {headerModel: _user$project$Header$initialModel, bitModel: _user$project$Bit$initialModel, packetModel: _user$project$Packet$defaultPacket, noParityReceivedPacket: _user$project$Packet$defaultPacket, bitProbability: 0.15, oddeven: 0, hammingModel: _user$project$HammingPacket$defaultPacket, hammingReceivedModel: _user$project$HammingPacket$receivedDefaultPacket};
 var _user$project$Main$AppModel = F8(
 	function (a, b, c, d, e, f, g, h) {
 		return {headerModel: a, bitModel: b, packetModel: c, noParityReceivedPacket: d, oddeven: e, bitProbability: f, hammingModel: g, hammingReceivedModel: h};
@@ -9299,16 +9298,7 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('If your friend detects an error in your letter but doesn\'t know where is it, he/she will request you to send the letter again. It may look inefficient but when the chances of no corruption are high hence is used only for really small P'),
-						A2(
-						_elm_lang$html$Html$sub,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('e')
-							])),
-						_elm_lang$html$Html$text(' as such requests would be small in number. Similarly the receivers request a retransmission of such error packets. Try to play with the knobs above to see which values enable us to resort to retransmission method to correct the error packets. ')
+						_elm_lang$html$Html$text('If your first thought of retransmission is: oh! it is inefficient, you are not wrong. If your friend detects an error in your mail but doesn\'t know where it is, he/she requesting you to send the mail again is not practical if errors in your mail are slightly more than tolerable. To make the process more efficient we must figure out a way to detect the exact alphabet that is in error. English words and sentences have this error correcting capability. We usually can understand the words without all the alphabets most of the time. In this section, let us try to build that capability into computer words (packets)')
 					])),
 				A2(
 				_elm_lang$html$Html$p,
@@ -9316,7 +9306,16 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('But for other cases, we need to correct a single error. Since there are only two alphabets (or bits) in our case, we can correct an error by identifying the error position within the packet and toggling it. Hence, we need identifiers. So we use k parity bits. As you may know, with k bits we can create 2^k possible names. The actual possibilities are no errors, error at location 1, error at location 2, error at location n. So a total of n+1. So all we have to do is to find minimum k such that 2'),
+						_elm_lang$html$Html$text('Since there are only two alphabets (or bits) in our case, we can correct an error by identifying the error position within the packet and toggling it. So all we need to think about is a way to identify the error bit. But first, we need a set of identifiers for this purpose to represent each bit. We also need an additional identifier to represent the no error situation (a total of n + 1). These n+1 bits must include k parity bits along with the data bits.  These k bits can be used to generate 2'),
+						A2(
+						_elm_lang$html$Html$sup,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('k')
+							])),
+						_elm_lang$html$Html$text(' identifiers at the receiver. So we have to make sure that 2'),
 						A2(
 						_elm_lang$html$Html$sup,
 						_elm_lang$core$Native_List.fromArray(
@@ -9351,14 +9350,23 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 						_elm_lang$html$Html$text(' = '),
 						_elm_lang$html$Html$text(
 						_elm_lang$core$Basics$toString(
-							Math.pow(2, model.hammingModel.k))),
-						A2(
-						_elm_lang$html$Html$br,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[])),
-						_elm_lang$html$Html$text('Before seeing how this packet can correct one error, play with the packet size. Which packet sizes do you think are the most efficient in terms of sending more data bits per packet?')
+							Math.pow(2, model.hammingModel.k)))
+					])),
+				A2(
+				_elm_lang$html$Html$p,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('To avoid confusion, let us assume that we are limited by the total packet size, n. So we have to fix the k parity bits for this packet and adjust our data into the remaining bits. Also these parity bits are all even parity check bits. Each bit does the even parity check on a set of bits in the packet but not the whole packet. (You can mouseover the blue parity bits to see which bits does it keep a watch on to maintain even parity). Arranging these k parity bits is a vital aspect of building this packet. Only rule to follow is to make sure that no parity bit includes another parity bit in its parity check bits. Thus we end up the following arrangement. (Exercise for the readers: Find out the criteria that decided the set of bits for each parity bit. Clue: convert the position number on top corner into binary format.)')
+					])),
+				A2(
+				_elm_lang$html$Html$p,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Hovering over data bits (green) will highlight all parity bits (blue) it will influence. And Hovering over parity bits (blue) will highlight all data bits (green) it keeps a watch on. And you can change the value of data bits by clicking on them. Parity bits will be updated immediately.')
 					])),
 				A2(
 				_elm_lang$html$Html$p,
@@ -9377,7 +9385,7 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('Lets see how the receiver can detect the exact bit that is corrupted. Click the button below to transmit the packet above. It will randomly flip a bit. Everytime you change the packet above. Click the transmit button again. You can then follow these simple rules to detect that corrupted bit.'),
+						_elm_lang$html$Html$text('Lets see how the receiver can detect the exact bit that is corrupted. Click the button below to transmit the packet. It will randomly flip a bit or not. Everytime you change the above packet, click the transmit button again. You can then follow these simple rules to detect that corrupted bit.'),
 						A2(
 						_elm_lang$html$Html$ol,
 						_elm_lang$core$Native_List.fromArray(
@@ -9406,7 +9414,7 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 									[]),
 								_elm_lang$core$Native_List.fromArray(
 									[
-										_elm_lang$html$Html$text('Note the parity (blue) bit positions (top left corner) that violate rule.')
+										_elm_lang$html$Html$text('Note the parity bit positions (top left corner) that violate rule.')
 									])),
 								A2(
 								_elm_lang$html$Html$li,
@@ -9414,7 +9422,7 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 									[]),
 								_elm_lang$core$Native_List.fromArray(
 									[
-										_elm_lang$html$Html$text('Add these position numbers')
+										_elm_lang$html$Html$text('Add these position numbers.')
 									])),
 								A2(
 								_elm_lang$html$Html$li,
@@ -9454,6 +9462,7 @@ var _user$project$Main$UpdateProbability = function (a) {
 	return {ctor: 'UpdateProbability', _0: a};
 };
 var _user$project$Main$errorProbability = function (model) {
+	var n = model.packetModel.msb - 1;
 	return A2(
 		_elm_lang$html$Html$div,
 		_elm_lang$core$Native_List.fromArray(
@@ -9474,7 +9483,7 @@ var _user$project$Main$errorProbability = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('The whole point of building a vocabulary of words is to store your memories on a diary or send letters to someone else. Unfortunately, pages on which the words are written can get partially spoiled and make certain words illegible. Similary, in computers, we build a set of packets so that we can store or transmit information. However, the disk drives we store the information can get corrupted, the cables/wireless environment through which we transmit the information can distort the packets. The exact mechanism of such corruption is beyond the scope of this essay. Let us just focus on how to deal with such corrupted bits.')
+						_elm_lang$html$Html$text('The whole point of building a vocabulary of words is to store your memories on a diary or send letters to someone. Unfortunately, pages on which the words are written can be spoiled that makes certain words illegible. Similary, in computers, we buid a vocabulary of these packets to store or transmit information. However, the disk drives we store these packets can get corrupted, the cables/wireless environment through which we transmit these packets can distort them. The exact mechanism of such corruption is beyond the scope of this essay. Let us just focus on how to deal with such corrupted packets.')
 					])),
 				A2(
 				_elm_lang$html$Html$p,
@@ -9483,27 +9492,13 @@ var _user$project$Main$errorProbability = function (model) {
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html$text('Such corruption and distortion increases the chance of accidental toggling of a single bit. P'),
-						A2(
-						_elm_lang$html$Html$sub,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('e')
-							])),
-						_elm_lang$html$Html$text(
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							' = ',
-							A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(model.bitProbability),
-								' '))),
+						_user$project$Main$se,
+						_elm_lang$html$Html$text(' = '),
 						A2(
 						_elm_lang$html$Html$input,
 						_elm_lang$core$Native_List.fromArray(
 							[
-								_elm_lang$html$Html_Attributes$type$('range'),
+								_elm_lang$html$Html_Attributes$type$('number'),
 								_elm_lang$html$Html_Attributes$size(100),
 								_elm_lang$html$Html_Attributes$value(
 								_elm_lang$core$Basics$toString(model.bitProbability)),
@@ -9523,22 +9518,22 @@ var _user$project$Main$errorProbability = function (model) {
 							[]),
 						_elm_lang$core$Native_List.fromArray(
 							[])),
-						_elm_lang$html$Html$text('Higher the number, more the chances of corruption. So for the packet built above with '),
+						_elm_lang$html$Html$text('Higher this number, more the chances of corruption of entire packet. For the above packet you built with '),
 						_elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(model.packetModel.msb)),
+						_elm_lang$core$Basics$toString(n)),
 						_elm_lang$html$Html$text(
 						A2(
 							_user$project$Main$pluralString,
 							{ctor: '_Tuple2', _0: 'bit', _1: 'bits'},
-							model.packetModel.msb)),
+							n)),
 						A2(
 						_elm_lang$html$Html$br,
 						_elm_lang$core$Native_List.fromArray(
 							[]),
 						_elm_lang$core$Native_List.fromArray(
 							[])),
-						_elm_lang$html$Html$text('the chance of having absolutely no corrupt bits is '),
-						A2(_user$project$Main$combinatricsNotation, model.packetModel.msb, model.packetModel.msb),
+						_elm_lang$html$Html$text('the chance of having absolutely no corrupt bits is:  '),
+						A2(_user$project$Main$combinatricsNotation, n, n),
 						_elm_lang$html$Html$text(' * (1 - '),
 						_elm_lang$html$Html$text(
 						A2(
@@ -9552,7 +9547,7 @@ var _user$project$Main$errorProbability = function (model) {
 						_elm_lang$core$Native_List.fromArray(
 							[
 								_elm_lang$html$Html$text(
-								_elm_lang$core$Basics$toString(model.packetModel.msb))
+								_elm_lang$core$Basics$toString(n))
 							])),
 						_elm_lang$html$Html$text(' = '),
 						_elm_lang$html$Html$text(
@@ -9561,7 +9556,7 @@ var _user$project$Main$errorProbability = function (model) {
 								_elm_lang$core$Basics$round(
 									(Math.pow(
 										1 - model.bitProbability,
-										_elm_lang$core$Basics$toFloat(model.packetModel.msb)) * 100) * 100)) / 100)),
+										_elm_lang$core$Basics$toFloat(n)) * 100) * 100)) / 100)),
 						_elm_lang$html$Html$text('%, '),
 						A2(
 						_elm_lang$html$Html$br,
@@ -9569,8 +9564,8 @@ var _user$project$Main$errorProbability = function (model) {
 							[]),
 						_elm_lang$core$Native_List.fromArray(
 							[])),
-						_elm_lang$html$Html$text('the chance of having exactly 1 corrupt bit is '),
-						A2(_user$project$Main$combinatricsNotation, model.packetModel.msb, model.packetModel.msb - 1),
+						_elm_lang$html$Html$text('the chance of having exactly 1 corrupt bit is: '),
+						A2(_user$project$Main$combinatricsNotation, n, n - 1),
 						_elm_lang$html$Html$text(' * (1 - '),
 						_elm_lang$html$Html$text(
 						A2(
@@ -9584,7 +9579,7 @@ var _user$project$Main$errorProbability = function (model) {
 						_elm_lang$core$Native_List.fromArray(
 							[
 								_elm_lang$html$Html$text(
-								_elm_lang$core$Basics$toString(model.packetModel.msb - 1))
+								_elm_lang$core$Basics$toString(n - 1))
 							])),
 						_elm_lang$html$Html$text(
 						A2(
@@ -9598,7 +9593,7 @@ var _user$project$Main$errorProbability = function (model) {
 								_elm_lang$core$Basics$round(
 									(((Math.pow(
 										1 - model.bitProbability,
-										_elm_lang$core$Basics$toFloat(model.packetModel.msb - 1)) * model.bitProbability) * 100) * _elm_lang$core$Basics$toFloat(model.packetModel.msb)) * 100)) / 100)),
+										_elm_lang$core$Basics$toFloat(n - 1)) * model.bitProbability) * 100) * _elm_lang$core$Basics$toFloat(n)) * 100)) / 100)),
 						_elm_lang$html$Html$text('%'),
 						A2(
 						_elm_lang$html$Html$br,
@@ -9606,8 +9601,8 @@ var _user$project$Main$errorProbability = function (model) {
 							[]),
 						_elm_lang$core$Native_List.fromArray(
 							[])),
-						_elm_lang$html$Html$text('and chances of exactly 2 corrupt bits is '),
-						A2(_user$project$Main$combinatricsNotation, model.packetModel.msb, model.packetModel.msb - 2),
+						_elm_lang$html$Html$text('and chances of exactly 2 corrupt bits is:  '),
+						A2(_user$project$Main$combinatricsNotation, n, n - 2),
 						_elm_lang$html$Html$text(' * (1 - '),
 						_elm_lang$html$Html$text(
 						A2(
@@ -9621,13 +9616,13 @@ var _user$project$Main$errorProbability = function (model) {
 						_elm_lang$core$Native_List.fromArray(
 							[
 								_elm_lang$html$Html$text(
-								_elm_lang$core$Basics$toString(model.packetModel.msb - 2))
+								_elm_lang$core$Basics$toString(n - 2))
 							])),
 						_elm_lang$html$Html$text(
 						A2(
 							_elm_lang$core$Basics_ops['++'],
 							' * ',
-							_elm_lang$core$Basics$toString(model.bitProbability))),
+							_elm_lang$core$Basics$toString(n))),
 						A2(
 						_elm_lang$html$Html$sup,
 						_elm_lang$core$Native_List.fromArray(
@@ -9643,7 +9638,7 @@ var _user$project$Main$errorProbability = function (model) {
 								_elm_lang$core$Basics$round(
 									(((Math.pow(
 										1 - model.bitProbability,
-										_elm_lang$core$Basics$toFloat(model.packetModel.msb - 2)) * Math.pow(model.bitProbability, 2)) * 50) * _elm_lang$core$Basics$toFloat(model.packetModel.msb * (model.packetModel.msb - 1))) * 100)) / 100)),
+										_elm_lang$core$Basics$toFloat(n - 2)) * Math.pow(model.bitProbability, 2)) * 50) * _elm_lang$core$Basics$toFloat(n * (n - 1))) * 100)) / 100)),
 						_elm_lang$html$Html$text('%')
 					])),
 				A2(
@@ -9652,16 +9647,9 @@ var _user$project$Main$errorProbability = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('play around with packet size (by adding/removing bits from packet) and P'),
-						A2(
-						_elm_lang$html$Html$sub,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('e')
-							])),
-						_elm_lang$html$Html$text('. ')
+						_elm_lang$html$Html$text('You can get an intution of how packet sizes and  P'),
+						_user$project$Main$se,
+						_elm_lang$html$Html$text(' affect the chances of corruption in the packet,  by playing around with those values. To understand how the chances are calculated you need to learn Probability, Permutations and Combinations. They are not necessary to understand the rest of this essay.')
 					]))
 			]));
 };
@@ -9729,7 +9717,7 @@ var _user$project$Main$packetIntro = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('A Packet is like a word. It is simply a group of bits. You can build whatever word you want to build with the bits you have. The computers which use this word must understand what it means. Just like how we can talk to some of our close friends with seemingly random words but can make total sense to each other, a packet can be of any set of bits as long as the computers that have to deal with this packet understand the meaning behind it. ')
+						_elm_lang$html$Html$text('A Packet (a group of bits) is like a word (a group of alphabets). You can build whatever packet you want with the bits you have. The computers which use this packet must understand what it means. Just like how we can invent words to talk to friends. A packet can be of any set of bits as long as the computers that have to deal with this packet understand the meaning behind it.')
 					])),
 				A2(
 				_elm_lang$html$Html$p,
@@ -9737,7 +9725,7 @@ var _user$project$Main$packetIntro = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('Go ahead and build a packet. You can increase or decrease the packet size by adding or removing a bit. And of course, you can set the value of each bit by clicking within the green squares. ')
+						_elm_lang$html$Html$text('You can build a packet. Just add, remove or toggle a bit. The number on the top left corner in the square represent the position of that bit in the packet. You will need later in this essay.')
 					])),
 				A2(
 				_elm_lang$html$Html_App$map,
@@ -9766,13 +9754,19 @@ var _user$project$Main$parityIntro = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('If you have played enough with the model above, you may have noticed some patterns. Try to see which packet size and which P'),
+						_elm_lang$html$Html$text('In real world application, we usually use these error detection and error correcting techniques for low P'),
 						_user$project$Main$se,
-						_elm_lang$html$Html$text(' has the highest chance of zero corrupt bits and 1 corrupt bits. In real world application, we usually deal with low P'),
+						_elm_lang$html$Html$text('. If it is so high, we will try to fix that situation by other means. We can tolerate ink blotting of certain words in our mail but if the mail is torn/burnt/lost during travel, we change the postal service first but not think about how to write stuff so that words are torn/burn proof. As we assume smaller P'),
 						_user$project$Main$se,
-						_elm_lang$html$Html$text('. If it is so high, we will try to fix that situation by other means. Using the words and letters analogy, we can tolerate ink blotting of certain words in our letters but if the letters get torn/burnt/lost during travel, we change the postal service first but not think about how to write stuff so that words are torn/burn proof. So for smaller P'),
-						_user$project$Main$se,
-						_elm_lang$html$Html$text(', it will be wise to deal with 1 bit corruptions as it will improve the reliability. In order to detect such single error, lets look at the most popular and oldest trick: parity check')
+						_elm_lang$html$Html$text(', handling 1 bit corruptions ( or single errors) increases chances of reliable transmission tremendously (Dont take my word, check it by tinkering the packet above). Let us just talk about \'detecting\' a single error and to deal with it, use the most popular and oldest trick: parity check')
+					])),
+				A2(
+				_elm_lang$html$Html$p,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('The parity bit is shown in blue below. You can\'t set its value directly by clicking on it. However, its value is set based on the type of parity check we use. This Parity Bits job is to make sure that there are certain number of 1s in the packet (including the parity bit). In Even Parity Check, its job is to make sure that there are even number of 1s. In Odd Parity Check, its job is to make sure that there are odd number of 1s. There is a button below the packet. You can use it to change the Parity Check type and verify the claim.')
 					])),
 				A2(
 				_elm_lang$html$Html_App$map,
@@ -9815,14 +9809,6 @@ var _user$project$Main$parityIntro = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('The parity bit is shown in blue and you can\'t set its value directly by clicking on it. Its value is set based on the type of parity check we use. In Even Parity Check, the total number of 1s in the packet (including that of blue parity bit) must be even. So the parity bit value is set to ensure that total 1s are even. Similarly, in Odd Parity Check, the parity bit value is set to make sure that total 1s are Odd.')
-					])),
-				A2(
-				_elm_lang$html$Html$p,
-				_elm_lang$core$Native_List.fromArray(
-					[]),
-				_elm_lang$core$Native_List.fromArray(
-					[
 						_elm_lang$html$Html$text(
 						A2(
 							_elm_lang$core$Basics_ops['++'],
@@ -9830,7 +9816,7 @@ var _user$project$Main$parityIntro = function (model) {
 							A2(
 								_elm_lang$core$Basics_ops['++'],
 								_user$project$Main$oddEven(model),
-								' number of 1s in the packet. If not, then we are certain that there is an error. ')))
+								' number of 1s in the packet. If not, then we are certain that there is an error. When the receiver finds out that there is an error, it asks for retransmission.')))
 					]))
 			]));
 };

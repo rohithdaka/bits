@@ -28,7 +28,7 @@ initialModel =
     , bitModel = Bit.initialModel
     , packetModel = Packet.defaultPacket
     , noParityReceivedPacket = Packet.defaultPacket
-    , bitProbability = 0
+    , bitProbability = 0.15
     , oddeven = 0
     , hammingModel = HammingPacket.defaultPacket
     , hammingReceivedModel = HammingPacket.receivedDefaultPacket
@@ -65,11 +65,11 @@ tutorialIntroText =
     Html.div []
         [ Html.p 
             []
-            [ Html.text "This explorable essay is a quick introduction to the concept of Error Correcting Codes. As you may already know, all information in computers is stored and exchanged with other computers in binary format, a set of 0s and 1s. For prolonged storage and to efficiently exchange this information, we had to invent techniques that can increase the reliability of the information. "
+            [ Html.text "This explorable essay is a quick introduction to the concept of Error Correcting Codes. All information in computers is stored and exchanged with other computers in binary format, a set of 0s and 1s. For prolonged storage and to efficiently exchange this information, we had to invent techniques that can increase the reliability of the information. "
             ]
         , Html.p
             []
-            [ Html.text "In April 1950, Richard Hamming introduced one such technique: Error Detecting and Error Correcting Codes. This essay is inspired by his original paper and written to serve as a preliminary guide to understand some concepts in this paper. No prior knowledge of anykind is assumed on the part of the reader. This essay intends to reason about the decisions that make this technique work. The models that are presented for you to explore, hopefully, will provide necessary insights to grasp the concepts. However, this essay doesnt deal with implementation details of this technique."
+            [ Html.text "In April 1950, Richard Hamming introduced one such technique: Error Detecting and Error Correcting Codes. This essay is inspired by his original paper and written to serve as a preliminary guide to understand some concepts in that paper. No prior knowledge of anykind is assumed on the part of the reader. This essay intends to reason about the decisions that make this technique work. The models that are presented for you to explore, hopefully, will provide necessary insights to grasp the concepts. However, this essay doesnt deal with implementation details of this technique."
             ]
         ]
 
@@ -92,10 +92,10 @@ packetIntro model =
         [ Html.h4 [] [Html.text "A Packet"]
         , Html.p 
             []
-            [ Html.text "A Packet is like a word. It is simply a group of bits. You can build whatever word you want to build with the bits you have. The computers which use this word must understand what it means. Just like how we can talk to some of our close friends with seemingly random words but can make total sense to each other, a packet can be of any set of bits as long as the computers that have to deal with this packet understand the meaning behind it. " ]
+            [ Html.text "A Packet (a group of bits) is like a word (a group of alphabets). You can build whatever packet you want with the bits you have. The computers which use this packet must understand what it means. Just like how we can invent words to talk to friends. A packet can be of any set of bits as long as the computers that have to deal with this packet understand the meaning behind it." ]
         , Html.p 
             [] 
-            [ Html.text "Go ahead and build a packet. You can increase or decrease the packet size by adding or removing a bit. And of course, you can set the value of each bit by clicking within the green squares. "]
+            [ Html.text "You can build a packet. Just add, remove or toggle a bit. The number on the top left corner in the square represent the position of that bit in the packet. You will need later in this essay."]
         , HApp.map PacketMsg (Packet.view model.packetModel)
         ]
 
@@ -116,116 +116,118 @@ pluralString (a, b) n =
         " " ++ b
 
 errorProbability model =
-    Html.div 
-        [] 
-        [Html.h4 [] [Html.text "Probability of Error"]
-        , Html.p 
-            []
-            [ Html.text "The whole point of building a vocabulary of words is to store your memories on a diary or send letters to someone else. Unfortunately, pages on which the words are written can get partially spoiled and make certain words illegible. Similary, in computers, we build a set of packets so that we can store or transmit information. However, the disk drives we store the information can get corrupted, the cables/wireless environment through which we transmit the information can distort the packets. The exact mechanism of such corruption is beyond the scope of this essay. Let us just focus on how to deal with such corrupted bits."
-            ]
-        , Html.p 
-            []
-            [ Html.text "Such corruption and distortion increases the chance of accidental toggling of a single bit. P"
-            , Html.sub [] [Html.text "e"] 
-            , Html.text (" = " ++ (toString model.bitProbability) ++ " " )
-            , Html.input 
-                [ HA.type' "range"
-                , HA.size 100
-                , HA.value (toString model.bitProbability) 
-                , HA.max "1"
-                , HA.min "0"
-                , HA.step "0.01"
-                , HE.on "change" (J.map UpdateProbability HE.targetValue)
-                ]
+    let n = (model.packetModel.msb - 1)
+    in  
+        Html.div 
+            [] 
+            [Html.h4 [] [Html.text "Probability of Error"]
+            , Html.p 
                 []
-            , Html.br [][]
-            , Html.text "Higher the number, more the chances of corruption. So for the packet built above with "
-            , Html.text (toString model.packetModel.msb)
-            , Html.text (pluralString ("bit","bits") model.packetModel.msb)
-            , Html.br [] []
-            , Html.text ("the chance of having absolutely no corrupt bits is " )
-            , (combinatricsNotation model.packetModel.msb model.packetModel.msb) 
-            , Html.text " * (1 - "
-            , Html.text ((toString model.bitProbability) ++ ")")
-            , Html.sup [] [Html.text (toString model.packetModel.msb)] 
-            , Html.text " = "
-            , Html.text (toString 
-                            (
-                                (toFloat 
-                                    (round 
-                                        (
+                [ Html.text "The whole point of building a vocabulary of words is to store your memories on a diary or send letters to someone. Unfortunately, pages on which the words are written can be spoiled that makes certain words illegible. Similary, in computers, we buid a vocabulary of these packets to store or transmit information. However, the disk drives we store these packets can get corrupted, the cables/wireless environment through which we transmit these packets can distort them. The exact mechanism of such corruption is beyond the scope of this essay. Let us just focus on how to deal with such corrupted packets."
+                ]
+            , Html.p 
+                []
+                [ Html.text "Such corruption and distortion increases the chance of accidental toggling of a single bit. P"
+                , se 
+                , Html.text " = "
+                , Html.input 
+                    [ HA.type' "number"
+                    , HA.size 100
+                    , HA.value (toString model.bitProbability) 
+                    , HA.max "1"
+                    , HA.min "0"
+                    , HA.step "0.01"
+                    , HE.on "change" (J.map UpdateProbability HE.targetValue)
+                    ]
+                    []
+                , Html.br [][]
+                , Html.text "Higher this number, more the chances of corruption of entire packet. For the above packet you built with "
+                , Html.text (toString n)
+                , Html.text (pluralString ("bit","bits") n)
+                , Html.br [] []
+                , Html.text ("the chance of having absolutely no corrupt bits is:  " )
+                , (combinatricsNotation n n) 
+                , Html.text " * (1 - "
+                , Html.text ((toString model.bitProbability) ++ ")")
+                , Html.sup [] [Html.text (toString n)] 
+                , Html.text " = "
+                , Html.text (toString 
+                                (
+                                    (toFloat 
+                                        (round 
                                             (
-                                                (1- model.bitProbability)^(toFloat model.packetModel.msb) *100
-                                            ) * 100 
-                                        )
-                                    ) 
-                                ) / 100  
-                            )
-                        ) 
-            , Html.text "%, " 
-            , Html.br [][]
-            , Html.text ("the chance of having exactly 1 corrupt bit is ")
-            , (combinatricsNotation model.packetModel.msb (model.packetModel.msb-1))
-            , Html.text " * (1 - "
-            , Html.text ((toString model.bitProbability) ++ ")")
-            , Html.sup [] [Html.text (toString (model.packetModel.msb-1))] 
-            , Html.text (" * " ++ (toString model.bitProbability))
-            , Html.text " = "
-            , Html.text (toString 
-                             (
-                                (toFloat 
-                                    (round 
-                                        (
+                                                (
+                                                    (1- model.bitProbability)^(toFloat n) *100
+                                                ) * 100 
+                                            )
+                                        ) 
+                                    ) / 100  
+                                )
+                            ) 
+                , Html.text "%, " 
+                , Html.br [][]
+                , Html.text ("the chance of having exactly 1 corrupt bit is: ")
+                , (combinatricsNotation n (n-1))
+                , Html.text " * (1 - "
+                , Html.text ((toString model.bitProbability) ++ ")")
+                , Html.sup [] [Html.text (toString (n-1))] 
+                , Html.text (" * " ++ (toString model.bitProbability))
+                , Html.text " = "
+                , Html.text (toString 
+                                 (
+                                    (toFloat 
+                                        (round 
                                             (
-                                                (1- model.bitProbability)^(toFloat (model.packetModel.msb-1)) 
-                                                * model.bitProbability 
-                                                * 100 
-                                                * (toFloat model.packetModel.msb)
-                                            ) * 100 
-                                        )
-                                    ) 
-                                ) / 100  
-                            )
-                        ) 
-            , Html.text "%" 
-            , Html.br [] []
-            , Html.text ("and chances of exactly 2 corrupt bits is ")
-            , (combinatricsNotation model.packetModel.msb (model.packetModel.msb-2))
-            , Html.text " * (1 - "
-            , Html.text ((toString model.bitProbability) ++ ")")
-            , Html.sup [] [Html.text (toString (model.packetModel.msb-2))] 
-            , Html.text (" * " ++ (toString model.bitProbability))
-            , Html.sup [] [Html.text "2"]
-            , Html.text " = "
-            , Html.text (toString 
-                            (
-                                (toFloat 
-                                    (round 
-                                        (
+                                                (
+                                                    (1- model.bitProbability)^(toFloat (n-1)) 
+                                                    * model.bitProbability 
+                                                    * 100 
+                                                    * (toFloat n)
+                                                ) * 100 
+                                            )
+                                        ) 
+                                    ) / 100  
+                                )
+                            ) 
+                , Html.text "%" 
+                , Html.br [] []
+                , Html.text ("and chances of exactly 2 corrupt bits is:  ")
+                , (combinatricsNotation n (n-2))
+                , Html.text " * (1 - "
+                , Html.text ((toString model.bitProbability) ++ ")")
+                , Html.sup [] [Html.text (toString (n-2))] 
+                , Html.text (" * " ++ (toString n))
+                , Html.sup [] [Html.text "2"]
+                , Html.text " = "
+                , Html.text (toString 
+                                (
+                                    (toFloat 
+                                        (round 
                                             (
-                                                (1- model.bitProbability)^(toFloat (model.packetModel.msb-2))
-                                                * (model.bitProbability^2) 
-                                                * 50 
-                                                * (toFloat 
-                                                        ( model.packetModel.msb 
-                                                        * (model.packetModel.msb - 1)
-                                                        )
-                                                    ) 
-                                            )* 100 
-                                        )
-                                    ) 
-                                ) / 100  
-                            )
-                        ) 
-            , Html.text "%"
+                                                (
+                                                    (1- model.bitProbability)^(toFloat (n-2))
+                                                    * (model.bitProbability^2) 
+                                                    * 50 
+                                                    * (toFloat 
+                                                            ( n 
+                                                            * (n- 1)
+                                                            )
+                                                        ) 
+                                                )* 100 
+                                            )
+                                        ) 
+                                    ) / 100  
+                                )
+                            ) 
+                , Html.text "%"
+                ]
+            , Html.p 
+                []
+                [ Html.text "You can get an intution of how packet sizes and  P"
+                , se
+                , Html.text " affect the chances of corruption in the packet,  by playing around with those values. To understand how the chances are calculated you need to learn Probability, Permutations and Combinations. They are not necessary to understand the rest of this essay."
+                ]
             ]
-        , Html.p 
-            []
-            [ Html.text "play around with packet size (by adding/removing bits from packet) and P"
-            , Html.sub [] [Html.text "e"]
-            , Html.text ". "
-            ]
-        ]
 
 se = Html.sub [] [Html.text "e"]
 
@@ -236,13 +238,15 @@ parityIntro model=
         [Html.h4 [] [Html.text "Single Error Detection"]
         , Html.p 
             []
-            [ Html.text "If you have played enough with the model above, you may have noticed some patterns. Try to see which packet size and which P"
+            [ Html.text "In real world application, we usually use these error detection and error correcting techniques for low P"
             , se
-            , Html.text " has the highest chance of zero corrupt bits and 1 corrupt bits. In real world application, we usually deal with low P"
+            , Html.text ". If it is so high, we will try to fix that situation by other means. We can tolerate ink blotting of certain words in our mail but if the mail is torn/burnt/lost during travel, we change the postal service first but not think about how to write stuff so that words are torn/burn proof. As we assume smaller P"
             , se
-            , Html.text ". If it is so high, we will try to fix that situation by other means. Using the words and letters analogy, we can tolerate ink blotting of certain words in our letters but if the letters get torn/burnt/lost during travel, we change the postal service first but not think about how to write stuff so that words are torn/burn proof. So for smaller P"
-            , se
-            , Html.text ", it will be wise to deal with 1 bit corruptions as it will improve the reliability. In order to detect such single error, lets look at the most popular and oldest trick: parity check"
+            , Html.text ", handling 1 bit corruptions ( or single errors) increases chances of reliable transmission tremendously (Dont take my word, check it by tinkering the packet above). Let us just talk about 'detecting' a single error and to deal with it, use the most popular and oldest trick: parity check"
+            ]
+        , Html.p 
+            []
+            [ Html.text "The parity bit is shown in blue below. You can't set its value directly by clicking on it. However, its value is set based on the type of parity check we use. This Parity Bits job is to make sure that there are certain number of 1s in the packet (including the parity bit). In Even Parity Check, its job is to make sure that there are even number of 1s. In Odd Parity Check, its job is to make sure that there are odd number of 1s. There is a button below the packet. You can use it to change the Parity Check type and verify the claim."
             ]
         , HApp.map PacketMsg (Packet.view model.packetModel)
         , HApp.map BitMsg (Bit.view (Bit.defaultBit (singleParity model) 1 "parity" False))    
@@ -251,11 +255,7 @@ parityIntro model=
         , Html.button [ HE.onClick ToggleOddEven] [Html.text "Change" ]
         , Html.p 
             []
-            [ Html.text "The parity bit is shown in blue and you can't set its value directly by clicking on it. Its value is set based on the type of parity check we use. In Even Parity Check, the total number of 1s in the packet (including that of blue parity bit) must be even. So the parity bit value is set to ensure that total 1s are even. Similarly, in Odd Parity Check, the parity bit value is set to make sure that total 1s are Odd."
-            ]
-        , Html.p 
-            []
-            [Html.text ("When, the receiver gets this packet. It knows that there must be " ++ (oddEven model) ++ " number of 1s in the packet. If not, then we are certain that there is an error. ") ]
+            [Html.text ("When, the receiver gets this packet. It knows that there must be " ++ (oddEven model) ++ " number of 1s in the packet. If not, then we are certain that there is an error. When the receiver finds out that there is an error, it asks for retransmission.") ]
         ]
 
 
@@ -266,13 +266,13 @@ singleErrorCorrection model =
         [ Html.h4 [HA.id "ec"] [Html.text "Single Error Correction"]
         , Html.p 
             []
-            [ Html.text "If your friend detects an error in your letter but doesn't know where is it, he/she will request you to send the letter again. It may look inefficient but when the chances of no corruption are high hence is used only for really small P"
-            , Html.sub [] [Html.text "e"]
-            , Html.text " as such requests would be small in number. Similarly the receivers request a retransmission of such error packets. Try to play with the knobs above to see which values enable us to resort to retransmission method to correct the error packets. "
+            [ Html.text "If your first thought of retransmission is: oh! it is inefficient, you are not wrong. If your friend detects an error in your mail but doesn't know where it is, he/she requesting you to send the mail again is not practical if errors in your mail are slightly more than tolerable. To make the process more efficient we must figure out a way to detect the exact alphabet that is in error. English words and sentences have this error correcting capability. We usually can understand the words without all the alphabets most of the time. In this section, let us try to build that capability into computer words (packets)"
             ]
         , Html.p 
             []
-            [ Html.text "But for other cases, we need to correct a single error. Since there are only two alphabets (or bits) in our case, we can correct an error by identifying the error position within the packet and toggling it. Hence, we need identifiers. So we use k parity bits. As you may know, with k bits we can create 2^k possible names. The actual possibilities are no errors, error at location 1, error at location 2, error at location n. So a total of n+1. So all we have to do is to find minimum k such that 2"
+            [ Html.text "Since there are only two alphabets (or bits) in our case, we can correct an error by identifying the error position within the packet and toggling it. So all we need to think about is a way to identify the error bit. But first, we need a set of identifiers for this purpose to represent each bit. We also need an additional identifier to represent the no error situation (a total of n + 1). These n+1 bits must include k parity bits along with the data bits.  These k bits can be used to generate 2"
+            , Html.sup [] [Html.text "k"]
+            , Html.text " identifiers at the receiver. So we have to make sure that 2"
             , Html.sup [] [Html.text "k"]
             , Html.text " is greater or equal to n+1."
             , Html.br [] []
@@ -284,15 +284,21 @@ singleErrorCorrection model =
             , Html.sup [] [Html.text (toString (model.hammingModel.k))]
             , Html.text " = "
             , Html.text (toString (2^model.hammingModel.k))
-            , Html.br [] []
-            , Html.text "Before seeing how this packet can correct one error, play with the packet size. Which packet sizes do you think are the most efficient in terms of sending more data bits per packet?"
+            ]
+        , Html.p 
+            []
+            [Html.text "To avoid confusion, let us assume that we are limited by the total packet size, n. So we have to fix the k parity bits for this packet and adjust our data into the remaining bits. Also these parity bits are all even parity check bits. Each bit does the even parity check on a set of bits in the packet but not the whole packet. (You can mouseover the blue parity bits to see which bits does it keep a watch on to maintain even parity). Arranging these k parity bits is a vital aspect of building this packet. Only rule to follow is to make sure that no parity bit includes another parity bit in its parity check bits. Thus we end up the following arrangement. (Exercise for the readers: Find out the criteria that decided the set of bits for each parity bit. Clue: convert the position number on top corner into binary format.)"
+            ]
+        , Html.p
+            []
+            [ Html.text "Hovering over data bits (green) will highlight all parity bits (blue) it will influence. And Hovering over parity bits (blue) will highlight all data bits (green) it keeps a watch on. And you can change the value of data bits by clicking on them. Parity bits will be updated immediately."
             ]
         , Html.p 
             []
             [HApp.map HammingMsg (HammingPacket.view model.hammingModel)]
         ,Html.p 
             []
-            [ Html.text "Lets see how the receiver can detect the exact bit that is corrupted. Click the button below to transmit the packet above. It will randomly flip a bit. Everytime you change the packet above. Click the transmit button again. You can then follow these simple rules to detect that corrupted bit."
+            [ Html.text "Lets see how the receiver can detect the exact bit that is corrupted. Click the button below to transmit the packet. It will randomly flip a bit or not. Everytime you change the above packet, click the transmit button again. You can then follow these simple rules to detect that corrupted bit."
             , Html.ol []
                 [ Html.li [] 
                     [ Html.text "Hover/Click on the parity bits to highlight the data bits that contribute to that parity bit. "]
@@ -300,9 +306,9 @@ singleErrorCorrection model =
                     [ Html.text "Verify if the parity bit satisfies the even parity check rule."]
                     
                 , Html.li []
-                    [ Html.text "Note the parity (blue) bit positions (top left corner) that violate rule."]
+                    [ Html.text "Note the parity bit positions (top left corner) that violate rule."]
                 , Html.li []
-                    [ Html.text "Add these position numbers"]
+                    [ Html.text "Add these position numbers."]
                 , Html.li []
                     [ Html.text "Voila! You found the corrupted bit!! You can verify by comparing it with the packet above."]
 
@@ -354,7 +360,12 @@ update msg model =
                 {model | bitModel = updatedBitModel}
 
         UpdateProbability n ->
-                {model | bitProbability = (n |> String.toFloat |> Result.toMaybe |> Maybe.withDefault 0.01)}
+                let x = (n |> String.toFloat |> Result.toMaybe |> Maybe.withDefault 0.01)
+                in 
+                    if (x >= 0 && x <= 1) then
+                        {model | bitProbability = x}
+                    else
+                        model
 
         ToggleOddEven ->
             {model | oddeven = (model.oddeven + 1 ) % 2 }
