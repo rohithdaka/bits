@@ -60,7 +60,7 @@ receivedDefaultPacket =
 specificParityValue: Int -> Model -> List Int
 specificParityValue x packet =
     let getBitValue bit = 
-        case (Array.get (round (logBase 2 (toFloat x))) (dec2bin packet.n) |> Maybe.withDefault 0 ) of 
+        case (Array.get ((round (logBase 2 (toFloat x))) + 1) (dec2bin packet.n) |> Maybe.withDefault 0 ) of 
             1 -> bit.value 
             _ -> 0
     in List.map getBitValue packet.bits
@@ -86,7 +86,7 @@ update msg packet =
         AddBit -> 
             let newBitPosition = packet.n
                 newBit = 
-                    if 2^(round (logBase 2 (toFloat packet.n))) == packet.n then 
+                    if 2^(round (logBase 2 (toFloat newBitPosition))) == packet.n then 
                         Bit.defaultBit (hammingParity packet.n packet) newBitPosition "parity" False
                     else
                         Bit.defaultBit 0 newBitPosition "data" False

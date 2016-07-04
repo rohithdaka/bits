@@ -8603,7 +8603,7 @@ var _user$project$HammingPacket$specificParityValue = F2(
 						A2(
 							_elm_lang$core$Basics$logBase,
 							2,
-							_elm_lang$core$Basics$toFloat(x))),
+							_elm_lang$core$Basics$toFloat(x))) + 1,
 					_user$project$HammingPacket$dec2bin(packet.n)));
 			if (_p1 === 1) {
 				return bit.value;
@@ -8653,7 +8653,7 @@ var _user$project$HammingPacket$update = F2(
 							A2(
 								_elm_lang$core$Basics$logBase,
 								2,
-								_elm_lang$core$Basics$toFloat(packet.n)))),
+								_elm_lang$core$Basics$toFloat(newBitPosition)))),
 					packet.n) ? A4(
 					_user$project$Bit$defaultBit,
 					A2(_user$project$HammingPacket$hammingParity, packet.n, packet),
@@ -9143,7 +9143,6 @@ var _user$project$Main$update = F2(
 					rModel.seed);
 				var bitToBeToggled = _p1._0;
 				var nextSeed = _p1._1;
-				var y = A2(_elm_lang$core$Debug$log, 'bit to be toggled', bitToBeToggled);
 				var receivedModel = _elm_lang$core$Native_Utils.update(
 					transmittedModel,
 					{
@@ -9151,7 +9150,6 @@ var _user$project$Main$update = F2(
 						bits: A2(_user$project$Main$transmittedBits, bitToBeToggled, transmittedModel.bits),
 						seed: nextSeed
 					});
-				var z = A2(_elm_lang$core$Debug$log, 'n', receivedModel.n);
 				return _elm_lang$core$Native_Utils.update(
 					model,
 					{hammingReceivedModel: receivedModel});

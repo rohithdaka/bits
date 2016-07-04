@@ -10,7 +10,6 @@ import Json.Decode as J
 import String exposing(concat,split,join,length)
 import Basics
 import Random as R
-import Debug
 
 type alias AppModel = 
     { headerModel: Header.Model
@@ -372,8 +371,6 @@ update msg model =
                 transmittedModel = model.hammingModel
                 rModel = model.hammingReceivedModel
                 (bitToBeToggled, nextSeed) = (R.step (R.int 0 transmittedModel.n) rModel.seed)
-                z = Debug.log "n" receivedModel.n
-                y = Debug.log "bit to be toggled" bitToBeToggled
                 receivedModel = {transmittedModel | status = "R", bits = (transmittedBits bitToBeToggled transmittedModel.bits), seed = nextSeed}
             in  
                 {model | hammingReceivedModel = receivedModel} 
