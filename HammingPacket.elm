@@ -18,6 +18,7 @@ type alias Model =
     { bits  : List Bit.Model
     , n: Int
     , k : Int
+    , status: String
     }
 
 
@@ -33,7 +34,25 @@ defaultPacket =
         , Bit.defaultBit 1 1 "parity" False]
     , n = 8
     , k = 3
+    , status = "T"
     }
+
+receivedDefaultPacket: Model
+receivedDefaultPacket =  
+    { bits = 
+        [ Bit.defaultBit 0 7 "data" False
+        , Bit.defaultBit 0 6 "data" False
+        , Bit.defaultBit 0 5 "data" False
+        , Bit.defaultBit 0 4 "parity" False
+        , Bit.defaultBit 0 3 "data" False
+        , Bit.defaultBit 0 2 "parity" False
+        , Bit.defaultBit 0 1 "parity" False]
+    , n = 8
+    , k = 3
+    , status = "R"
+    }
+
+
 
 
 
@@ -57,6 +76,8 @@ type Msg
     = AddBit 
     | RemoveBit
     | ModifyBit Int Bit.Msg
+    | JustHighlightBit Int Bit.Msg
+
 
 update: Msg -> Model -> Model 
 update msg packet = 
@@ -110,6 +131,24 @@ update msg packet =
                     bits = List.map updateSpecificBit packet.bits 
                 }
 
+        JustHighlightBit id bitAction -> 
+            let updateSpecificBit bit = 
+                    -- highlights data bits that are associated with hovered parity bit
+                    if 2^(round (logBase 2 (toFloat id))) == id then 
+                        if (Array.get (round (logBase 2 (toFloat id))) (dec2bin bit.position) |> Maybe.withDefault 0 ) == 1 then
+                            Bit.bitHighlighter bit bitAction
+                        else 
+                            bit 
+                    -- highlights parity bits that are influenced by the hovered data bit
+                    else if ( isParityBit bit.position id) then
+                        Bit.bitHighlighter bit bitAction
+                    else 
+                        bit
+            in
+                { packet | 
+                    bits = List.map updateSpecificBit packet.bits 
+                }
+
 
 isParityBit: Int -> Int -> Bool
 isParityBit p i =
@@ -126,25 +165,39 @@ dec2bin v =
         _ -> Array.append (Array.repeat 1 (v % 2)) (dec2bin (v // 2))
 
 view packet =
-    let bits = List.map viewSpecificBit packet.bits
-        removeBit  = button [ onClick RemoveBit] [text "-"]
-        addBit     = button [ onClick AddBit] [text "+"]
-    in 
-        div 
-            []
-            (   [removeBit] ++ 
-                [Html.text ("n = " ++ (toString (packet.n-1)))] ++
-                [addBit] ++ 
-                [Html.br [] []] ++
-                bits 
-            )
+    case packet.status of
+        "T" -> 
+            let bits = List.map (viewSpecificBit packet.status) packet.bits
+                removeBit  = button [ onClick RemoveBit] [text "-"]
+                addBit     = button [ onClick AddBit] [text "+"]
+            in 
+                div 
+                    []
+                    (   [Html.br [] []] ++
+                        [removeBit] ++ 
+                        [Html.text ("n = " ++ (toString (packet.n-1)))] ++
+                        [addBit] ++ 
+                        [Html.br [] []] ++
+                        bits )
 
-viewSpecificBit: Bit.Model -> Html Msg
-viewSpecificBit bit = 
-    case bit.category of
-        "data" ->  HA.map (ModifyBit bit.position) (Bit.view  bit)
-        "parity" -> HA.map (ModifyBit bit.position) (Bit.view  bit)
-        _ -> HA.map (ModifyBit bit.position) (Bit.view  bit)
+        "R" -> 
+            let bits = List.map (viewSpecificBit packet.status) packet.bits
+            in 
+                div 
+                    []
+                    (
+                        [Html.br [] []] ++
+                        bits 
+                    )
+        _ -> div [] []
+
+
+viewSpecificBit:  String -> Bit.Model -> Html Msg
+viewSpecificBit status bit = 
+    case status of
+        "T" ->  HA.map (ModifyBit bit.position) (Bit.view  bit)
+        "R" -> HA.map (JustHighlightBit bit.position) (Bit.view  bit)
+        _ -> div [] []
 
 
 main = 

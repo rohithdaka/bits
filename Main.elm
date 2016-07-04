@@ -18,6 +18,7 @@ type alias AppModel =
     , oddeven: Int 
     , bitProbability: Float
     , hammingModel: HammingPacket.Model
+    , hammingReceivedModel: HammingPacket.Model
     }
 
 initialModel: AppModel
@@ -29,6 +30,7 @@ initialModel =
     , bitProbability = 0
     , oddeven = 0
     , hammingModel = HammingPacket.defaultPacket
+    , hammingReceivedModel = HammingPacket.receivedDefaultPacket
     -- 0 for even and 1 for odd
     }
 
@@ -40,6 +42,8 @@ type Msg
     | UpdateProbability String 
     | ToggleOddEven
     | HammingMsg HammingPacket.Msg
+    | HammingRMsg HammingPacket.Msg
+    | TransmitPacket
 
 singleParity: AppModel -> Int
 singleParity model =
@@ -285,11 +289,32 @@ singleErrorCorrection model =
         , Html.p 
             []
             [HApp.map HammingMsg (HammingPacket.view model.hammingModel)]
+        ,Html.p 
+            []
+            [ Html.text "Lets see how the receiver can detect the exact bit that is corrupted. Click the button below to transmit the packet above. It will randomly flip a bit. You can then follow these simple rules to detect that corrupted bit."
+            , Html.ol []
+                [ Html.li [] 
+                    [ Html.text "Check every parity bit and see if they follow the even parity check rule."]
+                , Html.li []
+                    [ Html.text "Note the parity (blue) bit positions (on top left corner) that violate the even parity check rule."]
+                , Html.li []
+                    [ Html.text "Find the data (green) bit that is common to all the parity bits that violated the even parity check rule."]
+                , Html.li []
+                    [ Html.text "Voila! That bit is the error bit. If there is no such bit then there was no error."]
+
+                ]
+            ]
+        , Html.button [ HE.onClick TransmitPacket] [Html.text "Transmit Packet" ]
+        , Html.p 
+            []
+            [HApp.map HammingRMsg (HammingPacket.view model.hammingReceivedModel)]
         ]
 
 
 transmissionEfficiency model =
     Html.div [] []
+
+
 
 view model =
     Html.div 
@@ -335,6 +360,16 @@ update msg model =
                 updatedHammingModel = HammingPacket.update subAction model.hammingModel
             in
                 {model | hammingModel = updatedHammingModel}
+        HammingRMsg subAction ->
+             let 
+                updatedHammingRModel = HammingPacket.update subAction model.hammingReceivedModel
+            in
+                {model | hammingReceivedModel = updatedHammingRModel}
+        TransmitPacket ->
+            let 
+                transmittedModel = model.hammingModel
+                receivedModel = {transmittedModel | status = "R" }
+            in  {model | hammingReceivedModel = receivedModel } 
 
 
 main = 

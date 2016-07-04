@@ -7860,7 +7860,7 @@ var _user$project$HammingPacket$update = F2(
 								2,
 								_elm_lang$core$Basics$toFloat(nMinusMinus)))
 					}) : packet;
-			default:
+			case 'ModifyBit':
 				var _p5 = _p3._0;
 				var _p4 = _p3._1;
 				var updateSpecificBit = function (bit) {
@@ -7891,8 +7891,54 @@ var _user$project$HammingPacket$update = F2(
 					{
 						bits: A2(_elm_lang$core$List$map, updateSpecificBit, packet.bits)
 					});
+			default:
+				var _p7 = _p3._0;
+				var _p6 = _p3._1;
+				var updateSpecificBit = function (bit) {
+					return _elm_lang$core$Native_Utils.eq(
+						Math.pow(
+							2,
+							_elm_lang$core$Basics$round(
+								A2(
+									_elm_lang$core$Basics$logBase,
+									2,
+									_elm_lang$core$Basics$toFloat(_p7)))),
+						_p7) ? (_elm_lang$core$Native_Utils.eq(
+						A2(
+							_elm_lang$core$Maybe$withDefault,
+							0,
+							A2(
+								_elm_lang$core$Array$get,
+								_elm_lang$core$Basics$round(
+									A2(
+										_elm_lang$core$Basics$logBase,
+										2,
+										_elm_lang$core$Basics$toFloat(_p7))),
+								_user$project$HammingPacket$dec2bin(bit.position))),
+						1) ? A2(_user$project$Bit$bitHighlighter, bit, _p6) : bit) : (A2(_user$project$HammingPacket$isParityBit, bit.position, _p7) ? A2(_user$project$Bit$bitHighlighter, bit, _p6) : bit);
+				};
+				return _elm_lang$core$Native_Utils.update(
+					packet,
+					{
+						bits: A2(_elm_lang$core$List$map, updateSpecificBit, packet.bits)
+					});
 		}
 	});
+var _user$project$HammingPacket$receivedDefaultPacket = {
+	bits: _elm_lang$core$Native_List.fromArray(
+		[
+			A4(_user$project$Bit$defaultBit, 0, 7, 'data', false),
+			A4(_user$project$Bit$defaultBit, 0, 6, 'data', false),
+			A4(_user$project$Bit$defaultBit, 0, 5, 'data', false),
+			A4(_user$project$Bit$defaultBit, 0, 4, 'parity', false),
+			A4(_user$project$Bit$defaultBit, 0, 3, 'data', false),
+			A4(_user$project$Bit$defaultBit, 0, 2, 'parity', false),
+			A4(_user$project$Bit$defaultBit, 0, 1, 'parity', false)
+		]),
+	n: 8,
+	k: 3,
+	status: 'R'
+};
 var _user$project$HammingPacket$defaultPacket = {
 	bits: _elm_lang$core$Native_List.fromArray(
 		[
@@ -7905,94 +7951,148 @@ var _user$project$HammingPacket$defaultPacket = {
 			A4(_user$project$Bit$defaultBit, 1, 1, 'parity', false)
 		]),
 	n: 8,
-	k: 3
+	k: 3,
+	status: 'T'
 };
-var _user$project$HammingPacket$Model = F3(
-	function (a, b, c) {
-		return {bits: a, n: b, k: c};
+var _user$project$HammingPacket$Model = F4(
+	function (a, b, c, d) {
+		return {bits: a, n: b, k: c, status: d};
+	});
+var _user$project$HammingPacket$JustHighlightBit = F2(
+	function (a, b) {
+		return {ctor: 'JustHighlightBit', _0: a, _1: b};
 	});
 var _user$project$HammingPacket$ModifyBit = F2(
 	function (a, b) {
 		return {ctor: 'ModifyBit', _0: a, _1: b};
 	});
-var _user$project$HammingPacket$viewSpecificBit = function (bit) {
-	var _p6 = bit.category;
-	switch (_p6) {
-		case 'data':
-			return A2(
-				_elm_lang$html$Html_App$map,
-				_user$project$HammingPacket$ModifyBit(bit.position),
-				_user$project$Bit$view(bit));
-		case 'parity':
-			return A2(
-				_elm_lang$html$Html_App$map,
-				_user$project$HammingPacket$ModifyBit(bit.position),
-				_user$project$Bit$view(bit));
-		default:
-			return A2(
-				_elm_lang$html$Html_App$map,
-				_user$project$HammingPacket$ModifyBit(bit.position),
-				_user$project$Bit$view(bit));
-	}
-};
+var _user$project$HammingPacket$viewSpecificBit = F2(
+	function (status, bit) {
+		var _p8 = status;
+		switch (_p8) {
+			case 'T':
+				return A2(
+					_elm_lang$html$Html_App$map,
+					_user$project$HammingPacket$ModifyBit(bit.position),
+					_user$project$Bit$view(bit));
+			case 'R':
+				return A2(
+					_elm_lang$html$Html_App$map,
+					_user$project$HammingPacket$JustHighlightBit(bit.position),
+					_user$project$Bit$view(bit));
+			default:
+				return A2(
+					_elm_lang$html$Html$div,
+					_elm_lang$core$Native_List.fromArray(
+						[]),
+					_elm_lang$core$Native_List.fromArray(
+						[]));
+		}
+	});
 var _user$project$HammingPacket$RemoveBit = {ctor: 'RemoveBit'};
 var _user$project$HammingPacket$AddBit = {ctor: 'AddBit'};
 var _user$project$HammingPacket$view = function (packet) {
-	var addBit = A2(
-		_elm_lang$html$Html$button,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html_Events$onClick(_user$project$HammingPacket$AddBit)
-			]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$svg$Svg$text('+')
-			]));
-	var removeBit = A2(
-		_elm_lang$html$Html$button,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html_Events$onClick(_user$project$HammingPacket$RemoveBit)
-			]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$svg$Svg$text('-')
-			]));
-	var bits = A2(_elm_lang$core$List$map, _user$project$HammingPacket$viewSpecificBit, packet.bits);
-	return A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
-		A2(
-			_elm_lang$core$Basics_ops['++'],
-			_elm_lang$core$Native_List.fromArray(
-				[removeBit]),
-			A2(
-				_elm_lang$core$Basics_ops['++'],
+	var _p9 = packet.status;
+	switch (_p9) {
+		case 'T':
+			var addBit = A2(
+				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text(
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							'n = ',
-							_elm_lang$core$Basics$toString(packet.n - 1)))
+						_elm_lang$html$Html_Events$onClick(_user$project$HammingPacket$AddBit)
 					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$svg$Svg$text('+')
+					]));
+			var removeBit = A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$HammingPacket$RemoveBit)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$svg$Svg$text('-')
+					]));
+			var bits = A2(
+				_elm_lang$core$List$map,
+				_user$project$HammingPacket$viewSpecificBit(packet.status),
+				packet.bits);
+			return A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
 				A2(
 					_elm_lang$core$Basics_ops['++'],
 					_elm_lang$core$Native_List.fromArray(
-						[addBit]),
+						[
+							A2(
+							_elm_lang$html$Html$br,
+							_elm_lang$core$Native_List.fromArray(
+								[]),
+							_elm_lang$core$Native_List.fromArray(
+								[]))
+						]),
 					A2(
 						_elm_lang$core$Basics_ops['++'],
 						_elm_lang$core$Native_List.fromArray(
-							[
+							[removeBit]),
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_elm_lang$core$Native_List.fromArray(
+								[
+									_elm_lang$html$Html$text(
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										'n = ',
+										_elm_lang$core$Basics$toString(packet.n - 1)))
+								]),
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_elm_lang$core$Native_List.fromArray(
+									[addBit]),
 								A2(
-								_elm_lang$html$Html$br,
-								_elm_lang$core$Native_List.fromArray(
-									[]),
-								_elm_lang$core$Native_List.fromArray(
-									[]))
-							]),
-						bits)))));
+									_elm_lang$core$Basics_ops['++'],
+									_elm_lang$core$Native_List.fromArray(
+										[
+											A2(
+											_elm_lang$html$Html$br,
+											_elm_lang$core$Native_List.fromArray(
+												[]),
+											_elm_lang$core$Native_List.fromArray(
+												[]))
+										]),
+									bits))))));
+		case 'R':
+			var bits = A2(
+				_elm_lang$core$List$map,
+				_user$project$HammingPacket$viewSpecificBit(packet.status),
+				packet.bits);
+			return A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_elm_lang$core$Native_List.fromArray(
+						[
+							A2(
+							_elm_lang$html$Html$br,
+							_elm_lang$core$Native_List.fromArray(
+								[]),
+							_elm_lang$core$Native_List.fromArray(
+								[]))
+						]),
+					bits));
+		default:
+			return A2(
+				_elm_lang$html$Html$div,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[]));
+	}
 };
 var _user$project$HammingPacket$main = {
 	main: _elm_lang$html$Html_App$beginnerProgram(
@@ -8182,11 +8282,24 @@ var _user$project$Main$update = F2(
 					{
 						oddeven: A2(_elm_lang$core$Basics_ops['%'], model.oddeven + 1, 2)
 					});
-			default:
+			case 'HammingMsg':
 				var updatedHammingModel = A2(_user$project$HammingPacket$update, _p0._0, model.hammingModel);
 				return _elm_lang$core$Native_Utils.update(
 					model,
 					{hammingModel: updatedHammingModel});
+			case 'HammingRMsg':
+				var updatedHammingRModel = A2(_user$project$HammingPacket$update, _p0._0, model.hammingReceivedModel);
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{hammingReceivedModel: updatedHammingRModel});
+			default:
+				var transmittedModel = model.hammingModel;
+				var receivedModel = _elm_lang$core$Native_Utils.update(
+					transmittedModel,
+					{status: 'R'});
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{hammingReceivedModel: receivedModel});
 		}
 	});
 var _user$project$Main$transmissionEfficiency = function (model) {
@@ -8298,11 +8411,15 @@ var _user$project$Main$singleParity = function (model) {
 			return 5;
 	}
 };
-var _user$project$Main$initialModel = {headerModel: _user$project$Header$initialModel, bitModel: _user$project$Bit$initialModel, packetModel: _user$project$Packet$defaultPacket, noParityReceivedPacket: _user$project$Packet$defaultPacket, bitProbability: 0, oddeven: 0, hammingModel: _user$project$HammingPacket$defaultPacket};
-var _user$project$Main$AppModel = F7(
-	function (a, b, c, d, e, f, g) {
-		return {headerModel: a, bitModel: b, packetModel: c, noParityReceivedPacket: d, oddeven: e, bitProbability: f, hammingModel: g};
+var _user$project$Main$initialModel = {headerModel: _user$project$Header$initialModel, bitModel: _user$project$Bit$initialModel, packetModel: _user$project$Packet$defaultPacket, noParityReceivedPacket: _user$project$Packet$defaultPacket, bitProbability: 0, oddeven: 0, hammingModel: _user$project$HammingPacket$defaultPacket, hammingReceivedModel: _user$project$HammingPacket$receivedDefaultPacket};
+var _user$project$Main$AppModel = F8(
+	function (a, b, c, d, e, f, g, h) {
+		return {headerModel: a, bitModel: b, packetModel: c, noParityReceivedPacket: d, oddeven: e, bitProbability: f, hammingModel: g, hammingReceivedModel: h};
 	});
+var _user$project$Main$TransmitPacket = {ctor: 'TransmitPacket'};
+var _user$project$Main$HammingRMsg = function (a) {
+	return {ctor: 'HammingRMsg', _0: a};
+};
 var _user$project$Main$HammingMsg = function (a) {
 	return {ctor: 'HammingMsg', _0: a};
 };
@@ -8400,6 +8517,74 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 						_elm_lang$html$Html_App$map,
 						_user$project$Main$HammingMsg,
 						_user$project$HammingPacket$view(model.hammingModel))
+					])),
+				A2(
+				_elm_lang$html$Html$p,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Lets see how the receiver can detect the exact bit that is corrupted. Click the button below to transmit the packet above. It will randomly flip a bit. You can then follow these simple rules to detect that corrupted bit.'),
+						A2(
+						_elm_lang$html$Html$ol,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_elm_lang$html$Html$li,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('Check every parity bit and see if they follow the even parity check rule.')
+									])),
+								A2(
+								_elm_lang$html$Html$li,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('Note the parity (blue) bit positions (on top left corner) that violate the even parity check rule.')
+									])),
+								A2(
+								_elm_lang$html$Html$li,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('Find the data (green) bit that is common to all the parity bits that violated the even parity check rule.')
+									])),
+								A2(
+								_elm_lang$html$Html$li,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('Voila! That bit is the error bit. If there is no such bit then there was no error.')
+									]))
+							]))
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(_user$project$Main$TransmitPacket)
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Transmit Packet')
+					])),
+				A2(
+				_elm_lang$html$Html$p,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						A2(
+						_elm_lang$html$Html_App$map,
+						_user$project$Main$HammingRMsg,
+						_user$project$HammingPacket$view(model.hammingReceivedModel))
 					]))
 			]));
 };
