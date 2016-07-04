@@ -10,6 +10,7 @@ import List
 import String exposing(concat,split,join,length)
 import Html.App as HA
 import Array 
+import Random as R
 
 
 -- Model
@@ -19,6 +20,7 @@ type alias Model =
     , n: Int
     , k : Int
     , status: String
+    , seed: R.Seed
     }
 
 
@@ -35,6 +37,7 @@ defaultPacket =
     , n = 8
     , k = 3
     , status = "T"
+    , seed = R.initialSeed 4
     }
 
 receivedDefaultPacket: Model
@@ -50,10 +53,8 @@ receivedDefaultPacket =
     , n = 8
     , k = 3
     , status = "R"
+    , seed = R.initialSeed 5
     }
-
-
-
 
 
 specificParityValue: Int -> Model -> List Int

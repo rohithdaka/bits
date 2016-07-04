@@ -9,6 +9,8 @@ import Html.Events as HE
 import Json.Decode as J
 import String exposing(concat,split,join,length)
 import Basics
+import Random as R
+import Debug
 
 type alias AppModel = 
     { headerModel: Header.Model
@@ -368,8 +370,29 @@ update msg model =
         TransmitPacket ->
             let 
                 transmittedModel = model.hammingModel
-                receivedModel = {transmittedModel | status = "R" }
-            in  {model | hammingReceivedModel = receivedModel } 
+                rModel = model.hammingReceivedModel
+                (bitToBeToggled, nextSeed) = (R.step (R.int 0 transmittedModel.n) rModel.seed)
+                z = Debug.log "n" receivedModel.n
+                y = Debug.log "bit to be toggled" bitToBeToggled
+                receivedModel = {transmittedModel | status = "R", bits = (transmittedBits bitToBeToggled transmittedModel.bits), seed = nextSeed}
+            in  
+                {model | hammingReceivedModel = receivedModel} 
+
+
+transmittedBits x bits =
+    List.map (corruptTheBit x) bits
+
+
+corruptTheBit x bit =
+    if (bit.position == x ) then 
+        Bit.bitToggle bit
+    else 
+        bit
+
+
+
+
+
 
 
 main = 
