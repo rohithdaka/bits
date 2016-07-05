@@ -9272,7 +9272,7 @@ var _user$project$Main$tutorialIntroText = A2(
 				[]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html$text('In April 1950, Richard Hamming introduced a technique to improve the reliability of communications and storage using bits. This essay is inspired by his original paper and written to serve as a preliminary guide to understand some concepts in that paper. No prior knowledge is assumed on the part of the reader. This essay intends to reason about the decisions that make this technique work. The models that are presented for you to explore, hopefully, will provide necessary insights to grasp the concepts. However, this essay doesnt deal with implementation details of this technique.')
+					_elm_lang$html$Html$text('In April 1950, Richard Hamming introduced a technique to improve the reliability of communications and storage using bits. This essay is inspired by his original paper and written to serve as a preliminary guide to understand some concepts in that paper. No prior knowledge is assumed on your part. This essay intends to reason about the decisions that make this technique work. The models that are presented for you to explore, hopefully, will provide necessary insights to grasp the concepts. However, this essay doesnt deal with implementation details of this technique.')
 				]))
 		]));
 var _user$project$Main$oddEven = function (model) {
@@ -9354,7 +9354,7 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('Since there are only two alphabets (or bits) in our case, we can correct an error by identifying the error position within the packet and toggling it. So all we need to think about is a way to identify the error bit. But first, we need a set of identifiers for this purpose to represent each bit. We also need an additional identifier to represent the no error situation (a total of n + 1). These n+1 bits must include k parity bits along with the data bits.  These k bits can be used to generate 2'),
+						_elm_lang$html$Html$text('Since there are only two alphabets (or bits) in our case, we can correct an error by identifying the error position within the packet (of size n) and toggling it. So all we need to think about is a way to identify the error bit. But first, we need a set of identifiers for this purpose to represent each bit. We also need an additional identifier to represent the \'no error situation\' (a total of n + 1). So, the packet with n bits must include k parity bits along with the data bits. This reduces the number of data bits in a packet to n-k. The k bits are used to generate 2'),
 						A2(
 						_elm_lang$html$Html$sup,
 						_elm_lang$core$Native_List.fromArray(
@@ -9380,7 +9380,47 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('To avoid confusion, let us assume that we are limited by the total packet size, n. So we have to fix the k parity bits for this packet and adjust our data into the remaining bits. Also these parity bits are all even parity check bits. Each bit does the even parity check on a set of bits in the packet but not the whole packet. (You can mouseover the blue parity bits to see which bits does it keep a watch on to maintain even parity). Arranging these k parity bits is a vital aspect of building this packet. Only rule to follow is to make sure that no parity bit includes another parity bit in its parity check bits. Thus we end up the following arrangement. (Exercise for the readers: Find out the criteria that decided the set of bits for each parity bit. Clue: convert the position number on top corner into binary format.)')
+						_elm_lang$html$Html$text('To avoid confusion, let us assume the following:'),
+						A2(
+						_elm_lang$html$Html$ul,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								A2(
+								_elm_lang$html$Html$li,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('We are limited by the total packet size, n. So we have to fix the k parity bits for this packet and adjust our data into the remaining bits.')
+									])),
+								A2(
+								_elm_lang$html$Html$li,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('These parity bits are all even parity check bits.')
+									])),
+								A2(
+								_elm_lang$html$Html$li,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('Each bit does the even parity check on a set of bits in the packet but not the whole packet. (You can mouseover the blue parity bits to see which bits does it keep a watch on to maintain even parity).')
+									])),
+								A2(
+								_elm_lang$html$Html$li,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('Arranging these k parity bits is a vital aspect of building this packet. Only rule to follow is to make sure that no parity bit includes another parity bit while checking for even parity.')
+									]))
+							])),
+						_elm_lang$html$Html$text('Thus we end up the following arrangement. (Exercise for the readers: Find out the criteria that decided the set of bits for each parity bit. Clue: convert the position number on top corner into binary format.)')
 					])),
 				A2(
 				_elm_lang$html$Html$p,
@@ -9525,7 +9565,7 @@ var _user$project$Main$errorProbability = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('The whole point of building a vocabulary of words is to store your memories on a diary or send letters to someone. Unfortunately, pages on which the words are written can be spoiled that makes certain words illegible. Similary, in computers, we buid a vocabulary of these packets to store or transmit information. However, the disk drives we store these packets can get corrupted, the cables/wireless environment through which we transmit these packets can distort them. The exact mechanism of such corruption is beyond the scope of this essay. Let us just focus on how to deal with such corrupted packets.')
+						_elm_lang$html$Html$text('The whole point of building a vocabulary of words is to store your memories on a diary or send mail to friends. Unfortunately, pages on which the words are written can be spoiled making certain words illegible. Similary, in computers, we buid a vocabulary of these packets to store or transmit information. However, the disk drives we store these packets on can get corrupted, the cables/wireless environment through which we transmit these packets can distort them. The exact mechanism of such corruption is beyond the scope of this essay. Let us just focus on how to deal with such corrupted packets.')
 					])),
 				A2(
 				_elm_lang$html$Html$p,
@@ -9533,7 +9573,7 @@ var _user$project$Main$errorProbability = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('Such corruption and distortion increases the chance of accidental toggling of a single bit. P'),
+						_elm_lang$html$Html$text('We use a probability metric (0 to 1) to quantify such accidental toggling of a bit, let it be P'),
 						_user$project$Main$se,
 						_elm_lang$html$Html$text(' = '),
 						A2(
@@ -9691,7 +9731,7 @@ var _user$project$Main$errorProbability = function (model) {
 					[
 						_elm_lang$html$Html$text('You can get an intution of how packet sizes and  P'),
 						_user$project$Main$se,
-						_elm_lang$html$Html$text(' affect the chances of corruption in the packet,  by playing around with those values. To understand how the chances are calculated you need to learn Probability, Permutations and Combinations. They are not necessary to understand the rest of this essay.')
+						_elm_lang$html$Html$text(' affect the chances of corruption in the packet,  by playing around with those values. If you are wondering about how the chances are calculated you need to learn Probability, Permutations and Combinations. They are not necessary to understand the rest of this essay. For those who are familiar with the concept, the substituted equations are a hint.')
 					]))
 			]));
 };
@@ -9767,7 +9807,7 @@ var _user$project$Main$packetIntro = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('You can build a packet. Just add, remove or toggle a bit. The number on the top left corner in the square represent the position of that bit in the packet. You will need later in this essay.')
+						_elm_lang$html$Html$text('You can build a packet. Just add, remove or toggle a bit. The number on the top left corner in the square represent the position of that bit in the packet. You will need it later in this essay.')
 					])),
 				A2(
 				_elm_lang$html$Html_App$map,
@@ -9798,9 +9838,9 @@ var _user$project$Main$parityIntro = function (model) {
 					[
 						_elm_lang$html$Html$text('In real world application, we usually use these error detection and error correcting techniques for low P'),
 						_user$project$Main$se,
-						_elm_lang$html$Html$text('. If it is so high, we will try to fix that situation by other means. We can tolerate ink blotting of certain words in our mail but if the mail is torn/burnt/lost during travel, we change the postal service first but not think about how to write stuff so that words are torn/burn proof. As we assume smaller P'),
+						_elm_lang$html$Html$text(' situations. The higher cases are dealt by other means. To give you an example, we can tolerate ink blotting of certain words in our mail but if the mail is torn/burnt/lost during travel, we should change the postal service first but not think about writing words which are torn/burn proof. As we assume smaller P'),
 						_user$project$Main$se,
-						_elm_lang$html$Html$text(', handling 1 bit corruptions ( or single errors) increases chances of reliable transmission tremendously (Dont take my word, check it by tinkering the packet above). Let us just talk about \'detecting\' a single error and to deal with it, use the most popular and oldest trick: parity check')
+						_elm_lang$html$Html$text(', handling 1 bit corruptions (or single errors) increases chances of reliable transmission tremendously (Dont take my word, check it by tinkering the packet above). ')
 					])),
 				A2(
 				_elm_lang$html$Html$p,
@@ -9808,7 +9848,7 @@ var _user$project$Main$parityIntro = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('The parity bit is shown in blue below. You can\'t set its value directly by clicking on it. However, its value is set based on the type of parity check we use. This Parity Bits job is to make sure that there are certain number of 1s in the packet (including the parity bit). In Even Parity Check, its job is to make sure that there are even number of 1s. In Odd Parity Check, its job is to make sure that there are odd number of 1s. There is a button below the packet. You can use it to change the Parity Check type and verify the claim.')
+						_elm_lang$html$Html$text('First step is to \'detect\' a single error and to deal with it, we shall use the most popular and oldest trick: parity check. The parity bit is shown in blue below. Unlike data bit, you can\'t set its value directly by clicking on it. However, its value is set based on the type of parity check we use. The job of this Parity Bit is to make sure that there are certain number of 1s in the packet (including the parity bit). In Even Parity Check, its job is to make sure that there are even number of 1s. In Odd Parity Check, its job is to make sure that there are odd number of 1s. There is a button below the packet. You can use it to change the Parity Check type. Along with changing bit values and packet size, you can see how parity bit is set.')
 					])),
 				A2(
 				_elm_lang$html$Html_App$map,

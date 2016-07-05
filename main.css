@@ -68,3 +68,7 @@ sub {
 	line-height: 0.8em;
 }
 
+li {
+	text-indent: 0;
+}
+
