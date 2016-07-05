@@ -9215,7 +9215,26 @@ var _user$project$Main$tutorialFooterText = _elm_lang$core$Native_List.fromArray
 			[]),
 		_elm_lang$core$Native_List.fromArray(
 			[
-				_elm_lang$html$Html$text('')
+				_elm_lang$html$Html$text('If you find any error in technical details of this essay, please file an issue on '),
+				A2(
+				_elm_lang$html$Html$a,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Attributes$href('https://github.com/rohithdaka/bits/issues')
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('github')
+					])),
+				_elm_lang$html$Html$text('. Please email me at rohith.daka@gmail.com if you have any suggestions, comments about improving this essay. ')
+			])),
+		A2(
+		_elm_lang$html$Html$p,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html$text('Thanks to Bret Victor, for the inspiration and his work on explorable explanations; Evan Czaplicki, for designing Elm language; and Pooja Tyagi, for helping me brain storm the visual models for this essay.')
 			]))
 	]);
 var _user$project$Main$tutorialConclusionText = A2(
@@ -9249,7 +9268,7 @@ var _user$project$Main$tutorialConclusionText = A2(
 						[
 							_elm_lang$html$Html$text('original paper')
 						])),
-					_elm_lang$html$Html$text(' by Richard Hamming for more clarification. ')
+					_elm_lang$html$Html$text(' by Richard Hamming for more clarification.')
 				]))
 		]));
 var _user$project$Main$tutorialIntroText = A2(

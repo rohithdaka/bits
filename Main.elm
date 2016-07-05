@@ -82,15 +82,22 @@ tutorialConclusionText =
             , Html.a 
                 [HA.href "http://wayback.archive.org/web/20060525060427/http://www.caip.rutgers.edu/~bushnell/dsdwebsite/hamming.pdf"]
                 [Html.text "original paper"]
-            , Html.text " by Richard Hamming for more clarification. "
+            , Html.text " by Richard Hamming for more clarification."
             ]
-
         ]
 
 tutorialFooterText =
-    [ Html.p 
+    [ Html.p
         []
-        [Html.text "" ]
+        [ Html.text "If you find any error in technical details of this essay, please file an issue on "
+        , Html.a 
+            [HA.href "https://github.com/rohithdaka/bits/issues"]
+            [Html.text "github"]
+        , Html.text ". Please email me at rohith.daka@gmail.com if you have any suggestions, comments about improving this essay. "
+        ]
+    , Html.p
+        []
+        [Html.text "Thanks to Bret Victor, for the inspiration and his work on explorable explanations; Evan Czaplicki, for designing Elm language; and Pooja Tyagi, for helping me brain storm the visual models for this essay."]
     ]
 
 
