@@ -330,7 +330,7 @@ singleErrorCorrection model =
             [HApp.map HammingMsg (HammingPacket.view model.hammingModel)]
         ,Html.p 
             []
-            [ Html.text "For the packet below, (n+1) = " 
+            [ Html.text "For the packet above, (n+1) = " 
             , Html.text (toString (model.hammingModel.n))
             , Html.text " and k = "
             , Html.text (toString (model.hammingModel.k)) 

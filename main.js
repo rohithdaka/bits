@@ -9466,7 +9466,7 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('For the packet below, (n+1) = '),
+						_elm_lang$html$Html$text('For the packet above, (n+1) = '),
 						_elm_lang$html$Html$text(
 						_elm_lang$core$Basics$toString(model.hammingModel.n)),
 						_elm_lang$html$Html$text(' and k = '),
