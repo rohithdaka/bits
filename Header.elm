@@ -7,7 +7,7 @@ type alias Model = String
 
 initialModel: Model 
 initialModel = 
-    "Error Correction and Error Detection - An Interactive Primer"
+    "Error Detection and Error Correction - A Quick Interactive Primer"
 
 
 view model =

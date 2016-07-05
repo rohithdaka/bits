@@ -65,21 +65,42 @@ tutorialIntroText =
     Html.div []
         [ Html.p 
             []
-            [ Html.text "This explorable essay is a quick introduction to the concept of Error Correcting Codes. All information in computers is stored and exchanged with other computers in binary format, a set of 0s and 1s. For prolonged storage and to efficiently exchange this information, we had to invent techniques that can increase the reliability of the information. "
+            [ Html.text "This explorable essay is a quick introduction to the concept of Error Detecting and Error Correcting Codes. "
             ]
         , Html.p
             []
-            [ Html.text "In April 1950, Richard Hamming introduced one such technique: Error Detecting and Error Correcting Codes. This essay is inspired by his original paper and written to serve as a preliminary guide to understand some concepts in that paper. No prior knowledge of anykind is assumed on the part of the reader. This essay intends to reason about the decisions that make this technique work. The models that are presented for you to explore, hopefully, will provide necessary insights to grasp the concepts. However, this essay doesnt deal with implementation details of this technique."
+            [ Html.text "In April 1950, Richard Hamming introduced a technique to improve the reliability of communications and storage using bits. This essay is inspired by his original paper and written to serve as a preliminary guide to understand some concepts in that paper. No prior knowledge is assumed on the part of the reader. This essay intends to reason about the decisions that make this technique work. The models that are presented for you to explore, hopefully, will provide necessary insights to grasp the concepts. However, this essay doesnt deal with implementation details of this technique."
             ]
         ]
+
+tutorialConclusionText = 
+    Html.div []
+        [ Html.h4 [] [Html.text "Conclusion"]
+        , Html.p 
+            []
+            [ Html.text "The goal of this essay in using this visual explanation is to reduce the difficulty in understanding this concept. One advantage with this medium is that you are no longer a passive reader. To paraphrase a famous quote: You hear and you forget. You see and You remember. You do and You understand. I hope this active reading helped you understand the fundamentals of Error Detection and Error Correction. You can read the " 
+            , Html.a 
+                [HA.href "http://wayback.archive.org/web/20060525060427/http://www.caip.rutgers.edu/~bushnell/dsdwebsite/hamming.pdf"]
+                [Html.text "original paper"]
+            , Html.text " by Richard Hamming for more clarification. "
+            ]
+
+        ]
+
+tutorialFooterText =
+    [ Html.p 
+        []
+        [Html.text "" ]
+    ]
+
 
 bitIntro model =
     Html.div
         []
         [Html.h4 [] [Html.text "A Bit"]
         , Html.p 
-                []
-                [ Html.text "Let's start with the fundamental unit of communication: Binary Digit or a Bit. In English, we have 26 alphabets, 10 digits and several punctuation marks to store and exchange information. In computers, we have just 2. " ]
+            []
+            [ Html.text "Let's start with the fundamental unit of communication: Binary Digit or a Bit. In English, we have 26 alphabets, 10 digits and several punctuation marks to store and exchange information. In computers, we have just 2. " ]
         , HApp.map BitMsg (Bit.view model.bitModel)
         , Html.p 
             []
@@ -250,9 +271,11 @@ parityIntro model=
             ]
         , HApp.map PacketMsg (Packet.view model.packetModel)
         , HApp.map BitMsg (Bit.view (Bit.defaultBit (singleParity model) 1 "parity" False))    
-        , Html.br [] []
-        , Html.text ( (oddEven model) ++ " Parity Check ")
-        , Html.button [ HE.onClick ToggleOddEven] [Html.text "Change" ]
+        , Html.p 
+            []
+            [ Html.text ( (oddEven model) ++ " Parity Check ")
+            , Html.button [ HE.onClick ToggleOddEven] [Html.text "Change" ]
+            ]
         , Html.p 
             []
             [Html.text ("When, the receiver gets this packet. It knows that there must be " ++ (oddEven model) ++ " number of 1s in the packet. If not, then we are certain that there is an error. When the receiver finds out that there is an error, it asks for retransmission.") ]
@@ -275,15 +298,6 @@ singleErrorCorrection model =
             , Html.text " identifiers at the receiver. So we have to make sure that 2"
             , Html.sup [] [Html.text "k"]
             , Html.text " is greater or equal to n+1."
-            , Html.br [] []
-            , Html.text "For the packet below, (n+1) = " 
-            , Html.text (toString (model.hammingModel.n))
-            , Html.text " and k = "
-            , Html.text (toString (model.hammingModel.k)) 
-            , Html.text " as 2"
-            , Html.sup [] [Html.text (toString (model.hammingModel.k))]
-            , Html.text " = "
-            , Html.text (toString (2^model.hammingModel.k))
             ]
         , Html.p 
             []
@@ -298,7 +312,15 @@ singleErrorCorrection model =
             [HApp.map HammingMsg (HammingPacket.view model.hammingModel)]
         ,Html.p 
             []
-            [ Html.text "Lets see how the receiver can detect the exact bit that is corrupted. Click the button below to transmit the packet. It will randomly flip a bit or not. Everytime you change the above packet, click the transmit button again. You can then follow these simple rules to detect that corrupted bit."
+            [ Html.text "For the packet below, (n+1) = " 
+            , Html.text (toString (model.hammingModel.n))
+            , Html.text " and k = "
+            , Html.text (toString (model.hammingModel.k)) 
+            , Html.text " as 2"
+            , Html.sup [] [Html.text (toString (model.hammingModel.k))]
+            , Html.text " = "
+            , Html.text (toString (2^model.hammingModel.k))
+            , Html.text ". Lets see how the receiver can detect the exact bit that is corrupted. Click the button below to transmit the packet. It will randomly flip a bit or not. Everytime you change the above packet, click the transmit button again. You can then follow these simple rules to detect that corrupted bit."
             , Html.ol []
                 [ Html.li [] 
                     [ Html.text "Hover/Click on the parity bits to highlight the data bits that contribute to that parity bit. "]
@@ -325,14 +347,13 @@ transmissionEfficiency model =
     Html.div [] []
 
 
-
 view model =
-    Html.div 
+    Html.body 
         [HA.width 900]
         [ Html.header 
             [] 
             [Header.view model.headerModel]
-        , Html.body
+        , Html.section
             []
             [ tutorialIntroText
             , bitIntro model 
@@ -341,7 +362,11 @@ view model =
             , parityIntro model
             , transmissionEfficiency model
             , singleErrorCorrection model
+            , tutorialConclusionText
             ]
+        , Html.footer 
+            []
+            tutorialFooterText
         ]
 
 
@@ -399,12 +424,6 @@ corruptTheBit x bit =
         Bit.bitToggle bit
     else 
         bit
-
-
-
-
-
-
 
 main = 
     HApp.beginnerProgram { 

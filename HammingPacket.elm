@@ -169,14 +169,14 @@ view packet =
     case packet.status of
         "T" -> 
             let bits = List.map (viewSpecificBit packet.status) packet.bits
-                removeBit  = button [ onClick RemoveBit] [text "-"]
-                addBit     = button [ onClick AddBit] [text "+"]
+                removeBit  = button [ onClick RemoveBit] [text "Remove"]
+                addBit     = button [ onClick AddBit] [text "Add"]
             in 
                 div 
                     []
                     (   [Html.br [] []] ++
                         [removeBit] ++ 
-                        [Html.text ("n = " ++ (toString (packet.n-1)))] ++
+                        [Html.text (" n = " ++ (toString (packet.n-1)) ++ " ")] ++
                         [addBit] ++ 
                         [Html.br [] []] ++
                         bits )

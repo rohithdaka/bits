@@ -8834,7 +8834,7 @@ var _user$project$HammingPacket$view = function (packet) {
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$svg$Svg$text('+')
+						_elm_lang$svg$Svg$text('Add')
 					]));
 			var removeBit = A2(
 				_elm_lang$html$Html$button,
@@ -8844,7 +8844,7 @@ var _user$project$HammingPacket$view = function (packet) {
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$svg$Svg$text('-')
+						_elm_lang$svg$Svg$text('Remove')
 					]));
 			var bits = A2(
 				_elm_lang$core$List$map,
@@ -8876,8 +8876,11 @@ var _user$project$HammingPacket$view = function (packet) {
 									_elm_lang$html$Html$text(
 									A2(
 										_elm_lang$core$Basics_ops['++'],
-										'n = ',
-										_elm_lang$core$Basics$toString(packet.n - 1)))
+										' n = ',
+										A2(
+											_elm_lang$core$Basics_ops['++'],
+											_elm_lang$core$Basics$toString(packet.n - 1),
+											' ')))
 								]),
 							A2(
 								_elm_lang$core$Basics_ops['++'],
@@ -8940,7 +8943,7 @@ var _user$project$Header$view = function (model) {
 				_elm_lang$html$Html$text(model)
 			]));
 };
-var _user$project$Header$initialModel = 'Error Correction and Error Detection - An Interactive Primer';
+var _user$project$Header$initialModel = 'Error Detection and Error Correction - A Quick Interactive Primer';
 
 var _user$project$Packet$dec2bin = function (v) {
 	var _p0 = v;
@@ -9204,6 +9207,51 @@ var _user$project$Main$combinatricsNotation = F2(
 						]))
 				]));
 	});
+var _user$project$Main$tutorialFooterText = _elm_lang$core$Native_List.fromArray(
+	[
+		A2(
+		_elm_lang$html$Html$p,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$html$Html$text('')
+			]))
+	]);
+var _user$project$Main$tutorialConclusionText = A2(
+	_elm_lang$html$Html$div,
+	_elm_lang$core$Native_List.fromArray(
+		[]),
+	_elm_lang$core$Native_List.fromArray(
+		[
+			A2(
+			_elm_lang$html$Html$h4,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text('Conclusion')
+				])),
+			A2(
+			_elm_lang$html$Html$p,
+			_elm_lang$core$Native_List.fromArray(
+				[]),
+			_elm_lang$core$Native_List.fromArray(
+				[
+					_elm_lang$html$Html$text('The goal of this essay in using this visual explanation is to reduce the difficulty in understanding this concept. One advantage with this medium is that you are no longer a passive reader. To paraphrase a famous quote: You hear and you forget. You see and You remember. You do and You understand. I hope this active reading helped you understand the fundamentals of Error Detection and Error Correction. You can read the '),
+					A2(
+					_elm_lang$html$Html$a,
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html_Attributes$href('http://wayback.archive.org/web/20060525060427/http://www.caip.rutgers.edu/~bushnell/dsdwebsite/hamming.pdf')
+						]),
+					_elm_lang$core$Native_List.fromArray(
+						[
+							_elm_lang$html$Html$text('original paper')
+						])),
+					_elm_lang$html$Html$text(' by Richard Hamming for more clarification. ')
+				]))
+		]));
 var _user$project$Main$tutorialIntroText = A2(
 	_elm_lang$html$Html$div,
 	_elm_lang$core$Native_List.fromArray(
@@ -9216,7 +9264,7 @@ var _user$project$Main$tutorialIntroText = A2(
 				[]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html$text('This explorable essay is a quick introduction to the concept of Error Correcting Codes. All information in computers is stored and exchanged with other computers in binary format, a set of 0s and 1s. For prolonged storage and to efficiently exchange this information, we had to invent techniques that can increase the reliability of the information. ')
+					_elm_lang$html$Html$text('This explorable essay is a quick introduction to the concept of Error Detecting and Error Correcting Codes. ')
 				])),
 			A2(
 			_elm_lang$html$Html$p,
@@ -9224,7 +9272,7 @@ var _user$project$Main$tutorialIntroText = A2(
 				[]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html$text('In April 1950, Richard Hamming introduced one such technique: Error Detecting and Error Correcting Codes. This essay is inspired by his original paper and written to serve as a preliminary guide to understand some concepts in that paper. No prior knowledge of anykind is assumed on the part of the reader. This essay intends to reason about the decisions that make this technique work. The models that are presented for you to explore, hopefully, will provide necessary insights to grasp the concepts. However, this essay doesnt deal with implementation details of this technique.')
+					_elm_lang$html$Html$text('In April 1950, Richard Hamming introduced a technique to improve the reliability of communications and storage using bits. This essay is inspired by his original paper and written to serve as a preliminary guide to understand some concepts in that paper. No prior knowledge is assumed on the part of the reader. This essay intends to reason about the decisions that make this technique work. The models that are presented for you to explore, hopefully, will provide necessary insights to grasp the concepts. However, this essay doesnt deal with implementation details of this technique.')
 				]))
 		]));
 var _user$project$Main$oddEven = function (model) {
@@ -9324,33 +9372,7 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 							[
 								_elm_lang$html$Html$text('k')
 							])),
-						_elm_lang$html$Html$text(' is greater or equal to n+1.'),
-						A2(
-						_elm_lang$html$Html$br,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[])),
-						_elm_lang$html$Html$text('For the packet below, (n+1) = '),
-						_elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(model.hammingModel.n)),
-						_elm_lang$html$Html$text(' and k = '),
-						_elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(model.hammingModel.k)),
-						_elm_lang$html$Html$text(' as 2'),
-						A2(
-						_elm_lang$html$Html$sup,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text(
-								_elm_lang$core$Basics$toString(model.hammingModel.k))
-							])),
-						_elm_lang$html$Html$text(' = '),
-						_elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(
-							Math.pow(2, model.hammingModel.k)))
+						_elm_lang$html$Html$text(' is greater or equal to n+1.')
 					])),
 				A2(
 				_elm_lang$html$Html$p,
@@ -9385,7 +9407,27 @@ var _user$project$Main$singleErrorCorrection = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('Lets see how the receiver can detect the exact bit that is corrupted. Click the button below to transmit the packet. It will randomly flip a bit or not. Everytime you change the above packet, click the transmit button again. You can then follow these simple rules to detect that corrupted bit.'),
+						_elm_lang$html$Html$text('For the packet below, (n+1) = '),
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(model.hammingModel.n)),
+						_elm_lang$html$Html$text(' and k = '),
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(model.hammingModel.k)),
+						_elm_lang$html$Html$text(' as 2'),
+						A2(
+						_elm_lang$html$Html$sup,
+						_elm_lang$core$Native_List.fromArray(
+							[]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text(
+								_elm_lang$core$Basics$toString(model.hammingModel.k))
+							])),
+						_elm_lang$html$Html$text(' = '),
+						_elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString(
+							Math.pow(2, model.hammingModel.k))),
+						_elm_lang$html$Html$text('. Lets see how the receiver can detect the exact bit that is corrupted. Click the button below to transmit the packet. It will randomly flip a bit or not. Everytime you change the above packet, click the transmit button again. You can then follow these simple rules to detect that corrupted bit.'),
 						A2(
 						_elm_lang$html$Html$ol,
 						_elm_lang$core$Native_List.fromArray(
@@ -9783,25 +9825,26 @@ var _user$project$Main$parityIntro = function (model) {
 						'parity',
 						false))),
 				A2(
-				_elm_lang$html$Html$br,
+				_elm_lang$html$Html$p,
 				_elm_lang$core$Native_List.fromArray(
 					[]),
 				_elm_lang$core$Native_List.fromArray(
-					[])),
-				_elm_lang$html$Html$text(
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					_user$project$Main$oddEven(model),
-					' Parity Check ')),
-				A2(
-				_elm_lang$html$Html$button,
-				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Main$ToggleOddEven)
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_elm_lang$html$Html$text('Change')
+						_elm_lang$html$Html$text(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_user$project$Main$oddEven(model),
+							' Parity Check ')),
+						A2(
+						_elm_lang$html$Html$button,
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html_Events$onClick(_user$project$Main$ToggleOddEven)
+							]),
+						_elm_lang$core$Native_List.fromArray(
+							[
+								_elm_lang$html$Html$text('Change')
+							]))
 					])),
 				A2(
 				_elm_lang$html$Html$p,
@@ -9822,7 +9865,7 @@ var _user$project$Main$parityIntro = function (model) {
 };
 var _user$project$Main$view = function (model) {
 	return A2(
-		_elm_lang$html$Html$div,
+		_elm_lang$html$Html$body,
 		_elm_lang$core$Native_List.fromArray(
 			[
 				_elm_lang$html$Html_Attributes$width(900)
@@ -9838,7 +9881,7 @@ var _user$project$Main$view = function (model) {
 						_user$project$Header$view(model.headerModel)
 					])),
 				A2(
-				_elm_lang$html$Html$body,
+				_elm_lang$html$Html$section,
 				_elm_lang$core$Native_List.fromArray(
 					[]),
 				_elm_lang$core$Native_List.fromArray(
@@ -9849,8 +9892,14 @@ var _user$project$Main$view = function (model) {
 						_user$project$Main$errorProbability(model),
 						_user$project$Main$parityIntro(model),
 						_user$project$Main$transmissionEfficiency(model),
-						_user$project$Main$singleErrorCorrection(model)
-					]))
+						_user$project$Main$singleErrorCorrection(model),
+						_user$project$Main$tutorialConclusionText
+					])),
+				A2(
+				_elm_lang$html$Html$footer,
+				_elm_lang$core$Native_List.fromArray(
+					[]),
+				_user$project$Main$tutorialFooterText)
 			]));
 };
 var _user$project$Main$main = {
