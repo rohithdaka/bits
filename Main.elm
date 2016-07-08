@@ -151,7 +151,7 @@ errorProbability model =
             [Html.h4 [] [Html.text "Probability of Error"]
             , Html.p 
                 []
-                [ Html.text "The whole point of building a vocabulary of words is to store your memories on a diary or send mail to friends. Unfortunately, pages on which the words are written can be spoiled making certain words illegible. Similary, in computers, we buid a vocabulary of these packets to store or transmit information. However, the disk drives we store these packets on can get corrupted, the cables/wireless environment through which we transmit these packets can distort them. The exact mechanism of such corruption is beyond the scope of this essay. Let us just focus on how to deal with such corrupted packets."
+                [ Html.text "The whole point of building a vocabulary of words is to store your memories on a diary or send mail to friends. Unfortunately, pages on which the words are written can be spoiled making certain words illegible. Similary, in computers, we build a vocabulary of these packets to store or transmit information. However, the disk drives we store these packets on can get corrupted, the cables/wireless environment through which we transmit these packets can distort them. The exact mechanism of such corruption is beyond the scope of this essay. Let us just focus on how to deal with such corrupted packets."
                 ]
             , Html.p 
                 []
@@ -160,7 +160,7 @@ errorProbability model =
                 , Html.text " = "
                 , Html.input 
                     [ HA.type' "number"
-                    , HA.size 100
+                    , HA.size 50
                     , HA.value (toString model.bitProbability) 
                     , HA.max "1"
                     , HA.min "0"
@@ -174,80 +174,86 @@ errorProbability model =
                 , Html.text (pluralString ("bit","bits") n)
                 , Html.br [] []
                 , Html.text ("the chance of having absolutely no corrupt bits is:  " )
-                , (combinatricsNotation n n) 
-                , Html.text " * (1 - "
-                , Html.text ((toString model.bitProbability) ++ ")")
-                , Html.sup [] [Html.text (toString n)] 
-                , Html.text " = "
-                , Html.text (toString 
-                                (
-                                    (toFloat 
-                                        (round 
-                                            (
+                , Html.span [] 
+                    [(combinatricsNotation n n) 
+                    , Html.text " * (1 - "
+                    , Html.text ((toString model.bitProbability) ++ ")")
+                    , Html.sup [] [Html.text (toString n)] 
+                    , Html.text " = "
+                    , Html.text (toString 
+                                    (
+                                        (toFloat 
+                                            (round 
                                                 (
-                                                    (1- model.bitProbability)^(toFloat n) *100
-                                                ) * 100 
-                                            )
-                                        ) 
-                                    ) / 100  
-                                )
-                            ) 
-                , Html.text "%, " 
+                                                    (
+                                                        (1- model.bitProbability)^(toFloat n) *100
+                                                    ) * 100 
+                                                )
+                                            ) 
+                                        ) / 100  
+                                    )
+                                ) 
+                    , Html.text "%, "
+                ]
                 , Html.br [][]
                 , Html.text ("the chance of having exactly 1 corrupt bit is: ")
-                , (combinatricsNotation n (n-1))
-                , Html.text " * (1 - "
-                , Html.text ((toString model.bitProbability) ++ ")")
-                , Html.sup [] [Html.text (toString (n-1))] 
-                , Html.text (" * " ++ (toString model.bitProbability))
-                , Html.text " = "
-                , Html.text (toString 
-                                 (
-                                    (toFloat 
-                                        (round 
-                                            (
+                , Html.span [] 
+                    [ (combinatricsNotation n (n-1))
+                    , Html.text " * (1 - "
+                    , Html.text ((toString model.bitProbability) ++ ")")
+                    , Html.sup [] [Html.text (toString (n-1))] 
+                    , Html.text (" * " ++ (toString model.bitProbability))
+                    , Html.text " = "
+                    , Html.text (toString 
+                                     (
+                                        (toFloat 
+                                            (round 
                                                 (
-                                                    (1- model.bitProbability)^(toFloat (n-1)) 
-                                                    * model.bitProbability 
-                                                    * 100 
-                                                    * (toFloat n)
-                                                ) * 100 
-                                            )
-                                        ) 
-                                    ) / 100  
-                                )
-                            ) 
-                , Html.text "%" 
+                                                    (
+                                                        (1- model.bitProbability)^(toFloat (n-1)) 
+                                                        * model.bitProbability 
+                                                        * 100 
+                                                        * (toFloat n)
+                                                    ) * 100 
+                                                )
+                                            ) 
+                                        ) / 100  
+                                    )
+                                ) 
+                    , Html.text "%" 
+                    ]
                 , Html.br [] []
                 , Html.text ("and chances of exactly 2 corrupt bits is:  ")
-                , (combinatricsNotation n (n-2))
-                , Html.text " * (1 - "
-                , Html.text ((toString model.bitProbability) ++ ")")
-                , Html.sup [] [Html.text (toString (n-2))] 
-                , Html.text (" * " ++ (toString n))
-                , Html.sup [] [Html.text "2"]
-                , Html.text " = "
-                , Html.text (toString 
-                                (
-                                    (toFloat 
-                                        (round 
-                                            (
+                , Html.span [] 
+                    [ (combinatricsNotation n (n-2))
+                    , Html.text " * (1 - "
+                    , Html.text ((toString model.bitProbability) ++ ")")
+                    , Html.sup [] [Html.text (toString (n-2))] 
+                    , Html.text (" * " ++ (toString n))
+                    , Html.sup [] [Html.text "2"]
+                    , Html.text " = "
+                    , Html.text (toString 
+                                    (
+                                        (toFloat 
+                                            (round 
                                                 (
-                                                    (1- model.bitProbability)^(toFloat (n-2))
-                                                    * (model.bitProbability^2) 
-                                                    * 50 
-                                                    * (toFloat 
-                                                            ( n 
-                                                            * (n- 1)
-                                                            )
-                                                        ) 
-                                                )* 100 
-                                            )
-                                        ) 
-                                    ) / 100  
-                                )
-                            ) 
-                , Html.text "%"
+                                                    (
+                                                        (1- model.bitProbability)^(toFloat (n-2))
+                                                        * (model.bitProbability^2) 
+                                                        * 50 
+                                                        * (toFloat 
+                                                                ( n 
+                                                                * (n- 1)
+                                                                )
+                                                            ) 
+                                                    )* 100 
+                                                )
+                                            ) 
+                                        ) / 100  
+                                    )
+                                ) 
+                    , Html.text "%"
+                    ]
                 ]
             , Html.p 
                 []

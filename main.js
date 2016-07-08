@@ -9584,7 +9584,7 @@ var _user$project$Main$errorProbability = function (model) {
 					[]),
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html$text('The whole point of building a vocabulary of words is to store your memories on a diary or send mail to friends. Unfortunately, pages on which the words are written can be spoiled making certain words illegible. Similary, in computers, we buid a vocabulary of these packets to store or transmit information. However, the disk drives we store these packets on can get corrupted, the cables/wireless environment through which we transmit these packets can distort them. The exact mechanism of such corruption is beyond the scope of this essay. Let us just focus on how to deal with such corrupted packets.')
+						_elm_lang$html$Html$text('The whole point of building a vocabulary of words is to store your memories on a diary or send mail to friends. Unfortunately, pages on which the words are written can be spoiled making certain words illegible. Similary, in computers, we build a vocabulary of these packets to store or transmit information. However, the disk drives we store these packets on can get corrupted, the cables/wireless environment through which we transmit these packets can distort them. The exact mechanism of such corruption is beyond the scope of this essay. Let us just focus on how to deal with such corrupted packets.')
 					])),
 				A2(
 				_elm_lang$html$Html$p,
@@ -9600,7 +9600,7 @@ var _user$project$Main$errorProbability = function (model) {
 						_elm_lang$core$Native_List.fromArray(
 							[
 								_elm_lang$html$Html_Attributes$type$('number'),
-								_elm_lang$html$Html_Attributes$size(100),
+								_elm_lang$html$Html_Attributes$size(50),
 								_elm_lang$html$Html_Attributes$value(
 								_elm_lang$core$Basics$toString(model.bitProbability)),
 								_elm_lang$html$Html_Attributes$max('1'),
@@ -9634,31 +9634,38 @@ var _user$project$Main$errorProbability = function (model) {
 						_elm_lang$core$Native_List.fromArray(
 							[])),
 						_elm_lang$html$Html$text('the chance of having absolutely no corrupt bits is:  '),
-						A2(_user$project$Main$combinatricsNotation, n, n),
-						_elm_lang$html$Html$text(' * (1 - '),
-						_elm_lang$html$Html$text(
 						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_elm_lang$core$Basics$toString(model.bitProbability),
-							')')),
-						A2(
-						_elm_lang$html$Html$sup,
+						_elm_lang$html$Html$span,
 						_elm_lang$core$Native_List.fromArray(
 							[]),
 						_elm_lang$core$Native_List.fromArray(
 							[
+								A2(_user$project$Main$combinatricsNotation, n, n),
+								_elm_lang$html$Html$text(' * (1 - '),
 								_elm_lang$html$Html$text(
-								_elm_lang$core$Basics$toString(n))
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_elm_lang$core$Basics$toString(model.bitProbability),
+									')')),
+								A2(
+								_elm_lang$html$Html$sup,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text(
+										_elm_lang$core$Basics$toString(n))
+									])),
+								_elm_lang$html$Html$text(' = '),
+								_elm_lang$html$Html$text(
+								_elm_lang$core$Basics$toString(
+									_elm_lang$core$Basics$toFloat(
+										_elm_lang$core$Basics$round(
+											(Math.pow(
+												1 - model.bitProbability,
+												_elm_lang$core$Basics$toFloat(n)) * 100) * 100)) / 100)),
+								_elm_lang$html$Html$text('%, ')
 							])),
-						_elm_lang$html$Html$text(' = '),
-						_elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(
-							_elm_lang$core$Basics$toFloat(
-								_elm_lang$core$Basics$round(
-									(Math.pow(
-										1 - model.bitProbability,
-										_elm_lang$core$Basics$toFloat(n)) * 100) * 100)) / 100)),
-						_elm_lang$html$Html$text('%, '),
 						A2(
 						_elm_lang$html$Html$br,
 						_elm_lang$core$Native_List.fromArray(
@@ -9666,36 +9673,43 @@ var _user$project$Main$errorProbability = function (model) {
 						_elm_lang$core$Native_List.fromArray(
 							[])),
 						_elm_lang$html$Html$text('the chance of having exactly 1 corrupt bit is: '),
-						A2(_user$project$Main$combinatricsNotation, n, n - 1),
-						_elm_lang$html$Html$text(' * (1 - '),
-						_elm_lang$html$Html$text(
 						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_elm_lang$core$Basics$toString(model.bitProbability),
-							')')),
-						A2(
-						_elm_lang$html$Html$sup,
+						_elm_lang$html$Html$span,
 						_elm_lang$core$Native_List.fromArray(
 							[]),
 						_elm_lang$core$Native_List.fromArray(
 							[
+								A2(_user$project$Main$combinatricsNotation, n, n - 1),
+								_elm_lang$html$Html$text(' * (1 - '),
 								_elm_lang$html$Html$text(
-								_elm_lang$core$Basics$toString(n - 1))
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_elm_lang$core$Basics$toString(model.bitProbability),
+									')')),
+								A2(
+								_elm_lang$html$Html$sup,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text(
+										_elm_lang$core$Basics$toString(n - 1))
+									])),
+								_elm_lang$html$Html$text(
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									' * ',
+									_elm_lang$core$Basics$toString(model.bitProbability))),
+								_elm_lang$html$Html$text(' = '),
+								_elm_lang$html$Html$text(
+								_elm_lang$core$Basics$toString(
+									_elm_lang$core$Basics$toFloat(
+										_elm_lang$core$Basics$round(
+											(((Math.pow(
+												1 - model.bitProbability,
+												_elm_lang$core$Basics$toFloat(n - 1)) * model.bitProbability) * 100) * _elm_lang$core$Basics$toFloat(n)) * 100)) / 100)),
+								_elm_lang$html$Html$text('%')
 							])),
-						_elm_lang$html$Html$text(
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							' * ',
-							_elm_lang$core$Basics$toString(model.bitProbability))),
-						_elm_lang$html$Html$text(' = '),
-						_elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(
-							_elm_lang$core$Basics$toFloat(
-								_elm_lang$core$Basics$round(
-									(((Math.pow(
-										1 - model.bitProbability,
-										_elm_lang$core$Basics$toFloat(n - 1)) * model.bitProbability) * 100) * _elm_lang$core$Basics$toFloat(n)) * 100)) / 100)),
-						_elm_lang$html$Html$text('%'),
 						A2(
 						_elm_lang$html$Html$br,
 						_elm_lang$core$Native_List.fromArray(
@@ -9703,44 +9717,51 @@ var _user$project$Main$errorProbability = function (model) {
 						_elm_lang$core$Native_List.fromArray(
 							[])),
 						_elm_lang$html$Html$text('and chances of exactly 2 corrupt bits is:  '),
-						A2(_user$project$Main$combinatricsNotation, n, n - 2),
-						_elm_lang$html$Html$text(' * (1 - '),
-						_elm_lang$html$Html$text(
 						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_elm_lang$core$Basics$toString(model.bitProbability),
-							')')),
-						A2(
-						_elm_lang$html$Html$sup,
+						_elm_lang$html$Html$span,
 						_elm_lang$core$Native_List.fromArray(
 							[]),
 						_elm_lang$core$Native_List.fromArray(
 							[
+								A2(_user$project$Main$combinatricsNotation, n, n - 2),
+								_elm_lang$html$Html$text(' * (1 - '),
 								_elm_lang$html$Html$text(
-								_elm_lang$core$Basics$toString(n - 2))
-							])),
-						_elm_lang$html$Html$text(
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							' * ',
-							_elm_lang$core$Basics$toString(n))),
-						A2(
-						_elm_lang$html$Html$sup,
-						_elm_lang$core$Native_List.fromArray(
-							[]),
-						_elm_lang$core$Native_List.fromArray(
-							[
-								_elm_lang$html$Html$text('2')
-							])),
-						_elm_lang$html$Html$text(' = '),
-						_elm_lang$html$Html$text(
-						_elm_lang$core$Basics$toString(
-							_elm_lang$core$Basics$toFloat(
-								_elm_lang$core$Basics$round(
-									(((Math.pow(
-										1 - model.bitProbability,
-										_elm_lang$core$Basics$toFloat(n - 2)) * Math.pow(model.bitProbability, 2)) * 50) * _elm_lang$core$Basics$toFloat(n * (n - 1))) * 100)) / 100)),
-						_elm_lang$html$Html$text('%')
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_elm_lang$core$Basics$toString(model.bitProbability),
+									')')),
+								A2(
+								_elm_lang$html$Html$sup,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text(
+										_elm_lang$core$Basics$toString(n - 2))
+									])),
+								_elm_lang$html$Html$text(
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									' * ',
+									_elm_lang$core$Basics$toString(n))),
+								A2(
+								_elm_lang$html$Html$sup,
+								_elm_lang$core$Native_List.fromArray(
+									[]),
+								_elm_lang$core$Native_List.fromArray(
+									[
+										_elm_lang$html$Html$text('2')
+									])),
+								_elm_lang$html$Html$text(' = '),
+								_elm_lang$html$Html$text(
+								_elm_lang$core$Basics$toString(
+									_elm_lang$core$Basics$toFloat(
+										_elm_lang$core$Basics$round(
+											(((Math.pow(
+												1 - model.bitProbability,
+												_elm_lang$core$Basics$toFloat(n - 2)) * Math.pow(model.bitProbability, 2)) * 50) * _elm_lang$core$Basics$toFloat(n * (n - 1))) * 100)) / 100)),
+								_elm_lang$html$Html$text('%')
+							]))
 					])),
 				A2(
 				_elm_lang$html$Html$p,

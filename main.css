@@ -3,8 +3,9 @@
 html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    width: 70%;
+    max-width: 100%;
     margin: 1em;
+    width: 900px;
 }
 
 h1 {
@@ -44,6 +45,14 @@ h4 {
     letter-spacing: 0.00px;
     word-spacing: 0.00px;
     text-transform: none;
+}
+
+span {
+	white-space: nowrap;
+}
+
+svg {
+	margin:2px;
 }
 
 p {
