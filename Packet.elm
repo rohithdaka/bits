@@ -100,7 +100,7 @@ view packet =
         add     = button [ onClick Add] [text "Add a bit"]
     in 
         div [] 
-            ([remove] ++ [add] ++ [div [] bits])
+            ([remove] ++ [Html.text " "] ++ [add] ++ [div [] bits])
 
 
 viewSpecificBit: Bit.Model -> Html Msg
