@@ -229,7 +229,7 @@ errorProbability model =
                     , Html.text " * (1 - "
                     , Html.text ((toString model.bitProbability) ++ ")")
                     , Html.sup [] [Html.text (toString (n-2))] 
-                    , Html.text (" * " ++ (toString n))
+                    , Html.text (" * " ++ (toString model.bitProbability))
                     , Html.sup [] [Html.text "2"]
                     , Html.text " = "
                     , Html.text (toString 
@@ -394,6 +394,7 @@ view model =
         ]
 
 
+
 update: Msg -> AppModel -> AppModel
 update msg model =
     case msg of
@@ -449,11 +450,13 @@ corruptTheBit x bit =
     else 
         bit
 
+
+
 main = 
     HApp.beginnerProgram { 
         model = initialModel
     ,   view = view
-    ,   update = update 
+    ,   update = update
     }
 
 
