@@ -4,7 +4,6 @@ import HammingPacket
 import Header 
 import Html
 import Html.Attributes as HA
-import Html.App as HApp
 import Html.Events as HE
 import Json.Decode as J
 import String exposing(concat,split,join,length)
@@ -108,7 +107,7 @@ bitIntro model =
         , Html.p 
             []
             [ Html.text "Let's start with the fundamental unit of communication: Binary Digit or a Bit. In English, we have 26 alphabets, 10 digits and several punctuation marks to store and exchange information. In computers, we have just 2. " ]
-        , HApp.map BitMsg (Bit.view model.bitModel)
+        , Html.map BitMsg (Bit.view model.bitModel)
         , Html.p 
             []
             [ Html.text "Click anywhere within the green square to toggle its value between 0 and 1." ]
@@ -124,7 +123,7 @@ packetIntro model =
         , Html.p 
             [] 
             [ Html.text "You can build a packet. Just add, remove or toggle a bit. The number on the top left corner in the square represent the position of that bit in the packet. You will need it later in this essay."]
-        , HApp.map PacketMsg (Packet.view model.packetModel)
+        , Html.map PacketMsg (Packet.view model.packetModel)
         ]
 
 combinatricsNotation x y =
@@ -282,8 +281,8 @@ parityIntro model=
             []
             [ Html.text "First step is to 'detect' a single error and to deal with it, we shall use the most popular and oldest trick: parity check. The parity bit is shown in blue below. Unlike data bit, you can't set its value directly by clicking on it. However, its value is set based on the type of parity check we use. The job of this Parity Bit is to make sure that there are certain number of 1s in the packet (including the parity bit). In Even Parity Check, its job is to make sure that there are even number of 1s. In Odd Parity Check, its job is to make sure that there are odd number of 1s. There is a button below the packet. You can use it to change the Parity Check type. Along with changing bit values and packet size, you can see how parity bit is set."
             ]
-        , HApp.map PacketMsg (Packet.view model.packetModel)
-        , HApp.map BitMsg (Bit.view (Bit.defaultBit (singleParity model) 1 "parity" False))    
+        , Html.map PacketMsg (Packet.view model.packetModel)
+        , Html.map BitMsg (Bit.view (Bit.defaultBit (singleParity model) 1 "parity" False))    
         , Html.p 
             []
             [ Html.text ( (oddEven model) ++ " Parity Check ")
@@ -333,7 +332,7 @@ singleErrorCorrection model =
             ]
         , Html.p 
             []
-            [HApp.map HammingMsg (HammingPacket.view model.hammingModel)]
+            [Html.map HammingMsg (HammingPacket.view model.hammingModel)]
         ,Html.p 
             []
             [ Html.text "For the packet above, (n+1) = " 
@@ -363,7 +362,7 @@ singleErrorCorrection model =
         , Html.button [ HE.onClick TransmitPacket] [Html.text "Transmit Packet" ]
         , Html.p 
             []
-            [HApp.map HammingRMsg (HammingPacket.view model.hammingReceivedModel)]
+            [Html.map HammingRMsg (HammingPacket.view model.hammingReceivedModel)]
         ]
 
 
@@ -453,7 +452,7 @@ corruptTheBit x bit =
 
 
 main = 
-    HApp.beginnerProgram { 
+    Html.beginnerProgram { 
         model = initialModel
     ,   view = view
     ,   update = update

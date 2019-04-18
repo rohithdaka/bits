@@ -8,7 +8,7 @@ import Html exposing (Html,div,button)
 import Html.Events exposing (onClick)
 import List
 import String exposing(concat,split,join,length)
-import Html.App as HA
+import Browser
 import Array 
 import Random as R
 
@@ -60,14 +60,21 @@ receivedDefaultPacket =
 specificParityValue: Int -> Model -> List Int
 specificParityValue x packet =
     let getBitValue bit = 
-        case (Array.get ((round (logBase 2 (toFloat x))) + 1) (dec2bin packet.n) |> Maybe.withDefault 0 ) of 
+          case (Array.get ((round (logBase 2 (toFloat x))) + 1) (dec2bin packet.n) |> Maybe.withDefault 0 ) of 
             1 -> bit.value 
             _ -> 0
     in List.map getBitValue packet.bits
 
 hammingParity: Int -> Model -> Int
 hammingParity x packet =
-    case ((( packet |> (specificParityValue x) |> List.map toString |> concat |> split "0" |> join "" |> length) ) % 2 ) of 
+    case (modBy 2 (( packet 
+            |> (specificParityValue x) 
+            |> List.map toString 
+            |> concat 
+            |> split "0" 
+            |> join "" 
+            |> length 
+            ) ) ) of 
         0 -> 0
         1 -> 1
         _ -> 5 -- This should never happen as the case is determined by dividing with 2 
@@ -202,8 +209,8 @@ viewSpecificBit status bit =
 
 
 main = 
-    HA.beginnerProgram { 
-        model = defaultPacket
+    Browser.sandbox { 
+        init = defaultPacket
     ,   view = view
     ,   update = update 
     }
