@@ -151,12 +151,12 @@ packetIntro model =
         ]
 
 
-combinatricsNotation x y =
+combinatricsNotation n r =
     Html.span
         []
-        [ Html.sup [] [ Html.text (String.fromFloat x) ]
+        [ Html.sup [] [ Html.text (String.fromInt n) ]
         , Html.text "C"
-        , Html.sub [] [ Html.text (String.fromFloat y) ]
+        , Html.sub [] [ Html.text (String.fromInt r) ]
         ]
 
 
@@ -396,7 +396,7 @@ transmissionEfficiency model =
 
 
 view model =
-    Html.body
+    Html.tbody
         [ HA.width 900 ]
         [ Html.header
             []
@@ -438,7 +438,7 @@ update msg model =
         UpdateProbability n ->
             let
                 x =
-                    n |> String.toFloat |> Result.toMaybe |> Maybe.withDefault 0.01
+                    n |> String.toFloat |> Maybe.withDefault 0.01
             in
             if x >= 0 && x <= 1 then
                 { model | bitProbability = x }
@@ -494,7 +494,7 @@ corruptTheBit x bit =
 
 main =
     Browser.sandbox
-        { model = initialModel
+        { init = initialModel
         , view = view
         , update = update
         }
