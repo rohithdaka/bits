@@ -1,10 +1,10 @@
 module Bit exposing (..) -- where
-import Basics exposing (..)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Html exposing (..)
 import Html.Events exposing (onClick,onMouseEnter,onMouseLeave)
-import Html.App as HA
+import Browser
+import String
 
 type alias Model =
             { value: Int
@@ -65,7 +65,7 @@ clickType category=
         _ -> MouseHover
 
 bitToggle : Model -> Model
-bitToggle bit = {bit | value = (bit.value + 1) % 2}
+bitToggle bit = {bit | value = Basics.modBy 2 (bit.value + 1)}
 
 
 highlightValue bit = 
@@ -74,31 +74,31 @@ highlightValue bit =
         False -> "0.5"
 
 view bit =
-    let xOrigin = (toString 0)
-        yOrigin = (toString 0)
-        bitDimension = (toString sizeOfBit)
+    let xOrigin = (String.fromInt 0)
+        yOrigin = (String.fromInt 0)
+        bitDimension = (String.fromFloat sizeOfBit)
         fillColor = (colorOf bit.category)
-        textOrigin = (toString  (sizeOfBit/2))
-        idOrigin = (toString (sizeOfBit/6))
+        textOrigin = (String.fromFloat  (sizeOfBit/2))
+        idOrigin = (String.fromFloat (sizeOfBit/6))
         clickEvent = clickType bit.category
     in 
     Svg.svg 
         [ onClick clickEvent, onMouseEnter MouseHover, onMouseLeave MouseHover, x "0", y "0",width bitDimension, height bitDimension]
         [ 
-            rect 
+            rect
                 [ fill fillColor, x xOrigin, y yOrigin, width bitDimension, height bitDimension, fillOpacity (highlightValue bit)] 
                 []
-        ,   text' 
+        ,   text_
                 [x textOrigin, y textOrigin, fill "black", fontFamily "monospace", fontSize textOrigin, textAnchor "middle", alignmentBaseline "middle"]
-                [Html.text (toString bit.value)]
-        ,   text' 
+                [Html.text (String.fromInt bit.value)]
+        ,   text_
                 [x idOrigin, y idOrigin, fill "black", fontFamily "monospace", fontSize idOrigin, textAnchor "left", alignmentBaseline "top"]
-                [Html.text (toString bit.position)]
+                [Html.text (String.fromInt bit.position)]
         ]
 
 main = 
-    HA.beginnerProgram { 
-        model = initialModel
+    Browser.sandbox { 
+        init = initialModel
     ,   view = view
     ,   update = update 
     }

@@ -8,7 +8,7 @@ import Html exposing (Html,div,button)
 import Html.Events exposing (onClick)
 import List
 import String exposing(repeat,length)
-import Html.App as HA
+import Browser
 
 
 -- Model
@@ -83,12 +83,12 @@ dec2bin v =
     case v of
         1 -> "1"
         0 -> "0"
-        _ -> ( dec2bin (v // 2) ) ++ (toString (v % 2))
+        _ -> ( dec2bin (v // 2) ) ++ (String.fromInt (modBy 2 v))
 
 allPossibleValues : Int -> List String
 allPossibleValues n =
     let maxPossibleValue = 2^n - 1
-        valueStrings = List.map dec2bin [0..maxPossibleValue]
+        valueStrings = (List.map dec2bin (List.range 0 maxPossibleValue))
         padZeroes binaryString = (String.repeat (n - (String.length binaryString)) "0" ) ++ binaryString 
     in List.map padZeroes valueStrings
 
@@ -105,4 +105,4 @@ view packet =
 
 viewSpecificBit: Bit.Model -> Html Msg
 viewSpecificBit bit = 
-    HA.map (Modify bit.position) (Bit.view  bit)
+    Html.map (Modify bit.position) (Bit.view  bit)
